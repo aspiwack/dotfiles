@@ -1,0 +1,2036 @@
+#+TITLE:Arnaud Spiwack's emacs configuration
+#+PROPERTIES: header-args:emacs-lisp  :tangle yes
+#+startup: overview
+
+I wrote my configuration file in [[http://orgmode.org/worg/org-contrib/babel/][Orgmode/Babel]], a literate programming
+format. It allows me to structure the file better as it was getting
+quite unwieldy, and make the comments more useful. It also makes it
+nicer to share.
+
+Orgmode/Babel can serve as a literate programming tool for any
+language. It is meant to be edited with Emacs. There is special
+support to load a Babel file containing Emacs lisp from an Emacs lisp
+file, namely the function ~org-babel-load-file~. It is pretty much
+intended to be used to load an Emacs configuration such as this one.
+
+* Header
+
+The semantics of binding in vanilla elisp is so called [[https://en.wikipedia.org/wiki/Late_binding][/dynamic
+bindings/]], a bug in the original Lisp become standard (Scheme changed
+that). Mostly, it's horrible. The following makes binders /lexical/
+(aka /static/) by default.
+#+BEGIN_SRC emacs-lisp
+  ;;; -*- lexical-binding: t -*-
+#+END_SRC
+
+* Use this file
+
+I usually put this file in the directory ~.emacs.d/lisp/~. Then, to
+load the file at start up, put the following line in your
+~.emacs.d/init.el~ (or ~.emacs~) file:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (org-babel-load-file "~/.emacs.d/lisp/config.org" nil)
+#+END_SRC
+Note: the ~nil~ argument makes sure that this file is /not/ byte-compiled.
+It is optional, and this is the default behaviour. However, it so
+happens that compiling this file breaks the package manager
+configuration. My understanding, at this point, it that Emacs looks
+into the ~init.el~ to see if there is a call to ~(package-initialize)~, if
+there isn't, Emacs calls ~(package-initialize)~ before loading the
+~init.el~. Since the configuration of repositories must happen before
+~(package-initialize)~ is called, it is imperative that
+~(package-initialize)~ not be called before my configuration. However,
+it seems that byte compiling this file prevents Emacs from realising
+that I'm calling ~(package-initialize)~ myself. And breaks my calls to
+~use-package~. Also note that according to [[http://ergoemacs.org/emacs/emacs_byte_compile.html][this page]], byte-compiling
+~init.el~ is not actually useful.
+
+I usually also add:
+#+BEGIN_SRC emacs-lisp :tangle no
+  (add-to-list 'load-path "~/.emacs.d/lisp/")
+#+END_SRC
+So that I can tuck custom ~.el~ files in the ~.emacs.d/lisp/~
+directory.
+
+As a general remark, it is good to keep your ~.emacs.d/init.el~ (or
+~.emacs~ if you must, but it is tidier to have a ~.emacs.d/~ directory
+and have everything Emacs related there) just a few lines long. As I'm
+using a Babel file for my configuration I don't have a choice. But
+even if you don't, Emacs will add local configuration (such as safe
+local variables) to your ~init.el~ file, obscuring what comes from
+your configuration and what is generated. It also makes it really hard
+to synchronise between computer or to check in a version control
+system. Your Emacs configuration is precious: keep it clean and tidy.
+
+* Use-package
+
+The [[https://github.com/jwiegley/use-package][~use-package~]] macro helps structure Emacs configurations by
+arranging and scoping the configuration by package.
+
+** Setting up Melpa
+
+Melpa is a package repository of the ~package.el~ package manager
+which is distributed with Emacs. The most robust way to use Melpa is
+via ~use-package~. But in case one wants to try a package without
+committing to it, here is a short cheat-sheet:
+- Open package list with ~M-x package-list-packages~.
+- Commands inside the list: *i* (install), *U* (upgrade all), *x*
+  (execute requests).
+- With this configuration, packages are upgraded automatically by
+  [[Automatically%20upgrade%20packages][~auto-package-update.el~]]. Without such a package, packages are not
+  upgraded automatically, so from time to time you would have to do
+  ~M-x package-list-packages~ then ~U~ then ~x~.
+
+The following sets up ~package.el~ to use the Melpa repository and
+loads the installed packages
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (setq package-enable-at-startup nil)
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives
+               '("melpa-stable" . "http://stable.melpa.org/packages/"))
+  ; `package-initialize` must be called in the configuration otherwise
+  ; emacs calls it at startup
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+#+END_SRC
+
+** Bootstrapping use-package
+
+The ~use-package~ macro can install packages from Melpa, but it cannot
+install itself. So we need a bit of bootstrapping code to get
+ourselves started:
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  (require 'use-package)
+  (setq use-package-minimum-reported-time 0.05)
+  (setq use-package-verbose t)
+#+END_SRC
+
+* TODO Preliminaries
+
+Move opam stuff (from Melt & Ocaml) to here.
+
+* TODO Stuff I don't want to deal with right now
+
+#+BEGIN_SRC emacs-lisp
+  ;; compilation key-bindings
+  (global-set-key (kbd "<f10>") 'compile)
+  (global-set-key (kbd "<f11>") 'next-error)
+
+  ;; Don't use tabs for indentation
+  (setq-default indent-tabs-mode nil)
+
+  ;; Packages to install via Melpa: company-coq
+  ;; Stuff to install on the system: hindent (stack), Proof general (sources), ocp-indent (opam), merlin (opam), tuareg-mode (system)
+  ;; Note: packages installed via Melpa must be configured using the `after-init-hook`
+#+END_SRC
+
+* Emacs settings
+
+** Don't modify ~init.el~
+
+Emacs likes to modify the ~init.el~ to store customisation. It prevents
+me from having a fully declarative configuration as either I have to
+check the customisation information in my configuration repository, or
+I have to not control the ~init.el~ via my declarative configuration
+(and have to manually add a line in ~init.el~ to call this here file).
+
+This configuration lets Emacs store customisation information in
+~custom.el~ instead. Which is then only controlled by Emacs, and
+separate from my configuration.
+
+#+begin_src emacs-lisp
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file)
+#+end_src
+
+** Backup files to a dedicated directory
+
+Instead of saving the backup files (both autosave files of the form
+~#filename#~ and backup saves of the form ~\~filename~) in the same
+directory as the files they are backuping, cleanly store them in a
+dedicated directory (here ~\~/.emacs.d/backups~).
+
+The code for this comes from [[http://stackoverflow.com/a/18330742][a stack overflow comment]].
+#+BEGIN_SRC emacs-lisp
+  (defvar --backup-directory (concat user-emacs-directory "backups"))
+  (if (not (file-exists-p --backup-directory))
+          (make-directory --backup-directory t))
+  (setq backup-directory-alist `(("." . ,--backup-directory)))
+  ; (setq auto-save-file-name-transforms `(("." ,--backup-directory)))
+  (setq make-backup-files t               ; backup of a file the first time it is saved.
+        backup-by-copying t               ; don't clobber symlinks
+        version-control t                 ; version numbers for backup files
+        delete-old-versions t             ; delete excess backup files silently
+        delete-by-moving-to-trash t
+        kept-old-versions 6               ; oldest versions to keep when a new numbered backup is made (default: 2)
+        kept-new-versions 9               ; newest versions to keep when a new numbered backup is made (default: 2)
+        auto-save-default t               ; auto-save every buffer that visits a file
+        auto-save-timeout 20              ; number of seconds idle time before auto-save (default: 30)
+        auto-save-interval 200            ; number of keystrokes between auto-saves (default: 300)
+        )
+#+END_SRC
+
+* General purpose packages
+
+** Appearance
+
+*** Remove default behaviour
+
+#+begin_src emacs-lisp
+  ;; deactivate tool bar
+  (tool-bar-mode -1)
+
+  ;; deactivate the menu bar
+  (menu-bar-mode -1)
+
+  ;; deactivate the scroll bar
+  (scroll-bar-mode -1)
+#+end_src
+
+*** Diminish
+
+The [[https://github.com/myrjola/diminish.el][~diminish~]] package is used to unclutter the minor-mode line. It can
+be used to remove the mention of the minor-mode in the line when we
+don't want to be reminded of it. The ~diminish~ functionality is
+called via ~use-package~ with the ~:diminish~ keyword.
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :ensure t)
+#+END_SRC
+
+*** Fonts
+#+begin_src emacs-lisp
+  ; Don't set an absolute size for any but the default face, otherwise,
+  ; it seems that you can't change the size of the font with `C-x C-+'
+  ; and `C-x C--'.
+  (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 98)
+  (set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono" :inherit 'default :height 0.77)
+  (set-face-attribute 'variable-pitch nil :family "Linux Biolinum O" :inherit 'default :height 1.3)
+#+end_src
+
+Note for debugging: calling ~C-u C-x =~ gives a lot of information at
+point, including the face.
+
+Establishes Unicode font mapping, to display unicode characters
+better. It also lets me display emojis with coloured fonts 🙂. For the
+latter feature, the [[https://www.google.com/get/noto/help/emoji/][Noto Color Emoji]] font must be installed. (/e.g./ on
+Ubuntu, there is a ~fonts-noto-color-emoji~ package). The specific
+colour emoji font it added in the configuration, see below. By
+default, ~unicode-fonts~ uses Apple's font. But it's not easy to install
+it on Linux.
+
+#+begin_src emacs-lisp
+  ;; I don't fully understand this function, I've adapted it from
+  ;; `dw/replace-unicode-font-mapping' in
+  ;; https://github.com/daviwil/dotfiles/blob/f2c6fb1c80a8fe2f90f1a22e975b8b37dc9cf324/Emacs.org#enable-proper-unicode-glyph-support
+  (defun aspiwack/prepend-to-font-mapping (block-name new-font)
+    (let* ((block-idx (cl-position-if
+                           (lambda (i) (string-equal (car i) block-name))
+                           unicode-fonts-block-font-mapping))
+           (block-fonts (cadr (nth block-idx unicode-fonts-block-font-mapping)))
+           (updated-block (cons new-font block-fonts)))
+      (setf (cdr (nth block-idx unicode-fonts-block-font-mapping))
+            `(,updated-block))))
+
+  (use-package unicode-fonts
+    :ensure t
+    :config
+    ;; Display emojis with the Noto Emoji font first.
+    (mapcar
+      (lambda (block-name)
+        (aspiwack/prepend-to-font-mapping block-name "Noto Color Emoji"))
+      '("Dingbats"
+        "Emoticons"
+        "Miscellaneous Symbols and Pictographs"
+        "Transport and Map Symbols"))
+     ;; Trigger mapping
+    (unicode-fonts-setup))
+#+end_src
+*** Colour themes
+
+My previous dark (and default) theme was the [[https://github.com/synic/jbeans-emacs][jbeans theme]]. It is a theme
+with a black background.
+#+BEGIN_SRC emacs-lisp
+  (use-package jbeans-theme
+    :ensure t
+    ;; :config
+    ;; ; sets the theme at startup
+    ;; (load-theme 'jbeans t)
+    )
+#+END_SRC
+
+I use the adwaita theme as a light theme, when this is more
+appropriate (for instance when there is a lot of ambient light).
+#+BEGIN_SRC emacs-lisp
+  ; The Adwaita theme is available by default. This just declares the
+  ; adwaita theme as available for `enable-theme' (the second `t'
+  ; ensures that the theme is not displayed)
+  (load-theme 'adwaita t t)
+#+END_SRC
+
+A lot of themes which come bundled with Doom Emacs. Many look nice.
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :ensure t
+    :config
+    (load-theme 'doom-dracula))
+#+end_src
+
+Let me also define two functions (~M-x dark-theme~) and (~M-x
+light-theme~) to switch between them. Let me also define a more general
+function ~switch-theme~ which acts as ~load-theme~ (it loads and activates
+a theme), but also deactivates all other custom themes, so that we can
+easily change between available themes.
+#+BEGIN_SRC emacs-lisp
+  (defun dark-theme ()
+    (interactive)
+    (switch-theme 'doom-dracula))
+
+  (defun light-theme ()
+    (interactive)
+    (switch-theme 'adwaita))
+
+  ;; See https://stackoverflow.com/questions/22866733/emacs-disable-theme-after-loading-a-different-one-themes-conflict
+  (defun aspiwack/disable-all-themes ()
+    "Disable all active themes."
+    (dolist (i custom-enabled-themes)
+      (disable-theme i)))
+
+  (defun switch-theme (theme)
+    "Loads a theme, and deactivate all others"
+    (interactive
+     (list
+      (intern (completing-read "Load custom theme: "
+                               (mapcar #'symbol-name
+                                       (custom-available-themes))))))
+    (aspiwack/disable-all-themes)
+    (load-theme theme)
+    ; If powerline is running, it needs to be reset after changing theme
+    ; (otherwise theme elements from the previous theme will spill to
+    ; the new theme).
+    (if (fboundp 'powerline-reset) (powerline-reset)))
+#+END_SRC
+
+*** Powerline
+
+ [[https://github.com/milkypostman/powerline][Powerline]] is a customisation engine for the powerline. I used to use it with
+ boon in order to display colours for different modes. (This
+ configuration currently uses ~doom-modeline~)
+ #+BEGIN_SRC emacs-lisp
+   (use-package powerline
+     :ensure t
+     :config
+     ; correct an illegible font colour in the light mode
+     (face-spec-set 'powerline-active1 '((((background light)) :foreground "white smoke"))))
+ #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun aspiwack/boon-powerline-theme ()
+    "Set up a powerline based on powerline-default-theme which also displays boon-state."
+    (interactive)
+    (setq-default mode-line-format
+                  '("%e"
+                    (:eval
+                     (let* ((active (powerline-selected-window-active))
+                            (mode-line (if active 'mode-line 'mode-line-inactive))
+                            (face0 (if active (boon-state-face) 'mode-line-inactive))
+                            (face1 (if active 'powerline-active1 'powerline-inactive1))
+                            (face2 (if active 'powerline-active2 'powerline-inactive2))
+                            (separator-left (intern (format "powerline-%s-%s"
+                                                            powerline-default-separator
+                                                            (car powerline-default-separator-dir))))
+                            (separator-right (intern (format "powerline-%s-%s"
+                                                             powerline-default-separator
+                                                                (cdr powerline-default-separator-dir))))
+                            (boon (when (bound-and-true-p boon-mode)
+                                    (list
+                                     (powerline-raw " " face0)
+                                     (powerline-raw (boon-state-string) face0 'r)
+                                     (funcall separator-left face0 mode-line)
+                                     )))
+                            (lhs (list
+                                       (powerline-raw (if (buffer-modified-p) "*" "-" ) mode-line 'l)
+                                       (powerline-raw mode-line-mule-info mode-line)
+                                       (powerline-buffer-id mode-line 'l)
+                                       (when (and (boundp 'which-func-mode) which-func-mode)
+                                         (powerline-raw which-func-format mode-line 'l))
+                                       (powerline-raw " " mode-line)
+                                       (funcall separator-left mode-line face1)
+                                       (when (boundp 'erc-modified-channels-object)
+                                         (powerline-raw erc-modified-channels-object face1 'l))
+                                       (powerline-major-mode face1 'l)
+                                       (powerline-process face1)
+                                       (powerline-minor-modes face1 'l)
+                                       (powerline-narrow face1 'l)
+                                       (powerline-raw " " face1)
+                                       (funcall separator-left face1 face2)
+                                       (powerline-vc face2 'r)))
+                            (rhs (list (powerline-raw global-mode-string face2 'r)
+                                       (funcall separator-right face2 face1)
+                                       (powerline-raw "%l" face1 'l)
+                                       (powerline-raw ":" face1)
+                                       (powerline-raw "%c" face1 'r)
+                                       (funcall separator-right face1 mode-line)
+                                       (powerline-raw " " mode-line)
+                                       (powerline-raw "%p" mode-line)
+                                       (powerline-raw " " mode-line)
+                                       (powerline-buffer-size mode-line nil)
+                                       (powerline-raw " " mode-line)
+                                       (powerline-hud mode-line face1)
+                                       )))
+                       (concat (powerline-render boon)
+                               (powerline-render lhs)
+                               (powerline-fill face2 (powerline-width rhs))
+                               (powerline-render rhs)))))))
+#+END_SRC
+
+*** Doom-modeline
+
+The [[https://seagle0128.github.io/doom-modeline][doom-modeline]] is a clean modeline which seems to be inspired by
+Vs Code. It's used by default in Doom Emacs. The is a one-time setup
+thing to do, which is to run ~M-x all-the-icons-install-fonts~ (does
+it work on Nixos?), otherwise many icons won't show.
+
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :ensure t
+    :config
+    ;; configures modal state indicator's colours
+    (face-spec-set 'doom-modeline-evil-insert-state `((((background light)) :foreground "indian red") (((background dark)) :foreground "red")))
+    (face-spec-set 'doom-modeline-evil-normal-state `((((background light)) :foreground "dodger blue") (((background dark)) :foreground "DeepSkyBlue")))
+    (face-spec-set 'doom-modeline-evil-emacs-state `((((background light)) :foreground "spring green") (((background dark)) :foreground "green")))
+    (doom-modeline-mode 1)
+    :custom
+     ((doom-modeline-height 15 "Reduces the height of the modeline")
+      (doom-modeline-minor-modes t "Display the minor mode in the modeline")
+      (doom-modeline-modal-icon t "Shows the editing state."))
+   )
+#+end_src
+
+*** Misc
+
+#+begin_src emacs-lisp
+  ;; Displays column number in the modeline
+  (column-number-mode)
+#+end_src
+
+** Emacs behaviour
+
+*** Which-key
+
+[[https://github.com/justbur/emacs-which-key#manual-activation][Which-key]] display key binding completions.
+
+#+begin_src emacs-lisp
+  (use-package which-key
+      :ensure t
+      :diminish which-key-mode
+      :config
+      (which-key-mode)
+      :custom
+      (which-key-idle-delay 0.3))
+#+end_src
+
+*** Default text scale
+
+The standard text-scaling functions (see ~text-scale-adjust~) only
+adjust the current buffer size. But , most of the time, I want to
+adjust the font of an entire Emacs frame (a window in the sense of the
+window manager). This package lets me do so (but it only seems to work
+with open buffers, and doesn't transmit to new buffers that I open, so
+it's not quite what I want yet). See
+https://www.emacswiki.org/emacs/zoom-frm.el for something which may
+work better.
+
+#+begin_src emacs-lisp
+  ;; TODO: configure convenient bindings. Possibly with Hydra
+  (use-package default-text-scale
+    :ensure t
+    :diminish default-text-scale-mode
+    :config
+    (default-text-scale-mode 1))
+#+end_src
+
+** Editing
+
+*** Company
+
+The [[https://company-mode.github.io/][company mode]] is a completion framework. I use it by default in my
+Emacs buffers.
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    ; since company-mode is started globally, I don't need the mode line
+    ; showing that it's up. To avoid clutter, I deactivate it.
+    :diminish company-mode
+    ; company-mode is only activated due to `global-company-mode', so it
+    ; needs to be loaded. However, it is not critical for basic emacs
+    ; functionalities, so I delay its loading by a few seconds, to make
+    ; emacs more responsive.
+    :defer 2
+    :config
+      (global-company-mode)
+    :custom
+      (company-minimum-prefix-length 1)
+      ; wait for the typing to be idle for 0.0s before suggesting
+      ; completions (default is 0.5).
+      (company-idle-delay 0.0))
+
+  ;; Adds icons and eye-candy
+  (use-package company-box
+    :ensure t
+    :diminish company-box-mode
+    :hook (company-mode . company-box-mode))
+#+END_SRC
+
+Company has a few backends by default, but it is mostly meant to be
+extended. Many other package bring their extensions, but they must be
+registered after Company has started. I define a function to abstract
+this pattern.
+#+BEGIN_SRC emacs-lisp
+  (defun aspiwack/add-company-backend (backend)
+    (with-eval-after-load 'company (add-to-list 'company-backends backend)))
+#+END_SRC
+
+*** Swiper search
+
+[[https://github.com/abo-abo/swiper][Swiper]] is a tool to improve the search capabilities of Emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind
+    (; Rebinds the search key binding `C-s` to Swiper search function
+     ("C-s" . swiper)))
+#+END_SRC
+
+*** Helm
+
+[[https://emacs-helm.github.io/helm/][Helm]] is a powerful "narrowing" mode. It helps searching and selecting
+in files and lists (/e.g./ find-file).
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :config
+    (helm-mode t)
+    :defer 2 ; still enables helm mode after a short while if no
+             ; autoload has been used.
+    :bind
+    (("M-x" . helm-M-x)
+     ("C-x C-f" . helm-find-files)
+     ("C-x b" . helm-mini)
+     ;; helm-occur is helm's search command. For most uses Swiper
+     ;; offers a superior experience (the only point in favour of helm
+     ;; is that it makes it possible to search patterns typing words
+     ;; in the wrong order
+     ;; (e.g. "list type" maches "type 'a list")).
+     ;; ("C-s" . helm-occur)
+     ; The 3 following commands override unpleasant default from
+     ; Helm. Mostly this sets up `tab` to do things like select a
+     ; directory in `find-file` buffers, rather than open a
+     ; menu. (default was `C-z`, both are switch. I am not sure what the
+     ; `C-i` rebinding is for). These are taken from the internet [
+     ; http://tuhdo.github.io/helm-intro.html ]
+     :map helm-map
+     ("<tab>" . helm-execute-persistent-action) ; rebind tab to do persistent action
+     ("C-i" . helm-execute-persistent-action) ; make TAB works in terminal
+     ("C-z" . helm-select-action) ; list actions using C-z
+     )
+    :diminish helm-mode)
+#+END_SRC
+
+To search files in a project (git, darcs, etc…), I use
+[[https://github.com/bbatsov/helm-projectile][helm-projectile]]. In particular for the ~helm-projectile-ag~
+command. It also replaces the ido-based completion in projectile with
+helm.
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :ensure t
+    :commands helm-projectile-on
+    :bind
+    ("C-S-s" . helm-projectile-ag))
+
+  ;; Dependency of `helm-projectile' that seems not to have been
+  ;; specified.
+  (use-package helm-ag
+    :commands helm-ag
+    :ensure t)
+#+END_SRC
+
+**** TODO Add ~ag~ to requirements
+
+*** Counsel
+
+Counsel is very similar to Helm. I usually prefer Helm for the job,
+but sometimes Counsel does a better job for me. Notably to replace
+~org-goto~ in Org mode.
+
+#+begin_src emacs-lisp
+  (use-package counsel
+    :ensure t)
+#+end_src
+
+*** Multiple cursors
+
+The [[https://github.com/magnars/multiple-cursors.el][mutliple cursor mode]] makes it possible to have several cursors in
+an emacs buffer, allowing to act simultaneously at several points of
+the buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors
+    :ensure t
+    :bind
+    (; change a multi-line region in multiple cursors
+     ("C-S-c C-S-c" . mc/edit-lines)
+     ; When no region is selected: add a cursor below point. When a
+     ; region is selected, add a new cursor selecting next identical
+     ; region.
+     ("C->" . mc/mark-next-like-this)
+     ; Like above but puts cursor above point or at previous identical
+     ; region.
+     ("C-<" . mc/mark-previous-like-this)
+     ; Select all identical to current region
+     ("C-c C-<" . mc/mark-all-like-this)))
+#+END_SRC
+
+*** Electric pairs
+
+The [[https://www.emacswiki.org/emacs/ElectricPair][electric pair mode]] creates delimiters by pairs (/e.g./ when
+writing an opening parenthesis, it will output a matching closing
+parenthesis). The choice of delimiters to consider is based on the
+syntax of the current major mode.
+
+#+BEGIN_SRC emacs-lisp
+  (electric-pair-mode 1)
+#+END_SRC
+
+*** Rainbow delimiters
+
+The [[https://www.emacswiki.org/emacs/RainbowDelimiters][rainbow-delimiters mode]] colours nested delimiters in different
+colours so that it is easier to spot pairs of matching delimiters.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook
+    (prog-mode . rainbow-delimiters-mode))
+#+END_SRC
+
+**** TODO Improve colour scheme
+
+*** Spell checking
+The [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Flyspell]] mode spell checks text (or just comments for programming
+languages with the ~flyspell-prog-mode~)
+#+BEGIN_SRC emacs-lisp
+  (use-package flyspell
+    :init
+    (custom-set-variables
+       ; Selects flyspell's default dictionary
+       '(flyspell-default-dictionary "british-ise-w_accents"))
+    ;; :bind
+    ;; ; Proposes corrections for the last word found by flyspell before
+    ;; ; the current cursor position. Cheat-sheet: candidate number to
+    ;; ; substitute a proposed correction, `A' to add a the word as a local
+    ;; ; word, `r' to manually replace the word.
+    ;; ("C-c C-j" . flyspell-check-previous-highlighted-word)
+    )
+#+END_SRC
+
+[[https://github.com/d12frosted/flyspell-correct][Flyspell-correct]] augments Flyspell with keyboard-friendly commands
+(which I bound to "j" in the search map). Vanilly Flyspell is really
+better for use with the mouse (which is fine, but I often want to
+reach for my keyboard).
+
+Flyspell-correct integrates into Helm nicely (also other command
+completion framework if you'd rather use Ivy or something).
+
+#+begin_src emacs-lisp
+  (use-package flyspell-correct
+    :ensure t
+    :after flyspell
+    :commands (flyspell-correct-previous flyspell-correct-next))
+
+  (use-package flyspell-correct-helm
+    :after flyspell-correct)
+#+end_src
+
+
+*** White-space butler
+
+The [[https://github.com/lewang/ws-butler][~ws-butler~ mode]] erases trailing white spaces which would pollute
+your diffs in version control systems. But only on those lines you
+have actually edited to keep your commits minimal and meaningful even
+if you are working with people who, for any reason, leave white spaces
+behind.
+#+BEGIN_SRC emacs-lisp
+  (use-package ws-butler
+    :ensure t
+    :diminish ws-butler-mode
+    :config (ws-butler-global-mode))
+#+END_SRC
+
+I run ~ws-butler~ in all my buffers.
+
+*** hungry-delete-mode
+
+[[https://github.com/nflath/hungry-delete/][Hungry-delete mode]] deletes consecutive white-spaces as if they were a
+single character (See also
+http://endlessparentheses.com/hungry-delete-mode.html).
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package hungry-delete
+  ;;   :ensure t
+  ;;   :config
+  ;;   (global-hungry-delete-mode)
+  ;;   :diminish hungry-delete-mode)
+#+END_SRC
+*** Fill column indicator
+
+The [[https://www.emacswiki.org/emacs/fill-column-indicator.el][fill column indicator]] mode show a line at the configured /fill
+limit/ (/i.e./ the number of characters after which lines should be
+cut in two).
+#+BEGIN_SRC emacs-lisp
+  (use-package fill-column-indicator
+    :ensure t
+    :commands turn-on-fci-mode
+    :config
+#+END_SRC
+
+The fill limit can be configured with ~set-fill-column N~.
+
+I usually don't have the fill column indicator displayed. But I turn
+it on if a particular coding style calls for it. I always use the fill
+column indicator in Haskell as lines are a bit tricky there.
+
+**** Workaround
+
+There is a [[https://github.com/alpaker/Fill-Column-Indicator/issues/21][longstanding incompatibility]] between the fill column
+indicator and popup-like functions like those of Company mode. Here is
+a [[https://github.com/company-mode/company-mode/issues/180#issuecomment-55047120][workaround for Company mode]] which turns the fill column indicator
+off when a Company-mode popup is displayed.
+#+BEGIN_SRC emacs-lisp
+    (defvar-local company-fci-mode-on-p nil)
+
+    (defun company-turn-off-fci (&rest ignore)
+      (when (boundp 'fci-mode)
+        (setq company-fci-mode-on-p fci-mode)
+        (when fci-mode (fci-mode -1))))
+
+    (defun company-maybe-turn-on-fci (&rest ignore)
+      (when company-fci-mode-on-p (fci-mode 1)))
+
+    (add-hook 'company-completion-started-hook 'company-turn-off-fci)
+    (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
+    (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci))
+#+END_SRC
+
+**** TODO Link to Haskell section
+
+*** Yasnippet
+
+[[https://github.com/joaotavora/yasnippet][Yasnippet]] inserts templates (with holes which can be navigated with
+tabs). I'm experimenting with it, I can't recommend it just yet.
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (yas-global-mode)
+    :diminish yas-minor-mode
+    :defer 2)
+#+END_SRC
+
+*** Ace windows
+
+[[https://github.com/abo-abo/ace-window][Ace-window]] provides a faster way to navigate between windows. I rebind
+it on ~C-x o~ (usually ~other-window~) since it behaves like
+~other-window~ when there are only two windows. When they are more
+~ace-window~ gives a number to each window and typing that number
+switch to said window.
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :ensure t
+    :bind ("C-x o" . ace-window)
+    :config
+    (ace-window-display-mode 1))
+#+END_SRC
+
+*** Avy
+
+[[https://github.com/abo-abo/avy][Avy]] provides fast ways to jump to a word on screen (it can jump
+between windows as well). I haven't set bindings because I use Avy via
+[[https://github.com/jyp/boon][Boon]].
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t)
+#+END_SRC
+
+*** Boon
+
+[[https://github.com/jyp/boon][Boon]] is a modal binding for Emacs. An alternative is [[https://bitbucket.org/lyro/evil/wiki/Home][Evil]] (together
+with the crowd-sourced [[http://spacemacs.org/][Spacemacs]] bindings) which provides more
+vi-like bindings. But overall, I don't really likes these
+bindings. Boon is better-suited to my needs.
+
+I'm defining a lot of custom keys here. I think that most of them
+would be better suited in the ~use-package~ of their respective
+package. However, I found that it doesn't always work to do so. So I'm
+being conservative and define most boon-type bindings here.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package boon
+    :ensure t
+    ;; :load-path "~/projects/contributions/boon/master"
+    :config
+    (require 'boon-qwerty)
+    (boon-mode)
+    ;; I'm pretty sure this is the wrong mode map for search queries but
+    ;; it does work just fine This whole section should be moved to a
+    ;; `:bind' (with `:map' sections). But I'm lazy right now.
+    (define-key boon-moves-map "e " 'swiper)
+    (define-key boon-moves-map "eg" 'helm-projectile-ag)
+    (define-key boon-moves-map "ey" 'helm-show-kill-ring)
+    (define-key boon-x-map "f" 'helm-find-files)
+    (define-key boon-x-map "x" 'helm-M-x)
+    (define-key boon-moves-map "wj" 'flyspell-correct-previous)
+    (define-key boon-moves-map "ej" 'flyspell-correct-next)
+    (define-key boon-goto-map "d" 'dired-jump)
+    ; powerline configuration
+    ;; (require 'boon-powerline)
+    ;; ;; configures different colours for the light and dark themes
+    ;; (face-spec-set 'boon-modeline-ins `((((background light)) :background "indian red") (((background dark)) :background "red")))
+    ;; (face-spec-set 'boon-modeline-cmd `((((background light)) :background "dodger blue") (((background dark)) :background "blue")))
+    ;; (face-spec-set 'boon-modeline-spc `((((background light)) :background "spring green") (((background dark)) :background "dark green")))
+    ;; ; starts the powerline
+    ;; (aspiwack/boon-powerline-theme)
+    ; end powerline configuration
+    ; return to command mode on `keyboard-quit`
+    (defadvice keyboard-quit (before aspiwack/set-cmd-when-quit activate)
+      "On `C-g' (`keyboard-quit'), return to Boon command mode."
+      (boon-set-command-state))
+    (define-prefix-command 'aspiwack/boon-custom-map nil "custom")
+    (define-key boon-command-map "m" 'aspiwack/boon-custom-map)
+
+    ; Since the powerline/doom-modeline indicates boom's mode, we can safely remove
+    ; the normal boon indication from the mode line.
+    :diminish boon-local-mode
+      )
+#+END_SRC
+
+** Programming
+
+*** Flycheck
+
+[[http://www.flycheck.org/][Flycheck]] continuously compiles a project and reports compilation and
+typing errors inline.
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t)
+#+END_SRC
+
+*** Zeal at point
+
+[[https://zealdocs.org/][Zeal]] is a API-documentation browser for Linux (Mac users can use the
+original, vastly superior, but apparently non-free application [[https://kapeli.com/dash][Dash]],
+the Windows port [[http://velocity.silverlakesoftware.com/][Velocity]] looks pretty nice too).
+
+The [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] Emacs package searches and opens Zeal for the
+documentation of the symbol under the cursor. Users of Dash and
+Velocity will need the respective packages.
+
+(I have this installed, but to be honest, I don't currently used it,
+and it may be rendered quite a bit less useful with lsp support being
+rolled out everywhere).
+#+BEGIN_SRC emacs-lisp
+  (use-package zeal-at-point
+    :ensure t
+    :bind
+    ; There is no default bindings, `C-c d` is the binding suggested by
+    ; the documentation.
+    ("C-c d" . zeal-at-point)
+    :config
+    ; searches for a symbol only in the doc corresponding to the
+    ; language being edited.
+    (add-to-list 'zeal-at-point-mode-alist '(tuareg-mode . "ocaml"))
+    (add-to-list 'zeal-at-point-mode-alist '(haskell-mode . "haskell")))
+#+END_SRC
+
+**** TODO Make Zeal a requirement
+
+** Git
+
+[[http://magit.vc/][Magit]] is downright the best tool I've ever used to control git
+repositories. And I've used quite a few.
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    ; magit is only loaded when `magit-status' is called
+    :commands magit-status
+    :custom
+    (magit-wip-merge-branch t "Merge real commits in wip branch")
+    (magit-diff-refine-hunk 'all "Display magit's diffs with word-granularity")
+    (magit-display-buffer-function 'magit-display-buffer-fullcolumn-most-v1 "Avoid splitting buffers vertically")
+    :init
+    (magit-wip-mode)
+    ;; I don't really know why I can't use `:diminish' for
+    ;; `magit-wip-mode', but it doesn't work, so let me add it here.
+    (diminish 'magit-wip-mode))
+#+END_SRC
+
+Note: I do like to ~pull --rebase~ often. Magit lets me set the
+behaviour of pulls on individual branches: in the ~pull~ menu, press
+~r~ to toggle a default ~rebase~ or ~merge~ behaviour for the
+branch. It turns out to simply be an interface to Git's
+configuration. It can be toggled in the command line by ~git config
+--local branch.<branch name>.rebase true~.
+
+I can set rebase as the default globally with ~git config --global
+pull.rebase true~.
+
+*** Pull requests
+
+[[https://magit.vc/manual/forge/][Forge]] is an extension of Magit to manage Issues/PRs and more from
+Emacs. It does require some out-of-Emacs setup which cannot be
+automated. This is described [[https://magit.vc/manual/forge/Getting-Started.html#Getting-Started][in the relevant part of the Forge manual]].
+
+#+begin_src emacs-lisp
+  (use-package forge
+    :ensure t
+    :after magit)
+#+end_src
+
+Some documentation that I assembled before actually setting up
+Forge. Some of the documentation is about other Emacs packages. I've
+tried one, I think it was ~magit-gh-pulls~. Because it was attempting
+to read out information from Github as soon as I opened my Magit
+status, it was slowing down my workflow significantly, and I
+uninstalled it. Forge lets me choose when to connect to Github to
+refresh issues and PR. And one of the thing which convinced me to set
+it up was that it lets me create a Github fork right from my
+Emacs. Since it's a tad tedious a process, usually, it's a rather
+pleasant feature.
+- (more recent) https://magit.vc/manual/forge/
+- https://github.com/sigma/magit-gh-pulls
+- http://endlessparentheses.com/merging-github-pull-requests-from-emacs.html
+- http://endlessparentheses.com/create-github-prs-from-emacs-with-magit.html
+
+** Darcs
+
+For darcs repository, I use [[http://hub.darcs.net/simon/darcsum][darcsum]]. It's much less featureful than
+Magit. But it's serviceable.
+#+BEGIN_SRC emacs-lisp
+  (use-package darcsum
+    ; darcsum is only loaded when `darcsum-whatsnew' is called
+    :commands darcsum-whatsnew
+    :ensure t)
+#+END_SRC
+
+The ~projective-vc~ function from the [[http://batsov.com/projectile/][Projectile]] project management
+package abstracts over version control systems (it will open magit for
+git, for instance). However, it doesn't know of darcsum. So I define
+my own dispatch (using Projectile to discover what kind of source
+control we're currently under).
+#+BEGIN_SRC emacs-lisp
+  (defun aspiwack/vc (&optional project-root)
+    (interactive)
+    ; setup variables, logic taken from
+    ; https://github.com/bbatsov/projectile/blob/44f75e3ceceeebac7111954e6f33cda50d4793d5/projectile.el#L2694-L2695
+    (or project-root (setq project-root (projectile-project-root)))
+    (let ((vcs (projectile-project-vcs project-root)))
+      ; dispatching on vcs kind
+      (cl-case vcs
+        (darcs (darcsum-whatsnew project-root))
+        (otherwise (projectile-vc project-root)))
+      )
+    )
+#+END_SRC
+
+** Project management
+
+[[http://batsov.com/projectile/][Projectile]] is a project management library: it has functionalities to,
+among other things list or search the files in a project. Projects are
+typically the files checked in a version control system.
+
+A useful projectile command is ~projectile-find-other-file~ (bound to
+~<projectile prefix> a~) which switches between lists with the same
+basename but different extensions (it uses a list of matching
+extension: for instance, it can switch between ~.c~ and ~.h~ files in
+C projects).
+#+BEGIN_SRC emacs-lisp
+  ;; A function to figure out names for a git repository based on the
+  ;; name of the remote repository and current branch. Useful because I
+  ;; use `git worktree' a lot.
+  (defun aspiwack/git-repo-name (project-root)
+    (require 's) ; string processing library
+    (let (remotes (shell-command-to-string "git remote -v"))
+      (if (string= remotes "")
+          ; in case there is no remote, use the directory's basename
+          (projectile-default-project-name project-root)
+        ; TODO: can we make sure this is run from the project root?
+        (let ((repo-name
+               (s-trim (shell-command-to-string "git remote -v | head -n1 | cut -f2 | cut -d ' ' -f1 | xargs basename | sed -e 's/.git$//'")))
+              (branch-name
+               (s-trim (shell-command-to-string "git branch --no-color | grep '^*' | cut -c3-"))))
+          ; I don't need the branch name with doom-modeline
+          ;(format "%s/%s" repo-name branch-name)
+          (format "%s" repo-name)))
+      ))
+
+  (use-package projectile
+    :ensure t
+    :commands ; entry points for projectile
+    (projectile-project-vcs
+     projectile-project-root
+     projectile-vc
+     projectile-default-project-name)
+    :bind
+    ; Use `C-x g` to open the VCS (Magit, darcsum) dashboard
+    ("C-x g" . aspiwack/vc)
+    :bind-keymap
+    ; sets the prefix for projectile command to be `C-x p' (default
+    ; `C-c p').
+    ("C-x p" . projectile-command-map)
+    :config
+    ; starts projectile
+    (projectile-global-mode)
+    ; Set the projectile keymap
+    ; The following should be `:bind-keymap'. But for some reason
+    ; `:bind-keymap' doesn't seem happy with the `:map' modifier. See
+    ; https://github.com/jwiegley/use-package/issues/736
+    (define-key aspiwack/boon-custom-map "p" 'projectile-command-map)
+    ; customises the mode line display
+    (setq projectile-mode-line
+         '(:eval
+           (if
+               (file-remote-p default-directory)
+               " [<remote>]"
+             (format " [%s]"
+                     (projectile-project-name)))))
+    ; discover better project names
+    (setq projectile-project-name-function
+          (lambda (project-root)
+            (let ((vcs (projectile-project-vcs project-root)))
+              (cl-case vcs
+                ; In git repositories, I use worktrees and it makes the
+                ; name of the root directory (default project name) very
+                ; uninformative. Instead I use a project name based on
+                ; repository name and branch name.
+                (git (aspiwack/git-repo-name project-root))
+                (otherwise (projectile-default-project-name project-root))))))
+    ; replaces ido-based completion for projectile command with
+    ; helm-based ones (see `helm-projectile').
+    (helm-projectile-on)
+    :defer 2 ; enables projectile after a while if no autoload has been used
+    )
+#+END_SRC
+
+* Publishing formats
+
+Here is some configuration shared by all text editing modes which
+derive from ~text-mode~ (in Emacs terminology, ~text-mode~ is a base
+mode, and modes like ~markdown-mode~ derive from ~text-mode~).
+#+BEGIN_SRC emacs-lisp
+  (defun aspiwack/auto-fill-everywhere ()
+    ; This is only necessary for org-mode, in other text modes,
+    ; `comment-auto-fill-only-comments' doesn't actually have any
+    ; effect. Maybe there is a better way to do auto-filling in Org
+    ; which we could use instead.
+    ; It doesn't work anymore though. I thought it worked once. Maybe
+    ; that's the problem with variables being global state. And as soon
+    ; as there is a code snippet then `comment-auto-fill-only-comments'
+    ; gets reset to `t'. I don't know.
+    (setq comment-auto-fill-only-comments nil)
+    (auto-fill-mode 1))
+
+  (use-package text-mode
+    :hook
+    ; Automatically start a new line when the current line is full
+    (text-mode . aspiwack/auto-fill-everywhere)
+    ; Use flyspell for online spell-checking
+    (text-mode . turn-on-flyspell)
+    )
+#+END_SRC
+
+** Org mode
+
+Not only a publishing format, but also a powerful editing mode (with
+which I wrote this file), a literate programming tool, an agenda, a
+todo list manager, a spreadsheet program and more… [[http://orgmode.org/][Org mode]] is the
+most iconic Emacs mode.
+
+This configuration uses [[https://orgmode.org/manual/Noweb-Reference-Syntax.html#Noweb-Reference-Syntax][Noweb syntax]] because ~:config~ [[https://github.com/jwiegley/use-package/issues/882][doesn't seem to
+work with functions defined below]].
+
+#+BEGIN_SRC emacs-lisp :noweb yes
+  <<org-helpers>>
+
+  (defun aspiwack/org-setup-babel ()
+    ; Turns on syntax highlighting in code blocks
+    (setq org-src-fontify-natively t)
+
+    ; Active Babel languages: snippets in these languages can be
+    ; executed inside Org mode
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '(;(coq . t)
+       (ditaa . t)
+       (dot . t)
+       (emacs-lisp . t)
+       (haskell . t)
+       (ocaml . t)
+       (shell . t)
+       ))
+
+    ; Sets ditaa path to Ubuntu installation path. This is rather
+    ; inelegant and I'd rather find a more robust way to do it.
+    (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar"))
+
+  (defun aspiwack/org-setup-capture ()
+    ; Sets up capture in org mode see http://orgmode.org/org.html#Capture
+    ; templates
+    (setq org-capture-templates
+          '(("w" "Work todo" entry (file+headline "~/Dropbox/Org/log.org" "Work")
+             "* TODO %?\n  %i\n  %a")
+            ("t" "Personal todo" entry (file+headline "~/Dropbox/Org/log.org" "Perso")
+             "* TODO %?\n  %i\n  %a")))
+    ; key binding
+    (define-key global-map "\C-cc" 'org-capture))
+
+  (use-package org
+    :ensure t
+    :defer t ; defer doesn't work on org, apparently and the
+             ; configuration is rather slow. Need to figure something
+             ; out.
+    :hook
+    ((org-mode . variable-pitch-mode)
+     (org-mode . org-indent-mode)
+     (org-mode . aspiwack/org-setup-font))
+    :bind
+    ([remap org-goto] . counsel-org-goto)
+    :custom
+    ; Changes the symbol representing folding sections (default is `...`
+    ; which I rather dislike)
+    (org-ellipsis "⤵" "Changes the symbol to denote folding sections")
+    ; I'm not sure about the following, but it does look nice.
+    (org-hide-emphasis-markers t "Hides markup on bold, italics,…")
+    :config
+    (aspiwack/org-setup-babel)
+    (aspiwack/org-setup-capture)
+    (aspiwack/org-setup-latex))
+#+END_SRC
+
+[[https://github.com/sabof/org-bullets][Org-bullets]] decorates the Org bullet headers from ~*~, ~**~, ~***~, … and
+replaces them by cute Unicode bullets.
+
+#+begin_src emacs-lisp
+    (use-package org-bullets
+      :ensure t
+      :hook (org-mode . org-bullets-mode)
+      :after org)
+#+end_src
+
+*** Fonts
+:PROPERTIES:
+:header-args: :noweb-ref org-helpers :tangle no
+:END:
+
+#+begin_src emacs-lisp
+  (defun aspiwack/org-setup-font ()
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.1)
+                    (org-level-6 . 1.1)
+                    (org-level-7 . 1.1)
+                    (org-level-8 . 1.1)))
+      (set-face-attribute (car face) nil :font "Linux Biolinum O" :weight 'regular :height (cdr face)))
+
+
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+#+end_src
+
+*** Latex
+:PROPERTIES:
+:header-args: :noweb-ref org-helpers :tangle no
+:END:
+
+Setting up Latex for export from Org to pdf.
+- I like to use Xelatex as it has better fonts
+- ~minted~ highlights code in exports
+- The /memoir/ class serves as a slightly improved book class
+#+begin_src emacs-lisp
+  (defun aspiwack/org-setup-latex ()
+      ; Uses xelatex instead of latex to extract documents into pdf to
+    ; allow for better fonts. Passes the `-shell-escape` option to be
+    ; able to run minted.
+    (setq org-latex-pdf-process
+          '("xelatex -shell-escape -interaction nonstopmode %f"
+            "xelatex -shell-escape -interaction nonstopmode %f"))
+
+    ; sets up Latex export to highlight the syntax of code blocks
+    ; using the minted package
+    (add-to-list 'org-latex-packages-alist '("" "minted"))
+    (setq org-latex-listings 'minted)
+
+    ; Use imagemagick to create late previews. The reason is that
+    ; imagemagick uses the same latex command as the latex export, in
+    ; particular it will use xetex, and be compatible with minted.
+    (setq org-latex-create-formula-image-program 'imagemagick)
+
+    ; Defines a binding for the memoir class, an improvement over the
+    ; default book class. This export class doesn't produce parts. As I
+    ; understand it to be able to choose between having parts or chapter
+    ; at toplevel, the only way is to have two different classes (as far
+    ; as org mode is concerned).  `ox-latex` is required so that the
+    ; default value of `org-latex-classes` is loaded
+    (require 'ox-latex)
+    (add-to-list 'org-latex-classes
+           '("memoir"
+             "\\documentclass{memoir}"
+             ("\\chapter{%s}" . "\\chapter*{%s}")
+             ("\\section{%s}" . "\\section*{%s}")
+             ("\\subsection{%s}" . "\\subsection*{%s}")
+             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+             ("\\paragraph{%s}" . "\\paragraph*{%s}")
+             ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+           ))
+#+end_src
+
+*** Org structure templates
+
+This used to be the behaviour by default, but in recent Org mode, you
+need to add ~org-tempo~ to be able to expand templates such as ~<s~ into
+code blocks (and ~<q~ into quotes, etc…).
+
+(As I'm writing this, ~org-tempo~ stopped working for me, I don't know
+why. An alternative is ~C-c ~C-,~ (which is awkward in Boon))
+#+begin_src emacs-lisp
+  ;; In recent Org mode syntax tables, `</>' are declared as delimiters
+  ;; (possibly because of timestamp, I don't know), therefore, typing
+  ;; `<' is completed by a matching `>' which prevents `org-tempo''s
+  ;; expansions. So I deactivate `electric-pair' for this specific
+  ;; delimiter.
+  (defun aspiwack/no-electric-< ()
+    (add-function :before-until electric-pair-inhibit-predicate (lambda (c) (eq c ?<))))
+
+  (use-package org-tempo
+    :hook
+    (org-mode . aspiwack/no-electric-<)
+    :config
+    (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+    (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+    (add-to-list 'org-structure-template-alist '("hs" . "src haskell"))
+    (add-to-list 'org-structure-template-alist '("hask" . "src haskell"))
+    )
+#+end_src
+
+References:
+-  For ~no-electric-<~: [[https://www.reddit.com/r/emacs/comments/j1xdpv/mode_specific_electricpair_behavior/g726o7j/][Reddit]], [[https://emacs.stackexchange.com/questions/55570/yasnippet-avoid-electric-pairs-at-expansion-time/55643#55643][Stackoverflow]]
+
+*** Org-present
+
+To make simple presentation from Org mode document, there is a package
+[[https://github.com/rlister/org-present][org-present]]. From an Org file, run ~M-x org-present~ to read the file
+as a set of slides.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package org-present
+  ;;   :ensure t
+  ;;   :commands org-present)
+#+END_SRC
+
+*** Htmlize
+
+The [[https://www.emacswiki.org/emacs/Htmlize][htmlize]] package is used to export Org mode document to html with
+syntax highlighted code blocks.
+#+BEGIN_SRC emacs-lisp
+  (use-package htmlize :ensure t)
+#+END_SRC
+
+*** TODO Global default font choice?
+
+**** TODO Roman font family
+
+**** TODO Code font family
+This may be set directly with minted
+
+*** TODO Syntax highlighting in exports
+
+**** DONE Pdf
+
+**** TODO Add pygmentize (Package python-pygments in debian/ubuntu) as a requirement
+
+**** TODO Add imagemagick as a requirement
+**** DONE Html
+
+*** TODO Split the configuration into sections
+
+*** TODO No spell-checking in code blocks
+See
+- [[http://emacs.stackexchange.com/questions/450/intelligent-spell-checking-in-org-mode]]
+- http://emacs.stackexchange.com/questions/9333/how-does-one-use-flyspell-in-org-buffers-without-flyspell-triggering-on-tangled/9347
+- http://endlessparentheses.com/ispell-and-org-mode.html
+
+*** TODO Improve export of time stamps
+See
+http://endlessparentheses.com/better-time-stamps-in-org-export.html
+
+** Markdown
+
+The popular formatting language has an [[http://jblevins.org/projects/markdown-mode/][Emacs mode]].
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :commands (markdown-mode gfm-mode)
+    :mode (("README\\.md\\'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    )
+#+END_SRC
+
+** Melt
+
+Part document description part Ocaml, [[https://forge.ocamlcore.org/projects/melt/][Melt]] is a powerful tool to write
+your articles or monographs. The Emacs mode can be found in the
+sources of Melt.
+#+BEGIN_SRC emacs-lisp
+  ;; (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+  ;; (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+
+  ;; (require 'melt-mode)
+
+  ;; ; Online spell checking with flyspell
+  ;; (add-hook 'melt-mode-hook 'turn-on-flyspell)
+#+END_SRC
+
+*** TODO Expand description
+
+**** TODO Speak about latex
+
+**** TODO Links to some of my articles written with Melt
+
+** Latex
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company-math
+    :ensure t
+    :defer 2
+    :init
+    ;; local configuration for TeX modes
+    (defun company-math-latex-mode ()
+      ; Should be local to tex files. At least until I use company-math
+      ; to input unicode. (see variable `company-math--symbols')
+      (aspiwack/add-company-backend
+       '(company-math-symbols-latex company-latex-commands company-math-symbols-unicode))
+      ))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package tex
+    :ensure auctex
+    :defer ; the tex mode is, by default, in `automode-alist' auctex
+           ; seems to merely override the tex mode. So no configuration
+           ; is necessary beyon `:defer'.
+    :config
+    ; Help input and navigate references and such
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t)
+    ; Completion for math symbol, unicode symbols and latex commands
+    (add-hook 'LaTeX-mode-hook 'company-math-latex-mode))
+#+END_SRC
+
+* Programming languages
+
+Here is some configuration shared by all programming modes which
+derive from ~prog-mode~ (in Emacs terminology, ~prog-mode~ is a base
+mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
+#+BEGIN_SRC emacs-lisp
+  (defun aspiwack/fill-in-comments ()
+    (setq comment-auto-fill-only-comments t)
+    (auto-fill-mode 1))
+
+  (use-package prog-mode
+    :hook
+    ; Get flyspell to spell-check the comments
+    ((prog-mode . flyspell-prog-mode)
+     (prog-mode . aspiwack/fill-in-comments))
+    )
+#+END_SRC
+
+References:
+- I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stakcoverflow]].
+
+Language server protocol
+
+#+begin_src emacs-lisp
+  ;; See https://www.youtube.com/watch?v=E-NAM9U5JYE
+  (defun efs/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode))
+
+  ;; I don't really make use of `lsp-keymap-prefix', since I really only
+  ;; want the lsp menu to trigger in the command state. However, it is
+  ;; used by the which-key integration to edit the menu. So, this
+  ;; function manipulated the `lsp-keymap-prefix' to do the appropriate
+  ;; which-key stuff.
+  (defun aspiwack/lsp-which-key ()
+    ;; Where I want the actual keymap to be located
+    (setq lsp-keymap-prefix "ml")
+    (lsp-enable-which-key-integration)
+    (setq lsp-keymap-prefix "C-c l"))
+
+  (use-package lsp-mode
+      :ensure t
+      :hook (;; ;; replace XXX-mode with concrete major-mode(e. g. python-mode)
+             ;;  (haskell-mode . lsp)
+              ;; if you want which-key integration
+              (lsp-mode . lsp-enable-which-key-integration)
+              (lsp-mode . aspiwack/lsp-which-key)
+              )
+      :commands (lsp lsp-deferred)
+      :hook (lsp-mode . efs/lsp-mode-setup)
+      :init
+      ;; set prefix for lsp-command-map
+      (setq lsp-keymap-prefix "C-c l")
+      :config
+      ; Set the lsp keymap
+      ; The following should be `:bind-keymap'. But for some reason
+      ; `:bind-keymap' doesn't seem happy with the `:map' modifier. See
+      ; https://github.com/jwiegley/use-package/issues/736
+      (define-key aspiwack/boon-custom-map "l" lsp-command-map))
+
+  ;; optionally
+  (use-package lsp-ui
+      :ensure t
+      :hook (lsp-mode . lsp-ui-mode)
+      :commands lsp-ui-mode
+  )
+
+  ;; if you are helm user
+  (use-package helm-lsp
+    :commands helm-lsp-workspace-symbol)
+
+  (use-package lsp-treemacs
+    :ensure t
+    :commands (lsp-treemacs-symbols)
+    :after lsp)
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package company-tabnine
+  ;;   :ensure t
+  ;;   :config
+  ;;   (aspiwack/add-company-backend 'company-tabnine))
+#+END_SRC
+
+** Elisp
+
+*** Helpful
+
+Richer (and prettier) help for Emacs functions can be provided by [[https://github.com/Wilfred/helpful][helpful]].
+
+#+begin_src emacs-lisp
+  (use-package helpful
+    :ensure t
+    :bind
+    ([remap describe-function] . helpful-callable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . helpful-variable))
+#+end_src
+
+** Nix
+
+The [[http://nixos.org/nix/][Nix]] language and package manager.
+#+BEGIN_SRC emacs-lisp
+  (use-package nix-mode
+    :ensure t)
+#+END_SRC
+
+** Ocaml
+
+The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-church/merlin/][Merlin]] and [[https://www.typerex.org/ocp-indent.html][~ocp-indent~]]. (this is quite a bit out of date)
+#+BEGIN_SRC emacs-lisp
+  ;; ocaml-tuareg mode
+  ;; Add opam emacs directory to the load-path
+  (setq opam-share (substring (shell-command-to-string "opam config var share 2> /dev/null") 0 -1))
+  (add-to-list 'load-path (concat opam-share "/emacs/site-lisp"))
+
+  (load (concat opam-share "/emacs/site-lisp/tuareg-site-file"))
+
+  ;; installed via package manager
+  ;; ocp-indent
+  ;; (require 'ocp-indent)
+
+  ;; merlin
+  ;; Load merlin-mode
+  ;;(require 'merlin)
+  ;; Start merlin on ocaml files
+  (add-hook 'tuareg-mode-hook 'merlin-mode t)
+  (add-hook 'caml-mode-hook 'merlin-mode t)
+  ;; Enable auto-complete
+  ; Make company aware of merlin
+  (aspiwack/add-company-backend 'merlin-company-backend)
+  ;; Use opam switch to lookup ocamlmerlin binary
+  (setq merlin-command 'opam)
+#+END_SRC
+
+*** TODO Configure with use-package
+
+*** TODO Describe configuration
+
+** Coq
+
+The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]]
+and [[https://github.com/cpitclaudel/company-coq][company-coq]]. (this is quite a bit out of date)
+#+BEGIN_SRC emacs-lisp
+  ;; ProofGeneral generic mode
+  (use-package proof-site
+    :load-path "/home/aspiwack/.emacs.d/lisp/ProofGeneral/generic/"
+    :config
+    ; turns on the math input method defined below
+    ;; (add-hook 'proof-ready-for-assistant-hook
+    ;;           (lambda () (set-input-method 'math)))
+    ; turns on the automatic compilation feature of Proof General/Coq
+    (add-hook 'proof-ready-for-assistant-hook
+              '(lambda () (setq coq-compile-before-require 0))))
+
+  ;; Company-coq
+  (use-package company-coq
+    :ensure t
+    ; Don't actually load the package until company-coq is called by
+    ; Proof general. As it happens, just loading company-coq is rather
+    ; slow (~0.15s last time I checked)
+    :commands company-coq-initialize
+    :init
+    ; Load company-coq when opening Coq files
+    (add-hook 'coq-mode-hook #'company-coq-initialize))
+
+  ;; Coq default directory
+  ; (setq coq-project-find-file t)
+#+END_SRC
+
+*** TODO Configure with use-package
+
+*** TODO Describe configuration
+
+*** TODO Split into sections
+
+*** TODO Update Proof general to latest version
+
+**** DONE Locally
+
+**** TODO When available, download with packages.el
+
+*** TODO Link to Quail configuration
+
+*** TODO Steal ideas from this config?
+http://endlessparentheses.com/proof-general-configuration-for-the-coq-software-foundations-tutorial.html
+
+** Haskell
+
+The [[https://www.haskell.org/][Haskell]] programming language.
+#+BEGIN_SRC emacs-lisp
+  ;;;; hindent: indentation mode for Haskell
+  (use-package hindent
+    :ensure t
+    :commands hindent
+    :init
+    ; HACK: hident installed with nix. Can I get rid of it?
+    (setq hindent-process-path "/home/aspiwack/.local/bin/hindent")
+    :config
+    (setq hindent-style "johan-tibell")
+    :diminish hindent-mode
+   )
+
+  ;;; haskell-mode proper
+  (use-package haskell-mode
+    :ensure t
+    :config
+    (defun haskell-hook ()
+      ; set maximum column length
+      (set-fill-column 80)
+      ; show a marker at maximum column length
+      (turn-on-fci-mode)
+      ; set indentation mode to hindent
+      (hindent-mode)
+      ; automatically compile files in the background and report erros
+      (flycheck-mode)
+      ; turn on haskell mode's key bindings for interactive features
+      (interactive-haskell-mode)
+      )
+    (add-hook 'haskell-mode-hook 'haskell-hook)
+    :defer)
+
+  ;; TODO: add `cabal-install' to required list
+  (use-package dante
+    ;; Note on Melpa yet
+    ;; :ensure t
+    :ensure t
+    :commands dante-mode
+    ;:init
+    ;(add-hook 'haskell-mode-hook 'dante-mode)
+    )
+
+  (use-package lsp-haskell
+   :ensure t
+   :config
+   (setq lsp-haskell-process-path-hie "haskell-language-server-wrapper")
+   ;; Comment/uncomment this line to see interactions between lsp client/server.
+   ;;(setq lsp-log-io t)
+  )
+#+END_SRC
+
+This is a more generic purpose package (split off Dante) to repair
+errors using flycheck. It's here because I currently only use it for
+Haskell.
+#+BEGIN_SRC emacs-lisp
+  (use-package attrap
+    :ensure t
+    ;; :load-path "~/projects/contributions/attrap/master"
+    :bind (("C-x /" . attrap-attrap)))
+#+END_SRC
+
+*** TODO In progress
+
+*** TODO Comments and sections
+
+*** TODO Programming environment
+
+**** TODO Load interactive session on startup
+
+**** TODO Create tags on save
+
+**** TODO Rebind M-. to use both ghci and tags?
+
+** Misc
+
+Miscellaneous programming language (or adjacent) modes
+
+#+BEGIN_SRC emacs-lisp
+  (use-package terraform-mode
+    :ensure t)
+#+END_SRC
+
+* Multi-modes
+
+I use [[https://polymode.github.io/][Polymode]] to mix several modes in the same buffer. Most typically
+to have ~haskell-mode~ in Latex/Haskell Literate Haskell files.
+
+#+begin_src emacs-lisp
+  (use-package polymode
+    :ensure t)
+#+end_src
+
+** Latex/Haskell
+
+I don't think that there is a reliable way to start this mode
+automatically (/e.g./ the ~.lhs~ instance can be a Latex file or another
+form of Literate Haskell file). Therefore it needs to be started
+manually per file (either by calling the ~poly-latex-lhs-mode~ command,
+or by adding the mode in file- or dir-local variables).
+
+I've had success adding the following to my dir-local variables (the
+best way to add a dir-local variable is to call ~M-x
+add-dir-local-variable~ when in the appropriate ~.dir-locals.el~. For the
+variable, choose ~eval~, in this particular case)
+
+#+begin_src emacs-lisp :tangle no
+((nil . ((eval . (add-hook 'hack-local-variables-hook
+                           (lambda () (when (derived-mode-p 'latex-mode)
+                                        (poly-latex-lhs-mode))))))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (define-innermode aspiwack/poly-latex-haskell-innermode
+    :mode 'haskell-mode
+    :head-matcher "^[ \t]*\\\\begin{\\(code\\|spec\\)}"
+    :tail-matcher "^[ \t]*\\\\end{\\(code\\|spec\\)}"
+    :head-mode 'host
+    :tail-mode 'host)
+
+  (define-polymode poly-latex-lhs-mode poly-latex-root-polymode
+    :innermodes '(aspiwack/poly-latex-haskell-innermode))
+#+end_src
+
+* Operating system
+
+This section is about all the use of Emacs as a tool to manage , or,
+more generally, interact with, the operating system. Stuff like file
+management, shells, etc…
+
+** Dired
+
+Dired is Emacs's built-in file manager.
+
+#+begin_src emacs-lisp
+  (use-package dired
+    ;; dired is built-in
+    :hook
+    (dired-mode . aspiwack/dired-hide-detail-at-at-startup)
+    :custom
+    (dired-listing-switches "-alh --group-directories-first" "Better ls options")
+    (dired-hide-details-hide-symlink-targets nil "Don't hide symlink targets in hide-details")
+    (dired-dwim-target t "Use other dired pane to guess target for copy directory")
+    :config
+    (define-key dired-mode-map "]" 'dired-do-async-shell-command)
+    (define-key dired-mode-map "[" 'aspiwack/dired-do-async-xdg-open)
+  )
+
+  (defun aspiwack/dired-hide-detail-at-at-startup ()
+    (dired-hide-details-mode 1))
+
+  (defun aspiwack/dired-do-async-xdg-open (&optional arg file-list)
+    "Use `dired-do-async-shell-command' to open marked files with
+    `xdg-open'"
+    (interactive
+      (let ((files (dired-get-marked-files t current-prefix-arg nil nil t)))
+       (list
+        current-prefix-arg
+        files)))
+    (dired-do-async-shell-command "xdg-open" arg file-list))
+#+end_src
+
+Add icons
+
+#+begin_src emacs-lisp
+  (use-package all-the-icons-dired
+    :ensure t
+    :hook (dired-mode . all-the-icons-dired-mode))
+#+end_src
+
+** Running command
+
+This hides the output buffer of ~async-shell-command~. It usually pops
+up as soon as you send a command, but I don't typically want to read
+the buffer. So, instead, let it be created in the background.
+
+This solution was found at https://stackoverflow.com/a/47587185
+
+#+begin_src emacs-lisp
+  (add-to-list 'display-buffer-alist
+    (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+#+end_src
+
+* Applications
+
+** Weechat
+
+[[https://github.com/the-kenny/weechat.el][Emacs client]] to connect to a [[http://weechat.org/][Weechat]] server.
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package weechat
+  ;;   :ensure t
+  ;;   ; does not load the mode until the `weechat-connect` command has
+  ;;   ; been used.
+  ;;   :commands weechat-connect
+  ;;   :init
+  ;;   (custom-set-variables
+  ;;      '(weechat-host-default "mowgli.spiwack.net")
+  ;;      '(weechat-port-default 8001)
+  ;;      '(weechat-modules '(
+  ;;                    ; Make link clickable (default)
+  ;;                    weechat-button
+  ;;                    ; Nickname and command completion (default)
+  ;;                    weechat-complete
+  ;;                    ; Spell-checking with flyspell
+  ;;                    weechat-spelling
+  ;;                    ; Enables desktop notifications
+  ;;                    weechat-notifications
+  ;;                    ; Store passwords with secrets.el
+  ;;                    weechat-secrets
+  ;;                    ; Use `C-c C-spc` to circle between "hot" buffers
+  ;;                    weechat-tracking
+  ;;                    ; Previews Latex code (using Org mode's Latex preview)
+  ;;                    ; Deactivated because it doesn't work that well
+  ;;                    ;; 'weechat-latex
+  ;;                    ; Preview images
+  ;;                    weechat-image))
+  ;;      ; Retrieves a stored password automatically when a password is
+  ;;      ; required. Weechat also reconnects automatically to the server
+  ;;      ; if it can get a password this way.
+  ;;      '(weechat-password-callback 'weechat-secrets-get-password)
+  ;;      '(weechat-spelling-dictionaries '())
+  ;;      )
+
+  ;;   :config
+  ;;   ; Activates the visual line mode which, in particular, wraps line
+  ;;   ; based on word boundaries (see `word-wrap')
+  ;;   (add-hook 'weechat-mode-hook 'visual-line-mode)
+  ;;   ; Deactivated because Latex preview doesn't work that well
+  ;;   ;; (add-hook 'weechat-mode-hook 'weechat-latex-auto-mode)
+  ;;   )
+#+END_SRC
+
+About the ~secrets.el~ features. See the [[https://www.gnu.org/software/emacs/manual/html_node/auth/Secret-Service-API.html][relevant section of the Emacs
+documentation]].
+
+Instructions:
+- ~M-x weechat-secrets-create~, enter and confirm the password for the
+  appropriate host/port pair. The first time, you will be prompted to
+  create a keyring this requires another password, which you will have
+  to type when you log in your computer.
+
+At the time writing this [2016-02-12 ven.], there is [[https://github.com/the-kenny/weechat.el/pull/47][a bug in the
+~secrets.el~ feature of ~weechat.el~.]] To work around it, I do ~M-x
+trace-function~ on ~secrets-create-item~ before doing
+~weechat-secrets-create~, then evaluate ~secrets-create-item~ (with
+~M-:~) with the same inputs except the number after ~:port~ is
+replaced by the corresponding string.
+
+*** TODO Add the "francais" dictionary as a requirement
+~sudo apt-get install aspell-fr~
+
+** Vagrant
+
+[[https://www.vagrantup.com/][Vagrant]] is a tool to create virtual machines. Since it uses a
+roundabout way to connect to ssh, Emacs requires a [[https://github.com/dougm/vagrant-tramp][package]] to be able
+to connect via [[http://www.gnu.org/software/tramp/][TRAMP]]. Connect to a vagrant machine with ~C-x C-f
+/vagrant:~.
+
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package vagrant-tramp
+  ;;   :ensure t)
+#+END_SRC
+
+* Misc
+
+** Math input method
+
+This section sets up an input method — based on Latex mathematical
+symbols — for Unicode mathematical symbols. Input methods can be
+toggled on and off with ~C-\~.
+
+*** Custom bindings
+
+Here is a list of bindings I defined.
+
+#+BEGIN_SRC emacs-lisp
+(defun aspiwack-quail-bindings () '(
+#+END_SRC
+
+**** Shortcuts for Greek letters
+#+BEGIN_SRC emacs-lisp
+          ("\\ga" "α")
+          ("\\gb" "β")
+          ("\\gg" "γ")
+          ("\\gG" "Γ")
+          ("\\GG" "Γ")
+          ("\\ge" "ε")
+          ("\\gh" "η")
+          ("\\gl" "λ")
+          ("\\GL" "Λ")
+          ("\\gL" "Λ")
+          ("\\gy" "υ")
+#+END_SRC
+
+**** Arrows
+#+BEGIN_SRC emacs-lisp
+          ("\\->" "→")
+          ("\\-->" "⟶")
+          ("\\<-" "←")
+          ("\\<--" "⟵")
+          ("\\<->" "↔")
+          ("\\<-->" "⟷")
+          ("\\<|" "↓")
+          ("\\|>" "↑")
+          ("\\<|>" "↕")
+          ("\\=>" "⇒")
+          ("\\==>" "⟹")
+          ("\\<=" "⇐")
+          ("\\<==" "⟸")
+          ("\\<=>" "⇔")
+          ("\\<==>" "⟺")
+          ("\\-o" "⊸")
+          ("\\||>" "⇑")
+          ("\\<||" "⇓")
+          ("\\<||>" "⇕")
+#+END_SRC
+
+**** Overriding comparison symbols
+Replace the default variants with the variants which have a slanted
+equality sign.
+#+BEGIN_SRC emacs-lisp
+          ("\\leq" "⩽")
+          ("\\geq" "⩾")
+#+END_SRC
+
+**** Mathematical double-struck characters
+#+BEGIN_SRC emacs-lisp
+          ("\\bb0" "𝟘")
+          ("\\bb1" "𝟙")
+          ("\\bbB" "𝔹")
+          ("\\bbG" "𝔾")
+          ("\\bbH" "ℍ")
+          ("\\bbi" "𝕚")
+          ("\\bbI" "𝕀")
+          ("\\bbK" "𝕂")
+          ("\\bbN" "ℕ")
+          ("\\bbS" "𝕊")
+          ("\\bbZ" "ℤ")
+#+END_SRC
+
+**** Bold characters
+#+BEGIN_SRC emacs-lisp
+          ("\\bC" "𝗖")
+          ("\\bH"  "𝗛")
+#+END_SRC
+
+**** Delimiters
+#+BEGIN_SRC emacs-lisp
+          ("\\la" "⟨")
+          ("\\ra" "⟩")
+#+END_SRC
+
+**** Logical symbols
+#+BEGIN_SRC emacs-lisp
+          ("\\fa" "∀")
+          ("\\ex" "∃")
+          ("\\==" "≡")
+          ("\\eqdef" "≜")
+          ("\\|-" "⊢")
+          ("\\cand" "⋏")
+          ("\\cor" "⋎")
+          ("\\contains" "∋")
+#+END_SRC
+
+**** Mathematical script characters
+#+BEGIN_SRC emacs-lisp
+          ("\\cC" "𝒞")
+          ("\\cD" "𝒟")
+          ("\\cP" "𝒫")
+#+END_SRC
+
+**** Mathematical bold script characters
+#+BEGIN_SRC emacs-lisp
+          ("\\bcA" "𝓐")
+          ("\\bcB" "𝓑")
+          ("\\bcC" "𝓒")
+          ("\\bcD" "𝓓")
+          ("\\bcE" "𝓔")
+          ("\\bcF" "𝓕")
+          ("\\bcG" "𝓖")
+          ("\\bcP" "𝓟")
+#+END_SRC
+
+**** Misc
+#+BEGIN_SRC emacs-lisp
+          ("\\comp" "∘")
+          ))
+#+END_SRC
+
+*** Loading mathematical symbols
+
+First let us load the quail package, which defines input methods for
+Emacs.
+#+BEGIN_SRC emacs-lisp
+   (use-package quail)
+#+END_SRC
+
+Then, the [[https://github.com/vspinu/math-symbol-lists][math-symbol-lists]] package is used as a source to define an
+input method called /math/.
+#+BEGIN_SRC emacs-lisp
+  (use-package math-symbol-lists
+    :ensure t
+    ;:after quail
+
+    :init
+    ; adds a list of bindings of the form `(KEY TRANSLATION)` to an
+    ; input method
+    (defun defrules-from-pairs (pairs method)
+      (mapc (lambda (pair)
+              (quail-defrule (car pair) (cadr pair) method))
+            pairs))
+    ; add a list of bindings of the form `(SOMETHING KEY TRANSLATION)`
+    ; to an input method. Skips a binding if it doesn't contain a
+    ; `TRANSLATION`.
+    (defun defrules-from-triples (triples method)
+      (mapc (lambda (triple)
+              (if (cddr triple)
+                  (quail-defrule (cadr triple) (caddr triple) method)))
+            triples))
+
+    :config
+    ; Creates an input method with the symbols from `math-symbol-list`.
+    (quail-define-package "math" "UTF-8" "Ω" t)
+    (defrules-from-triples math-symbol-list-basic "math")
+    (defrules-from-triples math-symbol-list-extended "math")
+    ; extends the input method with custom bindings.
+    (defrules-from-pairs (aspiwack-quail-bindings) "math")
+    :defer t
+    )
+#+END_SRC
+
+**** TODO Consider replacing quail with company-math
+See https://github.com/vspinu/company-math
+Company-math may be extensible by ~setq~-ing the "constant" ~company-math--symbols~.
+
+** Emojis
+
+[[https://github.com/dunn/company-emoji][company-emoji]] is a company backend to input Unicode emojis
+#+BEGIN_SRC emacs-lisp
+  (use-package company-emoji
+    :ensure t
+    :defer 2
+    :config
+    (aspiwack/add-company-backend 'company-emoji))
+#+END_SRC
+
+** Automatically upgrade packages
+
+With [[https://github.com/rranelli/auto-package-update.el][~auto-package-update.el~]], packages installed with ~package.el~
+are automatically upgraded regularly.
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-package-update
+    :ensure t
+    :init
+    ; update every 30 days (bonus: 30 is coprime with 7, hence update
+    ; happens, in turn, on each of the 7 week days)
+    (setq auto-package-update-interval 30)
+    ; Delete older version of packages
+    (setq auto-package-update-delete-old-versions t)
+    :config
+    ; If there are upgrades pending, upgrade the corresponding package
+    ; when loaded.
+    (auto-package-update-maybe)
+    ; Do not load at startup (it would needlessly slow down startup
+    ; while very few startups will actually trigger an update). Instead,
+    ; load after sufficient idle time as to indicate that I'm probably
+    ; not typing in that buffer (that way updates will most likely not
+    ; affect my typing).
+    :defer 30)
+
+#+END_SRC
+
+** Push desktop notifications
+
+See the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html][documentation]].
+#+BEGIN_SRC emacs-lisp
+  (use-package notifications)
+#+END_SRC
+
+** Sending lines to opposite buffer
+
+#+BEGIN_SRC emacs-lisp
+  (defun send-to-eshell ()
+    "Paste content of the kill ring to the eshell buffer"
+    (interactive)
+    (append-to-buffer "*eshell*"
+                      (line-beginning-position)
+                      (line-end-position))
+    (set-buffer "*eshell*")
+    (eshell-send-input))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c C-s") 'send-to-eshell)
+#+END_SRC

@@ -42,6 +42,21 @@
 
   programs.zoxide.enable = true;
 
+
+  #### Emacs
+
+  home.file.".emacs.d/init.el".source = emacs/bootstrap/init.el;
+  home.file.".emacs.d/lisp/config.org" =
+    { source = emacs/config.org;
+      # The `config.el` produced by loading `config.org` in the Emacs
+      # configuration, is not always refreshed when `config.org`
+      # changes. So, let me delete the `config.el` file manually when
+      # `config.org` is updated.
+      onChange = ''
+        rm -f $HOME/.emacs.d/lisp/config.el
+      '';
+    };
+
   ### Versioning ###
 
   # This value determines the Home Manager release that your
