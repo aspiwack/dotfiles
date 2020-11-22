@@ -20,11 +20,19 @@
   # /usr/share/gnome:/home/aspiwack/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop:/var/lib/snapd/desktop
   # See targets.genericLinux.extraXdgDataDirs
 
+  ### Overlays ###
+
+  nixpkgs.overlays = [
+    (import (builtins.fetchTarball {
+      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+    }))
+  ];
+
   ### Configuration ###
 
   home.packages =
     let
-      emacs-base = pkgs.emacs;
+      emacs-base = pkgs.emacsGcc;
       emacs = (pkgs.emacsPackagesFor emacs-base).emacsWithPackages (epkgs: (with epkgs.melpaPackages; [vterm]));
     in
     [ emacs
