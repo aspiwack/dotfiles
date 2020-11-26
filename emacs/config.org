@@ -175,6 +175,12 @@ The code for this comes from [[http://stackoverflow.com/a/18330742][a stack over
         )
 #+END_SRC
 
+** Don't pop up compilation warnings
+
+#+begin_src emacs-lisp
+  (setq comp-async-report-warnings-errors nil)
+#+end_src
+
 * General purpose packages
 
 ** Appearance
