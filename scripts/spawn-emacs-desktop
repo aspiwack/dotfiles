@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+disp=":18"
+
+xinit /home/aspiwack/.config/nixpkgs/scripts/xephyr-init -- /usr/bin/Xephyr $disp -ac -title Share -output DVI-D-0 -dpi 96 &
