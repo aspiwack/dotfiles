@@ -31,27 +31,74 @@
   ### Configuration ###
 
   home.packages =
-    let
-      emacs-base = pkgs.emacsGcc;
-      emacs = (pkgs.emacsPackagesFor emacs-base).emacsWithPackages (epkgs: (with epkgs.melpaPackages; [vterm]));
-    in
-    [ emacs
+    [ pkgs.cachix
 
       pkgs.ag
-      pkgs.git
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
       pkgs.direnv
-      pkgs.fzf
 
       pkgs.xdot
     ];
 
-  programs.zoxide.enable = true;
 
+  #### Shell/terminal
+
+  programs.zoxide =
+    { enable = true;
+      enableFishIntegration = true;
+    };
+
+  programs.fzf =
+    { enable = true;
+      enableFishIntegration = true;
+      defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
+    };
+
+  programs.starship =
+    { enable = true;
+      enableFishIntegration = true;
+      settings =
+        { add_newline = false;
+        };
+     };
+
+  programs.fish =
+    { enable = true;
+      functions =
+        # TODO: I probably want to move all convenience functions to
+        # scripts, so that they are cross-shell.
+        { gitignoreio = "curl -sL https://www.gitignore.io/api/$argv";
+        };
+    };
+
+  #### Git
+
+  programs.git =
+    { enable = true;
+      userName = "Arnaud Spiwack";
+      extraConfig =
+        { pull.rebase = true;
+        };
+
+      # Aliases
+      aliases =
+        { ff = "pull --ff-only";
+        };
+
+      # Enable delta [https://github.com/dandavison/delta] as Git's
+      # default diff viewer
+      delta.enable = true;
+    };
 
   #### Emacs
+
+  programs.emacs =
+    { enable = true;
+      package = pkgs.emacsGcc;
+      extraPackages = epkgs: (with epkgs.melpaPackages; [vterm]);
+    };
 
   home.file.".emacs.d/init.el".source = emacs/bootstrap/init.el;
   home.file.".emacs.d/lisp/config.org" =
