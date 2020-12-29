@@ -40,8 +40,18 @@
       pkgs.direnv
 
       pkgs.xdot
+
+      # Fonts
+      pkgs.nerdfonts
     ];
 
+  ### Fonts
+
+  # For some reason, I had to manually perform some combination of
+  # `{sudo,} fc-cache {-rs,-fv}` to make the Home-Manager-installed
+  # fonts be picked up by Gnome Terminal. I suspect `fc-cache -r`
+  # would have sufficed.
+  fonts.fontconfig.enable = true;
 
   #### Shell/terminal
 
