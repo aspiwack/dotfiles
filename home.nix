@@ -61,6 +61,14 @@
       enableFishIntegration = true;
       settings =
         { add_newline = false;
+          line_break.disabled = true;
+          character =
+            # note: the double escaping is necessary for starship
+            { success_symbol = "[\\$](bold green)";
+              error_symbol = "[\\$](bold red)";
+            };
+
+          aws.disabled = true;
         };
      };
 
