@@ -77,6 +77,26 @@
             { success_symbol = "[\\$](bold green)";
               error_symbol = "[\\$](bold red)";
             };
+          directory.truncation_symbol = "…/";
+          directory.style="white";
+
+          username.format = "[$user@]($style)";
+          username.style_user = "blue";
+          username.style_root = "red";
+          hostname.format = "[$hostname]($style):";
+          hostname.style = "blue";
+
+          git_branch.format = "\\[[$symbol$branch]($style)\\] ";
+          git_branch.style = "cyan";
+
+          git_status.format = "([{$conflicted$deleted$renamed$modified$staged$ahead_behind}]($style) )";
+          git_status.style = "red";
+
+          cmd_duration.format = "[$duration]($style) ";
+          cmd_duration.style = "yellow";
+
+          ocaml.format = "\\([$symbol$version]($style)\\) ";
+          ocaml.style = "yellow";
 
           aws.disabled = true;
         };
