@@ -110,6 +110,25 @@ ourselves started:
   (setq use-package-verbose t)
 #+END_SRC
 
+** Quelpa
+
+[[https://github.com/quelpa/quelpa][Quelpa]] is a tool to install non-melpa package from source.
+
+#+begin_src emacs-lisp
+  (use-package quelpa
+    :ensure t)
+#+end_src
+
+Integrate Quelpa with use-package ([[https://github.com/quelpa/quelpa-use-package][source]])
+
+#+begin_src emacs-lisp
+  (quelpa
+   '(quelpa-use-package
+     :fetcher git
+     :url "https://github.com/quelpa/quelpa-use-package.git"))
+  (require 'quelpa-use-package)
+#+end_src
+
 * TODO Preliminaries
 
 Move opam stuff (from Melt & Ocaml) to here.
@@ -1726,6 +1745,32 @@ This solution was found at https://stackoverflow.com/a/47587185
 #+begin_src emacs-lisp
   (add-to-list 'display-buffer-alist
     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+#+end_src
+
+** Emacs application framework
+
+[[https://github.com/manateelazycat/emacs-application-framework][Emacs application framework]] lets one open graphical applications
+within Emacs.
+
+Some dependencies
+#+begin_src emacs-lisp
+  (use-package ctable
+    :ensure t
+    :pin melpa-stable)
+  (use-package epc
+    :ensure t
+    :pin melpa-stable)
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package eaf
+    :quelpa
+     (eaf :fetcher github
+           :repo  "manateelazycat/emacs-application-framework"
+           :files ("*")))
+  (quelpa '(eaf :fetcher github
+               :repo  "manateelazycat/emacs-application-framework"
+               :files ("*")))
 #+end_src
 
 * Applications
