@@ -30,9 +30,9 @@
 
   ### Configuration ###
 
-  ## TODO: bat, fd, rg (and some rg packages for emacs,
+  ## TODO: fd, rg (and some rg packages for emacs,
   ## https://tldr.sh/,tokei (sloccount replacement), procs is a nice
-  ## ps replacement)
+  ## ps replacement). Configure bat as the pager for man pages
 
   home.packages =
     [ pkgs.cachix
@@ -68,6 +68,11 @@
     { enable = true;
       enableFishIntegration = true;
       defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
+    };
+
+  programs.bat =
+    { enable = true;
+      config.theme = "Dracula";
     };
 
   programs.starship =
