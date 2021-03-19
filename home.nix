@@ -30,14 +30,16 @@
 
   ### Configuration ###
 
-  ## TODO: fd, rg (and some rg packages for emacs,
+  ## TODO: and some rg packages for emacs,
   ## https://tldr.sh/,tokei (sloccount replacement), procs is a nice
-  ## ps replacement). Configure bat as the pager for man pages
+  ## ps replacement. Configure bat as the pager for man pages
 
   home.packages =
     [ pkgs.cachix
 
       pkgs.ag
+      pkgs.fd
+      pkgs.ripgrep
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
