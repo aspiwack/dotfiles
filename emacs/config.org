@@ -116,7 +116,9 @@ ourselves started:
 
 #+begin_src emacs-lisp
   (use-package quelpa
-    :ensure t)
+    :ensure t
+    :init
+    (setq quelpa-update-melpa-p nil))
 #+end_src
 
 Integrate Quelpa with use-package ([[https://github.com/quelpa/quelpa-use-package][source]])
@@ -1768,9 +1770,6 @@ Some dependencies
      (eaf :fetcher github
            :repo  "manateelazycat/emacs-application-framework"
            :files ("*")))
-  (quelpa '(eaf :fetcher github
-               :repo  "manateelazycat/emacs-application-framework"
-               :files ("*")))
 #+end_src
 
 * Applications
