@@ -1396,7 +1396,7 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
 #+END_SRC
 
 References:
-- I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stakcoverflow]].
+- I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stackoverflow]].
 
 Language server protocol
 
@@ -1486,6 +1486,16 @@ The [[http://nixos.org/nix/][Nix]] language and package manager.
 
 ** Ocaml
 
+The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-lsp][ocaml-lsp-server]]
+
+#+begin_src emacs-lisp
+  (use-package tuareg
+    :hook
+    ((tuareg-mode . lsp)))
+#+end_src
+
+*** TODO should I add an indenter (ocp-indent)?
+*** COMMENT And old configuration
 The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-church/merlin/][Merlin]] and [[https://www.typerex.org/ocp-indent.html][~ocp-indent~]]. (this is quite a bit out of date)
 #+BEGIN_SRC emacs-lisp
   ;; ocaml-tuareg mode
@@ -1511,10 +1521,6 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-c
   ;; Use opam switch to lookup ocamlmerlin binary
   (setq merlin-command 'opam)
 #+END_SRC
-
-*** TODO Configure with use-package
-
-*** TODO Describe configuration
 
 ** Coq
 
