@@ -30,6 +30,10 @@
 
   ### Configuration ###
 
+  ## TODO: bat, fd, rg (and some rg packages for emacs,
+  ## https://tldr.sh/,tokei (sloccount replacement), procs is a nice
+  ## ps replacement)
+
   home.packages =
     [ pkgs.cachix
 
