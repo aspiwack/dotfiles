@@ -45,7 +45,6 @@
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
-      pkgs.direnv
 
       pkgs.xdot
 
@@ -137,6 +136,12 @@
     };
 
   programs.jq.enable = true;
+
+  programs.direnv = {
+    enable = true;
+    enableFishIntegration = true;
+    enableNixDirenvIntegration = true;
+  };
 
   #### Git
 
