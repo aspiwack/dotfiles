@@ -30,9 +30,7 @@
 
   ### Configuration ###
 
-  ## TODO: and some rg packages for emacs,
-  ## https://tldr.sh/,tokei (sloccount replacement), procs is a nice
-  ## ps replacement. Configure bat as the pager for man pages
+  ## TODO: some rg packages for emacs,
 
   home.packages =
     [ pkgs.cachix
@@ -40,12 +38,18 @@
       pkgs.ag
       pkgs.fd
       pkgs.ripgrep
+      pkgs.tldr
+
+      pkgs.tokei
+      pkgs.procs
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
       pkgs.direnv
 
       pkgs.xdot
+
+      pkgs.nodePackages.emoj
 
       # Fonts
       pkgs.nerdfonts
@@ -76,6 +80,10 @@
     { enable = true;
       config.theme = "Dracula";
     };
+
+  # This doesn't appear to have much of an effect. Not sure what
+  # `sessionVariables` is supposed to be really
+  home.sessionVariables.MANPAGER = "sh -c 'col -bx | bat -l man -p'";
 
   programs.starship =
     { enable = true;
@@ -120,6 +128,9 @@
         # scripts, so that they are cross-shell.
         { gitignoreio = "curl -sL https://www.gitignore.io/api/$argv";
         };
+      interactiveShellInit = ''
+        set MANPAGER "sh -c 'col -bx | bat -l man -p'"
+      '';
     };
 
   #### Git
