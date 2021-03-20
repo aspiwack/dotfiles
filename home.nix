@@ -136,6 +136,8 @@
       '';
     };
 
+  programs.jq.enable = true;
+
   #### Git
 
   programs.git =
