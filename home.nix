@@ -74,6 +74,9 @@
     { enable = true;
       enableFishIntegration = true;
       defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
+      # Use fd to find files
+      changeDirWidgetCommand = "fd --type d";
+      defaultCommand = "fd --type file";
     };
 
   programs.bat =
