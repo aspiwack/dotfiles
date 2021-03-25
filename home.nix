@@ -10,7 +10,9 @@ let
           hub clone $1 master
           cd master
       '';
-
+      ghci-with = pkgs.writeShellScriptBin "ghciwith" ''
+          nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [$*])" --run ghci
+      '';
     };
 in
 {
@@ -65,6 +67,7 @@ in
 
       # Scripts
       scripts.git-create
+      scripts.ghci-with
 
       # Fonts
       pkgs.nerdfonts
