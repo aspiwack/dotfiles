@@ -13,6 +13,13 @@ let
       ghci-with = pkgs.writeShellScriptBin "ghciwith" ''
           nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [$*])" --run ghci
       '';
+      weather = pkgs.writeShellScriptBin "weather" ''
+          [ -n $1 ] && arg="/$1"
+          curl "wttr.in$arg"
+      '';
+      gitignoreio = pkgs.writeShellScriptBin "gitignoreio" ''
+          curl -sL https://www.gitignore.io/api/$1;
+      '';
     };
 in
 {
@@ -68,6 +75,8 @@ in
       # Scripts
       scripts.git-create
       scripts.ghci-with
+      scripts.weather
+      scripts.gitignoreio
 
       # Fonts
       pkgs.nerdfonts
@@ -142,11 +151,6 @@ in
 
   programs.fish =
     { enable = true;
-      functions =
-        # TODO: I probably want to move all convenience functions to
-        # scripts, so that they are cross-shell.
-        { gitignoreio = "curl -sL https://www.gitignore.io/api/$argv";
-        };
     };
 
   programs.jq.enable = true;
