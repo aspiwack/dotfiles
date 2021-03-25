@@ -83,8 +83,6 @@
       config.theme = "Dracula";
     };
 
-  # This doesn't appear to have much of an effect. Not sure what
-  # `sessionVariables` is supposed to be really
   home.sessionVariables.MANPAGER = "sh -c 'col -bx | bat -l man -p'";
 
   programs.starship =
@@ -130,9 +128,6 @@
         # scripts, so that they are cross-shell.
         { gitignoreio = "curl -sL https://www.gitignore.io/api/$argv";
         };
-      interactiveShellInit = ''
-        set MANPAGER "sh -c 'col -bx | bat -l man -p'"
-      '';
     };
 
   programs.jq.enable = true;
