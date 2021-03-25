@@ -2,6 +2,7 @@
 
 
 let
+  my-emacs = pkgs.emacsGcc;
   scripts =
     { git-create = pkgs.writeShellScriptBin "git-create" ''
           name=$(basename $1 .git)
@@ -111,7 +112,11 @@ in
       config.theme = "Dracula";
     };
 
-  home.sessionVariables.MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+  home.sessionVariables = rec {
+    EDITOR="${my-emacs}/bin/emacsclient -a '' -c";
+    RLWRAP_EDITOR="${EDITOR} > /dev/null 2>&1";
+    MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+  };
 
   programs.starship =
     { enable = true;
@@ -185,7 +190,7 @@ in
 
   programs.emacs =
     { enable = true;
-      package = pkgs.emacsGcc;
+      package = my-emacs;
       extraPackages = epkgs: (with epkgs.melpaPackages; [vterm]);
     };
 
