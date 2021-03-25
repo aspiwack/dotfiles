@@ -1,5 +1,18 @@
 { config, pkgs, ... }:
 
+
+let
+  scripts =
+    { git-create = pkgs.writeShellScriptBin "git-create" ''
+          name=$(basename $1 .git)
+          mkdir $name
+          cd $name
+          hub clone $1 master
+          cd master
+      '';
+
+    };
+in
 {
   ### Machine-specific preamble ###
 
@@ -49,6 +62,9 @@
       pkgs.xdot
 
       pkgs.nodePackages.emoj
+
+      # Scripts
+      scripts.git-create
 
       # Fonts
       pkgs.nerdfonts
@@ -150,6 +166,7 @@
       # Aliases
       aliases =
         { ff = "pull --ff-only";
+          create = "!git-create";
         };
 
       # Enable delta [https://github.com/dandavison/delta] as Git's
