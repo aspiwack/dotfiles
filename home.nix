@@ -3,6 +3,9 @@
 
 let
   my-emacs = pkgs.emacsGcc;
+  extra-nodePackages = import ./nodePackages { inherit pkgs; };
+  obs-cli = extra-nodePackages.obs-cli;
+  obs-cli-bin = "${obs-cli}/bin/obs-cli";
   scripts =
     { git-create = pkgs.writeShellScriptBin "git-create" ''
           name=$(basename $1 .git)
@@ -21,6 +24,24 @@ let
       gitignoreio = pkgs.writeShellScriptBin "gitignoreio" ''
           curl -sL https://www.gitignore.io/api/$1;
       '';
+
+      obs-scene-switcher = pkgs.writeShellScriptBin "obs-scene-switcher" ''
+        # For all the commands, see https://github.com/Palakis/obs-websocket
+        function list-scenes() {
+          # Filtering out [NS] so that nested scenes don't appear
+          ${obs-cli-bin} GetSceneList | jq -r '.[0].scenes | .[].name' | grep -v -e "^\[NS\] "
+        }
+
+        function switch-to-scene() {
+          ${obs-cli-bin} SetCurrentScene="{\"scene-name\": \"$1\"}"
+        }
+
+        scene=$(list-scenes | rofi -dmenu -p "Scene" -i)
+        switch-to-scene "$scene"
+      '';
+
+      # TODO quick binding to
+      # gnome-screenshot --area --file="/home/aspiwack/Downloads/Screenshot $(date --iso-8601=seconds).png"
     };
 in
 {
@@ -72,6 +93,9 @@ in
       pkgs.xdot
 
       pkgs.nodePackages.emoj
+
+      obs-cli
+      scripts.obs-scene-switcher
 
       # Scripts
       scripts.git-create
@@ -165,6 +189,8 @@ in
     enableFishIntegration = true;
     enableNixDirenvIntegration = true;
   };
+
+  programs.rofi.enable = true;
 
   #### Git
 
