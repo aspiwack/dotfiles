@@ -105,6 +105,7 @@ in
 
       # Fonts
       pkgs.nerdfonts
+      pkgs.google-fonts
     ];
 
   ### Fonts
