@@ -6,8 +6,15 @@ let
   extra-nodePackages = import ./nodePackages { inherit pkgs; };
   obs-cli = extra-nodePackages.obs-cli;
   obs-cli-bin = "${obs-cli}/bin/obs-cli";
-  scripts =
-    { git-create = pkgs.writeShellScriptBin "git-create" ''
+  associator = name: d: pkgs.writeShellScript "associator-${name}" ''
+      dict='${builtins.toJSON d}'
+      if [ $# -eq 0 ]
+      then echo $dict | jq -r 'keys | .[]'
+      else echo $dict | jq -r ".[\"$1\"]" | xargs xargs
+      fi
+    '';
+  scripts = rec {
+      git-create = pkgs.writeShellScriptBin "git-create" ''
           name=$(basename $1 .git)
           mkdir $name
           cd $name
@@ -40,8 +47,16 @@ let
         switch-to-scene "$scene"
       '';
 
-      # TODO quick binding to
-      # gnome-screenshot --area --file="/home/aspiwack/Downloads/Screenshot $(date --iso-8601=seconds).png"
+      shortcuts = {
+        screenshot = ''
+          gnome-screenshot --area --file="/home/aspiwack/Downloads/Screenshot $(date --iso-8601=seconds).png"'';
+        "Obs scene-switcher" = ''
+          obs-scene-switcher'';
+      };
+      shortcuts-script = associator "shortcuts" shortcuts;
+      shortcuts-selector = pkgs.writeShellScriptBin "shortcuts-selector" ''
+        rofi -modi Action:${shortcuts-script} -show Action
+      '';
     };
 in
 {
@@ -102,6 +117,7 @@ in
       scripts.ghci-with
       scripts.weather
       scripts.gitignoreio
+      scripts.shortcuts-selector
 
       # Fonts
       pkgs.nerdfonts
