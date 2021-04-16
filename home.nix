@@ -112,6 +112,8 @@ in
       obs-cli
       scripts.obs-scene-switcher
 
+      pkgs.chrysalis
+
       # Scripts
       scripts.git-create
       scripts.ghci-with
