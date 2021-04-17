@@ -201,6 +201,11 @@ in
     { enable = true;
     };
 
+  programs.broot = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
   programs.jq.enable = true;
 
   programs.direnv = {
