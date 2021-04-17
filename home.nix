@@ -1,5 +1,13 @@
 { config, pkgs, ... }:
 
+## # Installing steps
+##
+## Not everything can be done unfortunately automatically, here are
+## things to do when installing on a new machines
+##
+## - Add `include managed.conf` to `~/.config/nix/nix.conf` (*after* the
+##   first `home-manager switch`)
+
 
 let
   my-emacs = pkgs.emacsGcc;
@@ -86,6 +94,9 @@ in
       url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
     }))
   ];
+
+  ### Nix configuration
+  home.file.".config/nix/managed.conf".source = ./nix.conf;
 
   ### Configuration ###
 
