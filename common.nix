@@ -226,6 +226,7 @@ in
       extraConfig =
         { pull.rebase = true;
         };
+      lfs.enable = true;
 
       # Aliases
       aliases =
