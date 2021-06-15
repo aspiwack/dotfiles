@@ -68,15 +68,6 @@ let
     };
 in
 {
-  ### Machine-specific preamble ###
-
-  # Home Manager needs a bit of information about you and the
-  # paths it should manage.
-  home.username = "aspiwack";
-  home.homeDirectory = "/home/aspiwack";
-
-  targets.genericLinux.enable = true;
-
   ### Home Manager self-configuration ###
 
   # Let Home Manager install and manage itself.
@@ -94,9 +85,6 @@ in
       url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
     }))
   ];
-
-  ### Nix configuration
-  home.file.".config/nix/managed.conf".source = ./nix.conf;
 
   ### Configuration ###
 
