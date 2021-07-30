@@ -1647,6 +1647,13 @@ Haskell.
 
 **** TODO Rebind M-. to use both ghci and tags?
 
+** Rust
+
+#+begin_src emacs-lisp
+  (use-package rust-mode
+    :ensure t)
+#+end_src
+
 ** Misc
 
 Miscellaneous programming language (or adjacent) modes
