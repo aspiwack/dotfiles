@@ -76,10 +76,11 @@ committing to it, here is a short cheat-sheet:
 - Open package list with ~M-x package-list-packages~.
 - Commands inside the list: *i* (install), *U* (upgrade all), *x*
   (execute requests).
-- With this configuration, packages are upgraded automatically by
-  [[Automatically%20upgrade%20packages][~auto-package-update.el~]]. Without such a package, packages are not
-  upgraded automatically, so from time to time you would have to do
-  ~M-x package-list-packages~ then ~U~ then ~x~.
+- I used to use [[Automatically%20upgrade%20packages][~auto-package-update.el~]] to periodically update
+  packages.  This was in a time when the packages I used changed
+  often. Nowadays I don't need this, so it's not worth the occasional
+  breakage. To upgrade packages: ~M-x package-list-packages~ then ~U~ then
+  ~x~.
 
 The following sets up ~package.el~ to use the Melpa repository and
 loads the installed packages
@@ -2049,7 +2050,9 @@ Company-math may be extensible by ~setq~-ing the "constant" ~company-math--symbo
     (aspiwack/add-company-backend 'company-emoji))
 #+END_SRC
 
-** Automatically upgrade packages
+** COMMENT Automatically upgrade packages
+
+Commented as I don't use this anymore.
 
 With [[https://github.com/rranelli/auto-package-update.el][~auto-package-update.el~]], packages installed with ~package.el~
 are automatically upgraded regularly.
