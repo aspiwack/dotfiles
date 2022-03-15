@@ -5,7 +5,7 @@
 ## Not everything can be done unfortunately automatically, here are
 ## things to do when installing on a new machines
 ##
-## - Add `include managed.conf` to `~/.config/nix/nix.conf` (*after* the
+## - [Only on non-nixos] Add `include managed.conf` to `~/.config/nix/nix.conf` (*after* the
 ##   first `home-manager switch`)
 
 
@@ -93,7 +93,7 @@ in
   home.packages =
     [ pkgs.cachix
 
-      pkgs.ag
+      pkgs.silver-searcher
       pkgs.fd
       pkgs.ripgrep
       pkgs.tldr
@@ -209,8 +209,8 @@ in
 
   programs.direnv = {
     enable = true;
-    enableFishIntegration = true;
-    enableNixDirenvIntegration = true;
+    # enableFishIntegration = true; # not needed anymore
+    nix-direnv.enable = true;
   };
 
   programs.rofi = {
