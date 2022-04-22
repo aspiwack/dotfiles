@@ -10,7 +10,7 @@
 
 
 let
-  my-emacs = pkgs.emacsGcc;
+  my-emacs = pkgs.emacsNativeComp;
   extra-nodePackages = import ./nodePackages { inherit pkgs; };
   obs-cli = extra-nodePackages.obs-cli;
   obs-cli-bin = "${obs-cli}/bin/obs-cli";
