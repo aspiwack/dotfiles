@@ -104,6 +104,8 @@ in
       pkgs.graphviz
       pkgs.lorri
 
+      pkgs.papis
+
       pkgs.xdot
 
       pkgs.nodePackages.emoj
@@ -258,6 +260,10 @@ in
         rm -f $HOME/.emacs.d/lisp/config.el
       '';
     };
+
+  #### Papis
+
+  home.file.".config/papis/config".source = files/papis.ini;
 
   ### Versioning ###
 
