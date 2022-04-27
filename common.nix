@@ -236,9 +236,13 @@ in
           create = "!git-create";
         };
 
-      # Enable delta [https://github.com/dandavison/delta] as Git's
-      # default diff viewer
-      delta.enable = true;
+      # Enable difftastic [https://github.com/Wilfred/difftastic] as
+      # Git's default diff viewer. It's a tree-sitter based tree diff
+      # differ.
+      difftastic =
+        { enable = true;
+          background = "dark";
+        };
     };
 
   #### Emacs
