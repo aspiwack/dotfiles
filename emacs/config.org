@@ -1054,7 +1054,9 @@ C projects).
     )
 #+END_SRC
 
-* Publishing formats
+* Languages
+
+** Publishing formats
 
 Here is some configuration shared by all text editing modes which
 derive from ~text-mode~ (in Emacs terminology, ~text-mode~ is a base
@@ -1081,7 +1083,7 @@ mode, and modes like ~markdown-mode~ derive from ~text-mode~).
     )
 #+END_SRC
 
-** Org mode
+*** Org mode
 
 Not only a publishing format, but also a powerful editing mode (with
 which I wrote this file), a literate programming tool, an agenda, a
@@ -1159,7 +1161,7 @@ replaces them by cute Unicode bullets.
       :after org)
 #+end_src
 
-*** Fonts
+**** Fonts
 :PROPERTIES:
 :header-args: :noweb-ref org-helpers :tangle no
 :END:
@@ -1188,7 +1190,7 @@ replaces them by cute Unicode bullets.
     (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 #+end_src
 
-*** Latex
+**** Latex
 :PROPERTIES:
 :header-args: :noweb-ref org-helpers :tangle no
 :END:
@@ -1235,7 +1237,7 @@ Setting up Latex for export from Org to pdf.
            ))
 #+end_src
 
-*** Org structure templates
+**** Org structure templates
 
 This used to be the behaviour by default, but in recent Org mode, you
 need to add ~org-tempo~ to be able to expand templates such as ~<s~ into
@@ -1266,7 +1268,7 @@ why. An alternative is ~C-c ~C-,~ (which is awkward in Boon))
 References:
 -  For ~no-electric-<~: [[https://www.reddit.com/r/emacs/comments/j1xdpv/mode_specific_electricpair_behavior/g726o7j/][Reddit]], [[https://emacs.stackexchange.com/questions/55570/yasnippet-avoid-electric-pairs-at-expansion-time/55643#55643][Stackoverflow]]
 
-*** Org-present
+**** Org-present
 
 To make simple presentation from Org mode document, there is a package
 [[https://github.com/rlister/org-present][org-present]]. From an Org file, run ~M-x org-present~ to read the file
@@ -1278,7 +1280,7 @@ as a set of slides.
   ;;   :commands org-present)
 #+END_SRC
 
-*** Htmlize
+**** Htmlize
 
 The [[https://www.emacswiki.org/emacs/Htmlize][htmlize]] package is used to export Org mode document to html with
 syntax highlighted code blocks.
@@ -1286,35 +1288,35 @@ syntax highlighted code blocks.
   (use-package htmlize :ensure t)
 #+END_SRC
 
-*** TODO Global default font choice?
+**** TODO Global default font choice?
 
-**** TODO Roman font family
+***** TODO Roman font family
 
-**** TODO Code font family
+***** TODO Code font family
 This may be set directly with minted
 
-*** TODO Syntax highlighting in exports
+**** TODO Syntax highlighting in exports
 
-**** DONE Pdf
+***** DONE Pdf
 
-**** TODO Add pygmentize (Package python-pygments in debian/ubuntu) as a requirement
+***** TODO Add pygmentize (Package python-pygments in debian/ubuntu) as a requirement
 
-**** TODO Add imagemagick as a requirement
-**** DONE Html
+***** TODO Add imagemagick as a requirement
+***** DONE Html
 
-*** TODO Split the configuration into sections
+**** TODO Split the configuration into sections
 
-*** TODO No spell-checking in code blocks
+**** TODO No spell-checking in code blocks
 See
 - [[http://emacs.stackexchange.com/questions/450/intelligent-spell-checking-in-org-mode]]
 - http://emacs.stackexchange.com/questions/9333/how-does-one-use-flyspell-in-org-buffers-without-flyspell-triggering-on-tangled/9347
 - http://endlessparentheses.com/ispell-and-org-mode.html
 
-*** TODO Improve export of time stamps
+**** TODO Improve export of time stamps
 See
 http://endlessparentheses.com/better-time-stamps-in-org-export.html
 
-** Markdown
+*** Markdown
 
 The popular formatting language has an [[http://jblevins.org/projects/markdown-mode/][Emacs mode]].
 #+BEGIN_SRC emacs-lisp
@@ -1327,7 +1329,7 @@ The popular formatting language has an [[http://jblevins.org/projects/markdown-m
     )
 #+END_SRC
 
-** Melt
+*** Melt
 
 Part document description part Ocaml, [[https://forge.ocamlcore.org/projects/melt/][Melt]] is a powerful tool to write
 your articles or monographs. The Emacs mode can be found in the
@@ -1342,13 +1344,13 @@ sources of Melt.
   ;; (add-hook 'melt-mode-hook 'turn-on-flyspell)
 #+END_SRC
 
-*** TODO Expand description
+**** TODO Expand description
 
-**** TODO Speak about latex
+***** TODO Speak about latex
 
-**** TODO Links to some of my articles written with Melt
+***** TODO Links to some of my articles written with Melt
 
-** Latex
+*** Latex
 
 #+BEGIN_SRC emacs-lisp
   (use-package company-math
@@ -1378,7 +1380,7 @@ sources of Melt.
     (add-hook 'LaTeX-mode-hook 'company-math-latex-mode))
 #+END_SRC
 
-* Programming languages
+** Programming languages
 
 Here is some configuration shared by all programming modes which
 derive from ~prog-mode~ (in Emacs terminology, ~prog-mode~ is a base
@@ -1462,9 +1464,9 @@ Language server protocol
   ;;   (aspiwack/add-company-backend 'company-tabnine))
 #+END_SRC
 
-** Elisp
+*** Elisp
 
-*** Helpful
+**** Helpful
 
 Richer (and prettier) help for Emacs functions can be provided by [[https://github.com/Wilfred/helpful][helpful]].
 
@@ -1477,7 +1479,7 @@ Richer (and prettier) help for Emacs functions can be provided by [[https://gith
     ([remap describe-variable] . helpful-variable))
 #+end_src
 
-** Nix
+*** Nix
 
 The [[http://nixos.org/nix/][Nix]] language and package manager.
 #+BEGIN_SRC emacs-lisp
@@ -1485,7 +1487,7 @@ The [[http://nixos.org/nix/][Nix]] language and package manager.
     :ensure t)
 #+END_SRC
 
-** Ocaml
+*** Ocaml
 
 The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-lsp][ocaml-lsp-server]]
 
@@ -1496,8 +1498,8 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-
     ((tuareg-mode . lsp)))
 #+end_src
 
-*** TODO should I add an indenter (ocp-indent)?
-*** COMMENT And old configuration
+**** TODO should I add an indenter (ocp-indent)?
+**** COMMENT And old configuration
 The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-church/merlin/][Merlin]] and [[https://www.typerex.org/ocp-indent.html][~ocp-indent~]]. (this is quite a bit out of date)
 #+BEGIN_SRC emacs-lisp
   ;; ocaml-tuareg mode
@@ -1524,7 +1526,7 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-c
   (setq merlin-command 'opam)
 #+END_SRC
 
-** Coq
+*** Coq
 
 The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]]
 and [[https://github.com/cpitclaudel/company-coq][company-coq]]. (this is quite a bit out of date)
@@ -1555,24 +1557,24 @@ and [[https://github.com/cpitclaudel/company-coq][company-coq]]. (this is quite 
   ; (setq coq-project-find-file t)
 #+END_SRC
 
-*** TODO Configure with use-package
+**** TODO Configure with use-package
 
-*** TODO Describe configuration
+**** TODO Describe configuration
 
-*** TODO Split into sections
+**** TODO Split into sections
 
-*** TODO Update Proof general to latest version
+**** TODO Update Proof general to latest version
 
-**** DONE Locally
+***** DONE Locally
 
-**** TODO When available, download with packages.el
+***** TODO When available, download with packages.el
 
-*** TODO Link to Quail configuration
+**** TODO Link to Quail configuration
 
-*** TODO Steal ideas from this config?
+**** TODO Steal ideas from this config?
 http://endlessparentheses.com/proof-general-configuration-for-the-coq-software-foundations-tutorial.html
 
-** Haskell
+*** Haskell
 
 The [[https://www.haskell.org/][Haskell]] programming language.
 #+BEGIN_SRC emacs-lisp
@@ -1636,26 +1638,26 @@ Haskell.
     :bind (("C-x /" . attrap-attrap)))
 #+END_SRC
 
-*** TODO In progress
+**** TODO In progress
 
-*** TODO Comments and sections
+**** TODO Comments and sections
 
-*** TODO Programming environment
+**** TODO Programming environment
 
-**** TODO Load interactive session on startup
+***** TODO Load interactive session on startup
 
-**** TODO Create tags on save
+***** TODO Create tags on save
 
-**** TODO Rebind M-. to use both ghci and tags?
+***** TODO Rebind M-. to use both ghci and tags?
 
-** Rust
+*** Rust
 
 #+begin_src emacs-lisp
   (use-package rust-mode
     :ensure t)
 #+end_src
 
-** Misc
+*** Misc
 
 Miscellaneous programming language (or adjacent) modes
 
@@ -1664,6 +1666,12 @@ Miscellaneous programming language (or adjacent) modes
     :ensure t)
 #+END_SRC
 
+** Configuration formats
+
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :ensure t)
+#+end_src
 * Multi-modes
 
 I use [[https://polymode.github.io/][Polymode]] to mix several modes in the same buffer. Most typically
