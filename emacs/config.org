@@ -265,19 +265,21 @@ it on Linux.
       (setf (cdr (nth block-idx unicode-fonts-block-font-mapping))
             `(,updated-block))))
 
-  (use-package unicode-fonts
-    :ensure t
-    :config
-    ;; Display emojis with the Noto Emoji font first.
-    (mapcar
-      (lambda (block-name)
-        (aspiwack/prepend-to-font-mapping block-name "Noto Color Emoji"))
-      '("Dingbats"
-        "Emoticons"
-        "Miscellaneous Symbols and Pictographs"
-        "Transport and Map Symbols"))
-     ;; Trigger mapping
-    (unicode-fonts-setup))
+  ;; Not needed since Emacs 28: emojis are supported natively
+  ;;
+  ;; (use-package unicode-fonts
+  ;;   :ensure t
+  ;;   :config
+  ;;   ;; Display emojis with the Noto Emoji font first.
+  ;;   (mapcar
+  ;;     (lambda (block-name)
+  ;;       (aspiwack/prepend-to-font-mapping block-name "Noto Color Emoji"))
+  ;;     '("Dingbats"
+  ;;       "Emoticons"
+  ;;       "Miscellaneous Symbols and Pictographs"
+  ;;       "Transport and Map Symbols"))
+  ;;    ;; Trigger mapping
+  ;;   (unicode-fonts-setup))
 #+end_src
 *** Colour themes
 
