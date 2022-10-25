@@ -10,7 +10,7 @@
 
 
 let
-  my-emacs = pkgs.emacsNativeComp;
+  my-emacs = pkgs.emacs-gtk;
   associator = name: d: pkgs.writeShellScript "associator-${name}" ''
       dict='${builtins.toJSON d}'
       if [ $# -eq 0 ]
