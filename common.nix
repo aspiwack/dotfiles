@@ -78,7 +78,6 @@ in
       pkgs.silver-searcher
       pkgs.fd
       pkgs.ripgrep
-      pkgs.tldr
 
       pkgs.tokei
       pkgs.procs
@@ -197,6 +196,24 @@ in
   programs.rofi = {
     enable = true;
     theme = "DarkBlue";
+  };
+
+  programs.tealdeer = {
+    enable = true;
+    settings = {
+      display = {
+        compact = false;
+        use_pager = false;
+      };
+      style.example_text.rgb = {r = 128; g = 128; b = 128;};
+      style.command_name.foreground = "red";
+      style.example_code.foreground = "red";
+      style.example_variable = {
+        foreground = "blue";
+        italic = true;
+      };
+      updates.auto_udpdate = "true";
+    };
   };
 
   #### Git
