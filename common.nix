@@ -118,11 +118,13 @@ in
   programs.zoxide =
     { enable = true;
       enableFishIntegration = true;
+      enableBashIntegration = true;
     };
 
   programs.fzf =
     { enable = true;
       enableFishIntegration = true;
+      enableBashIntegration = true;
       defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
       # Use fd to find files
       changeDirWidgetCommand = "fd --type d";
@@ -143,6 +145,7 @@ in
   programs.starship =
     { enable = true;
       enableFishIntegration = true;
+      enableBashIntegration = true;
       settings =
         { add_newline = false;
           line_break.disabled = true;
@@ -180,9 +183,16 @@ in
     { enable = true;
     };
 
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+    enableVteIntegration = true;
+  };
+
   programs.broot = {
     enable = true;
     enableFishIntegration = true;
+    enableBashIntegration = true;
   };
 
   programs.jq.enable = true;
