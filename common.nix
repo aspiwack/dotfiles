@@ -11,9 +11,6 @@
 
 let
   my-emacs = pkgs.emacsNativeComp;
-  extra-nodePackages = import ./nodePackages { inherit pkgs; };
-  obs-cli = extra-nodePackages.obs-cli;
-  obs-cli-bin = "${obs-cli}/bin/obs-cli";
   associator = name: d: pkgs.writeShellScript "associator-${name}" ''
       dict='${builtins.toJSON d}'
       if [ $# -eq 0 ]
@@ -40,26 +37,9 @@ let
           curl -sL https://www.gitignore.io/api/$1;
       '';
 
-      obs-scene-switcher = pkgs.writeShellScriptBin "obs-scene-switcher" ''
-        # For all the commands, see https://github.com/Palakis/obs-websocket
-        function list-scenes() {
-          # Filtering out [NS] so that nested scenes don't appear
-          ${obs-cli-bin} GetSceneList | jq -r '.[0].scenes | .[].name' | grep -v -e "^\[NS\] "
-        }
-
-        function switch-to-scene() {
-          ${obs-cli-bin} SetCurrentScene="{\"scene-name\": \"$1\"}"
-        }
-
-        scene=$(list-scenes | rofi -dmenu -p "Scene" -i)
-        switch-to-scene "$scene"
-      '';
-
       shortcuts = {
         screenshot = ''
           gnome-screenshot --area --file="/home/aspiwack/Downloads/Screenshot $(date --iso-8601=seconds).png"'';
-        "Obs scene-switcher" = ''
-          obs-scene-switcher'';
       };
       shortcuts-script = associator "shortcuts" shortcuts;
       shortcuts-selector = pkgs.writeShellScriptBin "shortcuts-selector" ''
@@ -109,9 +89,6 @@ in
       pkgs.xdot
 
       pkgs.nodePackages.emoj
-
-      obs-cli
-      scripts.obs-scene-switcher
 
       pkgs.chrysalis
 
