@@ -189,6 +189,11 @@ in
     enableVteIntegration = true;
   };
 
+  programs.exa = {
+    enable = true;
+    enableAliases = true;
+  };
+
   programs.broot = {
     enable = true;
     enableFishIntegration = true;
