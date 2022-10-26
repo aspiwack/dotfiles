@@ -79,6 +79,7 @@ in
 
       pkgs.tokei
       pkgs.procs
+      pkgs.duf
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
