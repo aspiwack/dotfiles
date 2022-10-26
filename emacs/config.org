@@ -717,48 +717,6 @@ http://endlessparentheses.com/hungry-delete-mode.html).
   ;;   (global-hungry-delete-mode)
   ;;   :diminish hungry-delete-mode)
 #+END_SRC
-*** Fill column indicator
-
-The [[https://www.emacswiki.org/emacs/fill-column-indicator.el][fill column indicator]] mode show a line at the configured /fill
-limit/ (/i.e./ the number of characters after which lines should be
-cut in two).
-#+BEGIN_SRC emacs-lisp
-  (use-package fill-column-indicator
-    :ensure t
-    :commands turn-on-fci-mode
-    :config
-#+END_SRC
-
-The fill limit can be configured with ~set-fill-column N~.
-
-I usually don't have the fill column indicator displayed. But I turn
-it on if a particular coding style calls for it. I always use the fill
-column indicator in Haskell as lines are a bit tricky there.
-
-**** Workaround
-
-There is a [[https://github.com/alpaker/Fill-Column-Indicator/issues/21][longstanding incompatibility]] between the fill column
-indicator and popup-like functions like those of Company mode. Here is
-a [[https://github.com/company-mode/company-mode/issues/180#issuecomment-55047120][workaround for Company mode]] which turns the fill column indicator
-off when a Company-mode popup is displayed.
-#+BEGIN_SRC emacs-lisp
-    (defvar-local company-fci-mode-on-p nil)
-
-    (defun company-turn-off-fci (&rest ignore)
-      (when (boundp 'fci-mode)
-        (setq company-fci-mode-on-p fci-mode)
-        (when fci-mode (fci-mode -1))))
-
-    (defun company-maybe-turn-on-fci (&rest ignore)
-      (when company-fci-mode-on-p (fci-mode 1)))
-
-    (add-hook 'company-completion-started-hook 'company-turn-off-fci)
-    (add-hook 'company-completion-finished-hook 'company-maybe-turn-on-fci)
-    (add-hook 'company-completion-cancelled-hook 'company-maybe-turn-on-fci))
-#+END_SRC
-
-**** TODO Link to Haskell section
-
 *** Yasnippet
 
 [[https://github.com/joaotavora/yasnippet][Yasnippet]] inserts templates (with holes which can be navigated with
@@ -1600,7 +1558,7 @@ The [[https://www.haskell.org/][Haskell]] programming language.
       ; set maximum column length
       (set-fill-column 80)
       ; show a marker at maximum column length
-      (turn-on-fci-mode)
+      (display-fill-column-indicator-mode)
       ; set indentation mode to hindent (TODO: better: use Ormolu to format)
       (hindent-mode)
       )
