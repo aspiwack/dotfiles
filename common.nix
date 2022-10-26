@@ -130,6 +130,12 @@ in
       defaultCommand = "fd --type file";
     };
 
+  programs.navi = {
+    enable = true;
+    enableFishIntegration = true;
+    enableBashIntegration = true;
+  };
+
   programs.bat =
     { enable = true;
       config.theme = "Dracula";
