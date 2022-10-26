@@ -203,6 +203,9 @@ in
 
   programs.noti.enable = true;
 
+  programs.htop.enable = true;
+  programs.btop.enable = true;
+
   programs.direnv = {
     enable = true;
     # enableFishIntegration = true; # not needed anymore
