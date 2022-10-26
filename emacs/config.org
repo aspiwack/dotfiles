@@ -581,12 +581,13 @@ helm.
     :ensure t
     :commands helm-projectile-on
     :bind
-    ("C-S-s" . helm-projectile-ag))
+    ("C-S-s" . helm-projectile-rg))
 
-  ;; Dependency of `helm-projectile' that seems not to have been
-  ;; specified.
-  (use-package helm-ag
-    :commands helm-ag
+  ;; Dynamic dependency of `helm-projectile'. I might as well install it
+  ;; automatically instead of doing this on the first call to
+  ;; `helm-projectile-rg' on each installation.
+  (use-package helm-rg
+    :commands helm-rg
     :ensure t)
 #+END_SRC
 
@@ -778,7 +779,7 @@ being conservative and define most boon-type bindings here.
     ;; it does work just fine This whole section should be moved to a
     ;; `:bind' (with `:map' sections). But I'm lazy right now.
     (define-key boon-moves-map "e " 'swiper)
-    (define-key boon-moves-map "eg" 'helm-projectile-ag)
+    (define-key boon-moves-map "eg" 'helm-projectile-rg)
     (define-key boon-moves-map "ey" 'helm-show-kill-ring)
     (define-key boon-x-map "f" 'helm-find-files)
     (define-key boon-x-map "x" 'helm-M-x)

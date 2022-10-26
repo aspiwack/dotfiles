@@ -74,7 +74,6 @@ in
   home.packages =
     [ pkgs.cachix
 
-      pkgs.silver-searcher
       pkgs.fd
       pkgs.ripgrep
 
