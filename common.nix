@@ -10,7 +10,8 @@
 
 
 let
-  my-emacs = pkgs.emacs-gtk;
+  my-emacs = pkgs.emacsPgtkNativeComp;
+
   associator = name: d: pkgs.writeShellScript "associator-${name}" ''
       dict='${builtins.toJSON d}'
       if [ $# -eq 0 ]
@@ -60,13 +61,11 @@ in
 
   ### Overlays ###
 
-  # Right now, Emacs from the main package has everything I need.
-  #
-  # nixpkgs.overlays = [
-  #   (import (builtins.fetchTarball {
-  #     url = https://github.com/nix-community/emacs  -overlay/archive/master.tar.gz;
-  #   }))
-  # ];
+  nixpkgs.overlays = [
+    (import (builtins.fetchTarball {
+      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+    }))
+  ];
 
   ### Configuration ###
 
