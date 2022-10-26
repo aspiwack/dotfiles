@@ -230,6 +230,15 @@ in
     };
   };
 
+  programs.tmux = {
+    enable = true;
+    clock24 = true;
+    sensibleOnTop = true;
+    # below is the default from sensible tmux, but it's otherwise
+    # overrided by the configuration
+    terminal = "screen-256color";
+  };
+
   #### Git
 
   programs.git =
