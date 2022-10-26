@@ -242,6 +242,11 @@ in
     # below is the default from sensible tmux, but it's otherwise
     # overrided by the configuration
     terminal = "screen-256color";
+    plugins = [
+      { plugin = pkgs.tmuxPlugins.power-theme;
+        extraConfig = "set -g @tmux_power_theme 'redwine'";
+      }
+    ];
   };
 
   #### Git
