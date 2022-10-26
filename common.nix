@@ -201,6 +201,8 @@ in
 
   programs.jq.enable = true;
 
+  programs.noti.enable = true;
+
   programs.direnv = {
     enable = true;
     # enableFishIntegration = true; # not needed anymore
