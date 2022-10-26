@@ -82,6 +82,7 @@ in
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
+      pkgs.progress
 
       pkgs.papis
 
