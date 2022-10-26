@@ -1424,8 +1424,8 @@ Language server protocol
 
   (use-package lsp-mode
       :ensure t
-      :hook (;; ;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-             ;;  (haskell-mode . lsp)
+      :hook ( ;; Modes to enable lsp on
+              (haskell-mode . lsp-deferred)
               ;; if you want which-key integration
               (lsp-mode . lsp-enable-which-key-integration)
               (lsp-mode . aspiwack/lsp-which-key)
@@ -1601,25 +1601,11 @@ The [[https://www.haskell.org/][Haskell]] programming language.
       (set-fill-column 80)
       ; show a marker at maximum column length
       (turn-on-fci-mode)
-      ; set indentation mode to hindent
+      ; set indentation mode to hindent (TODO: better: use Ormolu to format)
       (hindent-mode)
-      ; automatically compile files in the background and report erros
-      (flycheck-mode)
-      ; turn on haskell mode's key bindings for interactive features
-      (interactive-haskell-mode)
       )
     (add-hook 'haskell-mode-hook 'haskell-hook)
     :defer)
-
-  ;; TODO: add `cabal-install' to required list
-  (use-package dante
-    ;; Note on Melpa yet
-    ;; :ensure t
-    :ensure t
-    :commands dante-mode
-    ;:init
-    ;(add-hook 'haskell-mode-hook 'dante-mode)
-    )
 
   (use-package lsp-haskell
    :ensure t
