@@ -49,7 +49,10 @@ let
     };
 in
 {
-  imports = [ config/terminal.nix ];
+  imports = [
+    config/terminal.nix
+    config/unix.nix
+  ];
 
   ### Home Manager self-configuration ###
 
@@ -71,17 +74,9 @@ in
 
   ### Configuration ###
 
-  ## TODO: some rg packages for emacs,
-
   home.packages =
     [ pkgs.cachix
 
-      pkgs.fd
-      pkgs.ripgrep
-
-      pkgs.tokei
-      pkgs.procs
-      pkgs.duf
       # pkgs.darcs
       pkgs.graphviz
       pkgs.lorri
@@ -117,22 +112,11 @@ in
 
   #### Shell/terminal
 
-  programs.zoxide =
-    { enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
-    };
-
   programs.navi = {
     enable = true;
     enableFishIntegration = true;
     enableBashIntegration = true;
   };
-
-  programs.bat =
-    { enable = true;
-      config.theme = "Dracula";
-    };
 
   # TODO: I would like to move this to `terminal.nix`, but I need a
   # way to refer to Emacs from there
@@ -142,17 +126,6 @@ in
     MANPAGER = "sh -c 'col -bx | bat -l man -p'";
   };
 
-  programs.exa = {
-    enable = true;
-    enableAliases = true;
-  };
-
-  programs.broot = {
-    enable = true;
-    enableFishIntegration = true;
-    enableBashIntegration = true;
-  };
-
   programs.jq.enable = true;
 
   programs.noti.enable = true;
@@ -160,11 +133,19 @@ in
   programs.htop.enable = true;
   programs.btop.enable = true;
 
+  # Dmenu-type utility: launched with command line argument, pops up a
+  # menu window to select options. I don't use much of it at all, I'm
+  # sure I should.
   programs.rofi = {
     enable = true;
     theme = "DarkBlue";
   };
 
+  # A tldr client. It's significantly faster than the original tldr
+  # client (probably partly due to being written in Rust rather than
+  # Node). I also appreciated the theming options, which let me remove
+  # most of the bright green colours. And the fact that I could set
+  # the database to automatically update is quite convenient too.
   programs.tealdeer = {
     enable = true;
     settings = {
