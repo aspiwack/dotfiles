@@ -49,6 +49,8 @@ let
     };
 in
 {
+  imports = [ config/terminal.nix ];
+
   ### Home Manager self-configuration ###
 
   # Let Home Manager install and manage itself.
@@ -121,16 +123,6 @@ in
       enableBashIntegration = true;
     };
 
-  programs.fzf =
-    { enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
-      defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
-      # Use fd to find files
-      changeDirWidgetCommand = "fd --type d";
-      defaultCommand = "fd --type file";
-    };
-
   programs.navi = {
     enable = true;
     enableFishIntegration = true;
@@ -142,57 +134,12 @@ in
       config.theme = "Dracula";
     };
 
+  # TODO: I would like to move this to `terminal.nix`, but I need a
+  # way to refer to Emacs from there
   home.sessionVariables = rec {
     EDITOR="${my-emacs}/bin/emacsclient -a '' -c";
     RLWRAP_EDITOR="${EDITOR} > /dev/null 2>&1";
     MANPAGER = "sh -c 'col -bx | bat -l man -p'";
-  };
-
-  programs.starship =
-    { enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
-      settings =
-        { add_newline = false;
-          line_break.disabled = true;
-          character =
-            # note: the double escaping is necessary for starship
-            { success_symbol = "[\\$](bold green)";
-              error_symbol = "[\\$](bold red)";
-            };
-          directory.truncation_symbol = "…/";
-          directory.style="white";
-
-          username.format = "[$user@]($style)";
-          username.style_user = "blue";
-          username.style_root = "red";
-          hostname.format = "[$hostname]($style):";
-          hostname.style = "blue";
-
-          git_branch.format = "\\[[$symbol$branch]($style)\\] ";
-          git_branch.style = "cyan";
-
-          git_status.format = "([{$conflicted$deleted$renamed$modified$staged$ahead_behind}]($style) )";
-          git_status.style = "red";
-
-          cmd_duration.format = "[$duration]($style) ";
-          cmd_duration.style = "yellow";
-
-          ocaml.format = "\\([$symbol$version]($style)\\) ";
-          ocaml.style = "yellow";
-
-          aws.disabled = true;
-        };
-     };
-
-  programs.fish =
-    { enable = true;
-    };
-
-  programs.bash = {
-    enable = true;
-    enableCompletion = true;
-    enableVteIntegration = true;
   };
 
   programs.exa = {
@@ -212,12 +159,6 @@ in
 
   programs.htop.enable = true;
   programs.btop.enable = true;
-
-  programs.direnv = {
-    enable = true;
-    # enableFishIntegration = true; # not needed anymore
-    nix-direnv.enable = true;
-  };
 
   programs.rofi = {
     enable = true;
@@ -242,44 +183,35 @@ in
     };
   };
 
-  programs.tmux = {
+  #### Development environment
+
+  programs.git = {
     enable = true;
-    clock24 = true;
-    sensibleOnTop = true;
-    # below is the default from sensible tmux, but it's otherwise
-    # overrided by the configuration
-    terminal = "screen-256color";
-    plugins = [
-      { plugin = pkgs.tmuxPlugins.power-theme;
-        extraConfig = "set -g @tmux_power_theme 'redwine'";
-      }
-    ];
+    userName = "Arnaud Spiwack";
+    extraConfig =
+      { pull.rebase = true;
+      };
+    lfs.enable = true;
+
+    # Aliases
+    aliases =
+      { ff = "pull --ff-only";
+        create = "!git-create";
+      };
+
+    # Enable difftastic [https://github.com/Wilfred/difftastic] as
+    # Git's default diff viewer. It's a tree-sitter based tree diff
+    # differ.
+    difftastic =
+      { enable = true;
+        background = "dark";
+      };
   };
 
-  #### Git
-
-  programs.git =
-    { enable = true;
-      userName = "Arnaud Spiwack";
-      extraConfig =
-        { pull.rebase = true;
-        };
-      lfs.enable = true;
-
-      # Aliases
-      aliases =
-        { ff = "pull --ff-only";
-          create = "!git-create";
-        };
-
-      # Enable difftastic [https://github.com/Wilfred/difftastic] as
-      # Git's default diff viewer. It's a tree-sitter based tree diff
-      # differ.
-      difftastic =
-        { enable = true;
-          background = "dark";
-        };
-    };
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   #### Emacs
 
