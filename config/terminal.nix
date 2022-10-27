@@ -48,8 +48,11 @@
           username.format = "[$user@]($style)";
           username.style_user = "blue";
           username.style_root = "red";
-          hostname.format = "[$hostname]($style):";
+          hostname.format = "[$hostname$ssh_symbol]($style):";
+          hostname.ssh_symbol = " 🌐";
           hostname.style = "blue";
+
+          sudo.disabled = false;
 
           git_branch.format = "\\[[$symbol$branch]($style)\\] ";
           git_branch.style = "cyan";
