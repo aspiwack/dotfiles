@@ -21,6 +21,33 @@
     enableVteIntegration = true;
   };
 
+  # I don't use much of Nushell, to be honest. But it's useful to have
+  # it configured if I am to do a bit of data scraping from time to
+  # time.
+  #
+  # Nushell is coming along quite nicely, honestly. Completion is
+  # competitive with fish (the only thing missing there is the visual
+  # indicator for commands which don't exist). If direnv worked, I
+  # could even consider making it my main shell.
+  programs.nushell = {
+    enable = true;
+    envFile.text = ''
+      # Zoxide integration
+      zoxide init nushell | save ~/.zoxide.nu
+
+      # Starship integration
+      mkdir ~/.cache/starship
+      starship init nu | save ~/.cache/starship/init.nu
+    '';
+    configFile.text = ''
+      # Zoxide integration
+      source ~/.zoxide.nu
+
+      # Starship integration
+      source ~/.cache/starship/init.nu
+    '';
+  };
+
   ### Theming
 
   # Starship is a terminal independent (well it supports a bunch of
