@@ -218,6 +218,10 @@ in
 
   home.file.".config/papis/config".source = files/papis.ini;
 
+  #### Stack
+
+  home.file.".stack/config.yaml".source = files/stack-config.yaml;
+
   ### Versioning ###
 
   # This value determines the Home Manager release that your
