@@ -189,6 +189,9 @@ in
       };
   };
 
+  # Globally-configured ignored patterns
+  home.file.".config/git/ignore".source = files/gitignore;
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
