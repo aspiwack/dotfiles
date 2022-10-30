@@ -26,9 +26,11 @@
   # time.
   #
   # Nushell is coming along quite nicely, honestly. Completion is
-  # competitive with fish (the only thing missing there is the visual
-  # indicator for commands which don't exist). If direnv worked, I
-  # could even consider making it my main shell.
+  # competitive with fish (Fish is still a little better, I'd say, for
+  # instance it has the visual indicator for commands which don't
+  # exist, the predictive completion is more powerful in Fish; overall
+  # Fish feels smoother). Direnv works too. I could consider switching
+  # to Nushell as my main shell.
   programs.nushell = {
     enable = true;
     envFile.text = ''
@@ -40,6 +42,18 @@
       starship init nu | save ~/.cache/starship/init.nu
     '';
     configFile.text = ''
+      let-env config = {
+        hooks: {
+          pre_prompt: [{
+            code: "
+              let direnv = (direnv export json | from json)
+              let direnv = if ($direnv | length) == 1 { $direnv } else { {} }
+              $direnv | load-env
+            "
+          }]
+        }
+      }
+
       # Zoxide integration
       source ~/.zoxide.nu
 
