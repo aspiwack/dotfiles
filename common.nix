@@ -10,8 +10,7 @@
 
 
 let
-  my-emacs = pkgs.emacsPgtkNativeComp;
-
+  my-emacs = pkgs.emacs-gtk;
   associator = name: d: pkgs.writeShellScript "associator-${name}" ''
       dict='${builtins.toJSON d}'
       if [ $# -eq 0 ]
@@ -66,11 +65,18 @@ in
 
   ### Overlays ###
 
-  nixpkgs.overlays = [
-    (import (builtins.fetchTarball {
-      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-    }))
-  ];
+  # Right now, Emacs from the main package has everything I
+  # need. Except support for Wayland (the “pure GTK” build). Which
+  # only exists for upcoming version 29. However, as of my last
+  # testing, the master version of Emacs was not working very fine. In
+  # particular LSP was extremely slow, which is not a productive
+  # programming environment.
+  #
+  # nixpkgs.overlays = [
+  #   (import (builtins.fetchTarball {
+  #     url = https://github.com/nix-community/emacs  -overlay/archive/master.tar.gz;
+  #   }))
+  # ];
 
   ### Configuration ###
 
