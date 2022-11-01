@@ -1619,6 +1619,35 @@ Miscellaneous programming language (or adjacent) modes
   (use-package yaml-mode
     :ensure t)
 #+end_src
+
+** Other languages
+
+*** Just
+[[https://just.systems/][Just]] is a tool to provide commands to projects. It's configured with a
+~justfile~, with a syntax reminiscent of ~make~. Contrary to ~make~, every
+command is called every time, and commends can take arguments. Just
+can also list commands with a help line natively, something which is
+possible in ~make~, but with hacks. On the other hand, contrary to ~make~,
+it's not installed on every machine. But I'm still content to
+experiment with it a little, as this is how I've been using ~make~ for
+the most part. And since I tend to use a ~shell.nix~ it's not very
+problematic.
+
+[[https://github.com/leon-barrett/just-mode.el][Just-mode]] is a highlighting mode for ~justfile~
+#+begin_src emacs-lisp
+  (use-package just-mode
+    :ensure t)
+#+end_src
+
+[[https://github.com/psibi/justl.el][Justl]] helps with calling Just commands from within Emacs. The entry point is ~M-x justl~.
+#+begin_src emacs-lisp
+  (use-package justl
+    :ensure t
+    :commands
+    (justl)
+    :config
+    (define-key aspiwack/boon-custom-map "j" 'justl))
+#+end_src
 * Multi-modes
 
 I use [[https://polymode.github.io/][Polymode]] to mix several modes in the same buffer. Most typically
