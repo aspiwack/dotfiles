@@ -1614,7 +1614,7 @@ Miscellaneous programming language (or adjacent) modes
 #+END_SRC
 
 ** Configuration formats
-
+*** Yaml
 #+begin_src emacs-lisp
   (use-package yaml-mode
     :ensure t)
