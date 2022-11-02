@@ -1643,10 +1643,9 @@ problematic.
 #+begin_src emacs-lisp
   (use-package justl
     :ensure t
-    :commands
-    (justl)
-    :config
-    (define-key aspiwack/boon-custom-map "j" 'justl))
+    :bind
+    (:map aspiwack/boon-custom-map
+          ("j" . justl)))
 #+end_src
 * Multi-modes
 
