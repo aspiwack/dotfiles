@@ -127,6 +127,31 @@
     ];
   };
 
+  programs.tmate = {
+    enable = true;
+    # It's a little unfortunate that I can't use my Tmux configuration
+    # on Tmate. This is because Tmate is a fork of Tmux, and isn't
+    # caught up with the latest developments. Or so I understand. So
+    # this is a bit of a silly configuration, but it's a decent
+    # workaround.
+    extraConfig = ''
+      ## Make tmate's tmux invisible so that we can call tmux inside.
+
+      # Note: I still need to call `set TMUX` (Fish) or `export TMUX=`
+      # (bash) to be able to call a nested TMUX.
+
+      # Reassign prefix to random nonsense not conflict with tmux
+      set -g prefix C-]
+      bind-key ] send-prefix
+
+      # turn off status bar so tmate is invisible
+      set -g status off
+
+      # Fix timeout for escape key
+      set -s escape-time 0
+    '';
+  };
+
   ### Customisation
 
   # Enables and themes the fzf fuzzy finder. Most importantly for this
