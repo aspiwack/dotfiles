@@ -1011,6 +1011,7 @@ C projects).
     ; replaces ido-based completion for projectile command with
     ; helm-based ones (see `helm-projectile').
     (helm-projectile-on)
+    :defer 0 ; loads immediately, overrides the autoloads.
     )
 #+END_SRC
 
