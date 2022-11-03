@@ -166,7 +166,7 @@ in
         foreground = "blue";
         italic = true;
       };
-      updates.auto_udpdate = "true";
+      updates.auto_update = true;
     };
   };
 
