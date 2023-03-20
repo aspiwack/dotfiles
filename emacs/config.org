@@ -1493,15 +1493,8 @@ The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, wit
 and [[https://github.com/cpitclaudel/company-coq][company-coq]]. (this is quite a bit out of date)
 #+BEGIN_SRC emacs-lisp
   ;; ProofGeneral generic mode
-  (use-package proof-site
-    :load-path "/home/aspiwack/.emacs.d/lisp/ProofGeneral/generic/"
-    :config
-    ; turns on the math input method defined below
-    ;; (add-hook 'proof-ready-for-assistant-hook
-    ;;           (lambda () (set-input-method 'math)))
-    ; turns on the automatic compilation feature of Proof General/Coq
-    (add-hook 'proof-ready-for-assistant-hook
-              '(lambda () (setq coq-compile-before-require 0))))
+  (use-package proof-general
+    :ensure t)
 
   ;; Company-coq
   (use-package company-coq
