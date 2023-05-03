@@ -1456,7 +1456,21 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-
   (use-package tuareg
     :ensure t
     :hook
-    ((tuareg-mode . lsp)))
+    ((tuareg-mode . lsp-deferred)))
+#+end_src
+
+Some support for the [[https://dune.build/][Dune]] build system
+
+#+begin_src emacs-lisp
+  (use-package dune
+    :ensure t)
+#+end_src
+
+And for [[https://opam.ocaml.org/][Opam]]
+
+#+begin_src emacs-lisp
+  (use-package opam
+    :ensure t)
 #+end_src
 
 **** TODO should I add an indenter (ocp-indent)?
