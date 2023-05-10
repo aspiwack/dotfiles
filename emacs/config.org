@@ -1362,7 +1362,7 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
 References:
 - I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stackoverflow]].
 
-Language server protocol
+*** Language server protocol
 
 #+begin_src emacs-lisp
   ;; See https://www.youtube.com/watch?v=E-NAM9U5JYE
@@ -1424,6 +1424,30 @@ Language server protocol
   ;;   :config
   ;;   (aspiwack/add-company-backend 'company-tabnine))
 #+END_SRC
+
+*** AI autocompletion
+
+Copilot
+#+begin_src emacs-lisp
+  (use-package copilot
+    :quelpa
+     (copilot :fetcher github
+           :repo  "zerolfx/copilot.el"
+           :files ("*.el" "dist"))
+    :diminish (copilot-mode "✈")
+    :config
+    (define-prefix-command 'aspiwack/copilot-map nil "copilot")
+    (define-key aspiwack/boon-custom-map "k" aspiwack/copilot-map)
+    (define-key aspiwack/copilot-map "c" 'copilot-complete)
+    (define-key aspiwack/copilot-map "a" 'copilot-accept-completion)
+    (define-key aspiwack/copilot-map "s" 'copilot-accept-completion-by-word)
+    ;; not sure why, but the space command doesn't work. Something takes
+    ;; over for some reason
+    (define-key aspiwack/copilot-map " " 'copilot-accept-completion-by-line)
+    (define-key aspiwack/copilot-map "p" 'copilot-accept-completion-by-line)
+    (define-key aspiwack/copilot-map "g" 'copilot-accept-completion-by-paragraph)
+    )
+#+end_src
 
 *** Elisp
 
