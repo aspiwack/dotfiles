@@ -300,6 +300,15 @@ A lot of themes which come bundled with Doom Emacs. Many look nice.
     (load-theme 'doom-dracula))
 #+end_src
 
+Other theme packages
+#+begin_src emacs-lisp
+  (use-package solo-jazz-theme
+    :ensure t)
+
+  (use-package lab-themes
+    :ensure t)
+#+end_src
+
 Let me also define two functions (~M-x dark-theme~) and (~M-x
 light-theme~) to switch between them. Let me also define a more general
 function ~switch-theme~ which acts as ~load-theme~ (it loads and activates
@@ -312,7 +321,7 @@ easily change between available themes.
 
   (defun light-theme ()
     (interactive)
-    (switch-theme 'adwaita))
+    (switch-theme 'solo-jazz))
 
   ;; See https://stackoverflow.com/questions/22866733/emacs-disable-theme-after-loading-a-different-one-themes-conflict
   (defun aspiwack/disable-all-themes ()
@@ -390,6 +399,16 @@ with a black background.
     ;; (load-theme 'jbeans t)
     )
 #+END_SRC
+
+[2023-05-22 Mon]
+I've used Adwaita as my light theme for a long time, but it never
+quite scratched my itch. Now that I'm moving to use more light theme
+during the day, I'm moving on.
+#+begin_src emacs-lisp
+  (defun light-theme ()
+    (interactive)
+    (switch-theme 'adwaita))
+#+end_src
 *** Powerline
 
  [[https://github.com/milkypostman/powerline][Powerline]] is a customisation engine for the powerline. I used to use it with
