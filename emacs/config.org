@@ -283,17 +283,6 @@ it on Linux.
 #+end_src
 *** Colour themes
 
-My previous dark (and default) theme was the [[https://github.com/synic/jbeans-emacs][jbeans theme]]. It is a theme
-with a black background.
-#+BEGIN_SRC emacs-lisp
-  (use-package jbeans-theme
-    :ensure t
-    ;; :config
-    ;; ; sets the theme at startup
-    ;; (load-theme 'jbeans t)
-    )
-#+END_SRC
-
 I use the adwaita theme as a light theme, when this is more
 appropriate (for instance when there is a lot of ambient light).
 #+BEGIN_SRC emacs-lisp
@@ -345,7 +334,62 @@ easily change between available themes.
     ; the new theme).
     (if (fboundp 'powerline-reset) (powerline-reset)))
 #+END_SRC
+**** Switch theme based on the desktop theme
 
+This sets the theme to light or dark depending on whether the
+desktop's theme is light or dark. It uses dbus to react to changes,
+and ~org.freedesktop.portal.Desktop~ as the value to observe (this
+should work on most Linux desktop environments). The code is (lightly)
+adapted from [[https://www.reddit.com/r/emacs/comments/o49v2w/comment/i5ibcyv/?utm_source=reddit&utm_medium=web2x&context=3][this Reddit answer]].
+
+#+begin_src emacs-lisp
+  (use-package dbus)
+
+  (defun aspiwack/set-theme-from-dbus-value (value)
+    "Set the appropiate theme according to the color-scheme setting value."
+    (message "value is %s" value)
+    (if (equal value '1)
+        (progn (message "Switch to dark theme")
+               (dark-theme))
+      (progn (message "Switch to light theme")
+             (light-theme))))
+
+  (defun aspiwack/color-scheme-changed (path var value)
+    "DBus handler to detect when the color-scheme has changed."
+    (when (and (string-equal path "org.freedesktop.appearance")
+               (string-equal var "color-scheme"))
+      (aspiwack/set-theme-from-dbus-value (car value))
+      ))
+
+  ;; Register for future changes
+  (dbus-register-signal
+     :session "org.freedesktop.portal.Desktop"
+     "/org/freedesktop/portal/desktop" "org.freedesktop.portal.Settings"
+     "SettingChanged"
+     #'aspiwack/color-scheme-changed)
+
+  ;; Request the current color-scheme
+  (dbus-call-method-asynchronously
+   :session "org.freedesktop.portal.Desktop"
+   "/org/freedesktop/portal/desktop" "org.freedesktop.portal.Settings"
+   "Read"
+   (lambda (value) (aspiwack/set-theme-from-dbus-value (caar value)))
+   "org.freedesktop.appearance"
+   "color-scheme"
+   )
+#+end_src
+**** COMMENT Former themes
+
+For a while my dark (and default) theme was the [[https://github.com/synic/jbeans-emacs][jbeans theme]]. It is a theme
+with a black background.
+#+BEGIN_SRC emacs-lisp
+  (use-package jbeans-theme
+    :ensure t
+    ;; :config
+    ;; ; sets the theme at startup
+    ;; (load-theme 'jbeans t)
+    )
+#+END_SRC
 *** Powerline
 
  [[https://github.com/milkypostman/powerline][Powerline]] is a customisation engine for the powerline. I used to use it with
