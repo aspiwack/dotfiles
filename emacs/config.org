@@ -297,7 +297,7 @@ A lot of themes which come bundled with Doom Emacs. Many look nice.
   (use-package doom-themes
     :ensure t
     :config
-    (load-theme 'doom-dracula))
+    (load-theme 'doom-dracula t t))
 #+end_src
 
 Other theme packages
