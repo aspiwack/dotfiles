@@ -33,15 +33,6 @@
   # to Nushell as my main shell.
   programs.nushell = {
     enable = true;
-    envFile.text = ''
-      # Starship integration
-      mkdir ~/.cache/starship
-      starship init nu | save ~/.cache/starship/init.nu
-    '';
-    configFile.text = ''
-      # Starship integration
-      source ~/.cache/starship/init.nu
-    '';
   };
 
   ### Theming
@@ -57,6 +48,7 @@
     { enable = true;
       enableFishIntegration = true;
       enableBashIntegration = true;
+      enableNushellIntegration = true;
       settings =
         { add_newline = false;
           line_break.disabled = true;
