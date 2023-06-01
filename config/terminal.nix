@@ -34,9 +34,6 @@
   programs.nushell = {
     enable = true;
     envFile.text = ''
-      # Zoxide integration
-      zoxide init nushell | save ~/.zoxide.nu
-
       # Starship integration
       mkdir ~/.cache/starship
       starship init nu | save ~/.cache/starship/init.nu
@@ -53,9 +50,6 @@
           }]
         }
       }
-
-      # Zoxide integration
-      source ~/.zoxide.nu
 
       # Starship integration
       source ~/.cache/starship/init.nu

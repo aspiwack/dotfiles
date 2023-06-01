@@ -31,6 +31,7 @@
     enable = true;
     enableFishIntegration = true;
     enableBashIntegration = true;
+    enableNushellIntegration = true;
   };
 
   # Replacement for `cat`. Has syntax highlighting, does paging when
