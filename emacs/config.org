@@ -132,6 +132,30 @@ Integrate Quelpa with use-package ([[https://github.com/quelpa/quelpa-use-packag
   (require 'quelpa-use-package)
 #+end_src
 
+** Bootstrapping straight.el
+
+[[https://github.com/radian-software/straight.el][Straight.el]] is an alternative package manager for Emacs. This code
+sets it up. I'm making very little use of it right now. But it does
+understand Melpa and all. I could replace pretty much all of
+packages.el with it. Not sure what the trade-offs are, except avoiding
+having two different package managers (it may also replace Quelpa? Not
+sure).
+
+#+begin_src emacs-lisp
+(defvar bootstrap-version)
+(let ((bootstrap-file
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+#+end_src
+
 * TODO Preliminaries
 
 Move opam stuff (from Melt & Ocaml) to here.
