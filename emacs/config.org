@@ -1501,7 +1501,13 @@ References:
       ; The following should be `:bind-keymap'. But for some reason
       ; `:bind-keymap' doesn't seem happy with the `:map' modifier. See
       ; https://github.com/jwiegley/use-package/issues/736
-      (define-key aspiwack/boon-custom-map "l" lsp-command-map))
+      (define-key aspiwack/boon-custom-map "l" lsp-command-map)
+      (add-to-list 'lsp-language-id-configuration
+                   '("\\.typ$" . "typst"))
+      (lsp-register-client
+       (make-lsp-client :new-connection (lsp-stdio-connection "typst-lsp")
+                        :activation-fn (lsp-activate-on "typst")
+                        :server-id 'typst-lsp)))
 
   ;; optionally
   (use-package lsp-ui
