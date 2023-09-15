@@ -45,7 +45,7 @@
   # Replacement for `ls`. Installs an alias so that it's simply called
   # as `ls`. As a bonus, it provides an ls-like UX for Nushell, when
   # I'm interested in the visuals over the data.
-  programs.exa = {
+  programs.eza = {
     enable = true;
     enableAliases = true;
   };
