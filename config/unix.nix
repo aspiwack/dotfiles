@@ -13,9 +13,6 @@
   home.packages = [
     # Replacement for `find`
     pkgs.fd
-    # Replacement for `grep`. Particularly worthy because of how
-    # ridiculously fast it is.
-    pkgs.ripgrep
     # Replacement for `sloccount`
     pkgs.tokei
     # Replacement for `ps`
@@ -23,6 +20,10 @@
     # Replacement for `du`
     pkgs.duf
   ];
+
+  # Replacement for `grep`. Particularly worthy because of how
+  # ridiculously fast it is.
+  programs.ripgrep.enable = true;
 
   # Replacement for `cd`, kind of. I don't find that it replaces
   # `cd` really. I use it to navigate between project, but use `cd`
