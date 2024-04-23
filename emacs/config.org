@@ -1503,12 +1503,21 @@ References:
       ; `:bind-keymap' doesn't seem happy with the `:map' modifier. See
       ; https://github.com/jwiegley/use-package/issues/736
       (define-key aspiwack/boon-custom-map "l" lsp-command-map)
+      ; Config for Typst
       (add-to-list 'lsp-language-id-configuration
                    '("\\.typ$" . "typst"))
       (lsp-register-client
        (make-lsp-client :new-connection (lsp-stdio-connection "typst-lsp")
                         :activation-fn (lsp-activate-on "typst")
-                        :server-id 'typst-lsp)))
+                        :server-id 'typst-lsp))
+      ; Config for Nickel
+      (add-to-list 'lsp-language-id-configuration '(nickel-mode . "nickel"))
+      (lsp-register-client (make-lsp-client
+                            :new-connection (lsp-stdio-connection "nls")
+                            :activation-fn (lsp-activate-on "nickel")
+                            :server-id 'nls
+                            :major-modes 'nickel-mode))
+      (add-hook 'nickel-mode-hook 'lsp-deferred))
 
   ;; optionally
   (use-package lsp-ui
@@ -1759,6 +1768,14 @@ Miscellaneous programming language (or adjacent) modes
   (use-package yaml-mode
     :ensure t)
 #+end_src
+*** Nickel
+#+begin_src emacs-lisp
+  (use-package nickel-mode
+    :ensure t
+    :hook
+    ((nickel-mode . lsp-deferred)))
+
+#+end_src
 
 ** Other languages
 
@@ -1887,7 +1904,7 @@ This solution was found at https://stackoverflow.com/a/47587185
     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 #+end_src
 
-** Emacs application framework
+** COMMENT Emacs application framework
 
 [[https://github.com/manateelazycat/emacs-application-framework][Emacs application framework]] lets one open graphical applications
 within Emacs.
