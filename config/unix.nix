@@ -46,10 +46,7 @@
   # Replacement for `ls`. Installs an alias so that it's simply called
   # as `ls`. As a bonus, it provides an ls-like UX for Nushell, when
   # I'm interested in the visuals over the data.
-  programs.eza = {
-    enable = true;
-    enableAliases = true;
-  };
+  programs.eza.enable = true;
 
   # Interactive replacement for tree. It's almost a file manager.
   programs.broot = {
