@@ -85,7 +85,6 @@ in
 
       # pkgs.darcs
       pkgs.graphviz
-      pkgs.lorri
       pkgs.progress
       pkgs.jnv # interactive jq explorer
 
