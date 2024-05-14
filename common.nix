@@ -87,6 +87,7 @@ in
       pkgs.graphviz
       pkgs.lorri
       pkgs.progress
+      pkgs.jnv # interactive jq explorer
 
       pkgs.papis
 
