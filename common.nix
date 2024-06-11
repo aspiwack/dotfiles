@@ -71,6 +71,7 @@ in
       # Fonts
       pkgs.nerdfonts
       pkgs.google-fonts
+      pkgs.libertine
     ];
 
   ### Fonts
