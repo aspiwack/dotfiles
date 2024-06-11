@@ -11,21 +11,7 @@
 
 let
   my-emacs = pkgs.emacs29-pgtk;
-  associator = name: d: pkgs.writeShellScript "associator-${name}" ''
-      dict='${builtins.toJSON d}'
-      if [ $# -eq 0 ]
-      then echo $dict | jq -r 'keys | .[]'
-      else echo $dict | jq -r ".[\"$1\"]" | xargs xargs
-      fi
-    '';
   scripts = rec {
-      git-create = pkgs.writeShellScriptBin "git-create" ''
-          name=$(basename $1 .git)
-          mkdir $name
-          cd $name
-          hub clone $1 master
-          cd master
-      '';
       ghci-with = pkgs.writeShellScriptBin "ghciwith" ''
           nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [$*])" --run ghci
       '';
@@ -35,15 +21,6 @@ let
       '';
       gitignoreio = pkgs.writeShellScriptBin "gitignoreio" ''
           curl -sL https://www.gitignore.io/api/$1;
-      '';
-
-      shortcuts = {
-        screenshot = ''
-          gnome-screenshot --area --file="/home/aspiwack/Downloads/Screenshot $(date --iso-8601=seconds).png"'';
-      };
-      shortcuts-script = associator "shortcuts" shortcuts;
-      shortcuts-selector = pkgs.writeShellScriptBin "shortcuts-selector" ''
-        rofi -modi Action:${shortcuts-script} -show Action
       '';
     };
 in
@@ -97,11 +74,9 @@ in
       pkgs.chrysalis
 
       # Scripts
-      scripts.git-create
       scripts.ghci-with
       scripts.weather
       scripts.gitignoreio
-      scripts.shortcuts-selector
 
       # Fonts
       pkgs.nerdfonts
