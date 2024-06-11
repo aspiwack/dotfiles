@@ -54,6 +54,9 @@ in
 
       pkgs.papis
 
+      (pkgs.aspellWithDicts
+          (dicts: with dicts; [ en en-computers en-science es fr ]))
+
       pkgs.xdot
 
       pkgs.nodePackages.emoj
