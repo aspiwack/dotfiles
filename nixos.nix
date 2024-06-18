@@ -1,7 +1,18 @@
 { ... }:
 
+let
+  # See https://github.com/NixOS/nixpkgs/pull/277422
+  # When merged I can remove this.
+  fixed-dropbox = final: prev: {
+    dropbox = prev.callPackage ./dropbox.nix {};
+  };
+in
+
+
 {
   imports = [ ./common.nix ];
+
+  nixpkgs.overlays = [ fixed-dropbox ];
 
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
