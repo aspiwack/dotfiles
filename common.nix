@@ -48,6 +48,7 @@ in
     [ pkgs.cachix
 
       pkgs.evince
+      pkgs.gnome.nautilus
 
       # pkgs.darcs
       pkgs.graphviz
