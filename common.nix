@@ -47,6 +47,8 @@ in
   home.packages =
     [ pkgs.cachix
 
+      pkgs.evince
+
       # pkgs.darcs
       pkgs.graphviz
       pkgs.progress
