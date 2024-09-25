@@ -19,6 +19,8 @@
     pkgs.procs
     # Replacement for `du`
     pkgs.duf
+    # A variant of ssh which deals with disconnection and latency
+    pkgs.mosh
   ];
 
   # Replacement for `grep`. Particularly worthy because of how
