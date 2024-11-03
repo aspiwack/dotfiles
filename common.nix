@@ -48,7 +48,9 @@ in
     [ pkgs.cachix
 
       pkgs.evince
+      pkgs.gnome.eog
       pkgs.gnome.nautilus
+      pkgs.vlc
 
       # pkgs.darcs
       pkgs.graphviz
