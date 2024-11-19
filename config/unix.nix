@@ -21,6 +21,8 @@
     pkgs.duf
     # A variant of ssh which deals with disconnection and latency
     pkgs.mosh
+    # Provides an interactive interface to systemctl
+    pkgs.systemctl-tui
   ];
 
   # Replacement for `grep`. Particularly worthy because of how
