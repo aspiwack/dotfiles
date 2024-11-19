@@ -50,6 +50,7 @@ in
       pkgs.evince
       pkgs.gnome.eog
       pkgs.gnome.nautilus
+      pkgs.gnome.file-roller
       pkgs.vlc
 
       # pkgs.darcs
