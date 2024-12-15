@@ -1858,6 +1858,7 @@ variable, choose ~eval~, in this particular case)
 
 * Operating system
 
+
 This section is about all the use of Emacs as a tool to manage , or,
 more generally, interact with, the operating system. Stuff like file
 management, shells, etc…
@@ -1938,6 +1939,18 @@ Some dependencies
            :files ("*")))
 #+end_src
 
+** Terminals
+
+*** EAT
+[[https://codeberg.org/akib/emacs-eat][EAT]] is an emulated terminal in Elisp. But it works really well, at
+least I've had a good experience with it. Not as native as Vterm, but
+this makes the integration smoother. More normal a terminal than
+Eshell. It's become my default choice of terminal inside Emacs.
+
+#+begin_src emacs-lisp
+  (use-package eat
+    :ensure t)
+#+end_src
 * Applications
 
 ** Weechat
