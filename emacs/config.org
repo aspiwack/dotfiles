@@ -1444,6 +1444,17 @@ because Typst doesn't parse well with regexps.
     :hook
     ((typst-mode . lsp-deferred)))
 #+end_src
+
+*** Ott
+[[https://github.com/ott-lang/ott][Ott]] isn't, strictly speaking, an authoring language. It's a
+description language for programming-language-theory type of maths. My
+main use of it is in conjunction to Latex for authoring purposes
+(everything is macros, and it's much more readable), hence its being here.
+
+#+begin_src emacs-lisp
+  (use-package ott-mode
+    :straight (:type git :host github :repo "ott-lang/ott" :files ("emacs/*")))
+#+end_src
 ** Programming languages
 
 Here is some configuration shared by all programming modes which
