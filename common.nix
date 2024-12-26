@@ -28,6 +28,7 @@ in
   imports = [
     config/terminal.nix
     config/unix.nix
+    services/weechat.nix
   ];
 
   ### Home Manager self-configuration ###
@@ -203,6 +204,7 @@ in
   #### Stack
 
   home.file.".stack/config.yaml".source = files/stack-config.yaml;
+
 
   ### Versioning ###
 
