@@ -23,6 +23,18 @@ let
           curl -sL https://www.gitignore.io/api/$1;
       '';
     };
+  overlays = {
+    # Load extensions in Weechat
+    weechat = self: super: {
+      weechat = super.weechat.override {
+        configure = {...}: {
+          scripts = [
+            super.weechatScripts.weechat-notify-send
+          ];
+        };
+      };
+    };
+  };
 in
 {
   imports = [
@@ -42,6 +54,10 @@ in
   # See targets.genericLinux.extraXdgDataDirs
 
   ### Overlays ###
+
+  nixpkgs.overlays = [
+    overlays.weechat
+  ];
 
   ### Configuration ###
 

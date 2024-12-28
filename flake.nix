@@ -8,9 +8,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    ghostty.url = "github:ghostty-org/ghostty";
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, ghostty }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
@@ -20,7 +21,10 @@
 
         # Specify your home configuration modules here, for example,
         # the path to your home.nix.
-        modules = [ ./nixos.nix ];
+        modules = [
+          ./nixos.nix
+          { home.packages = [ghostty.packages.x86_64-linux.default]; }
+        ];
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
