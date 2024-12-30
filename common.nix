@@ -70,6 +70,9 @@ in
       pkgs.file-roller
       pkgs.vlc
 
+      ## Sound stuff
+      pkgs.qpwgraph
+
       # pkgs.darcs
       pkgs.graphviz
       pkgs.progress
@@ -106,9 +109,9 @@ in
   # would have sufficed.
   fonts.fontconfig.enable = true;
 
-  ### Desktop
+  #### Desktop
 
-  #### Gnome settings
+  ##### Gnome settings
   programs.gnome-shell.enable = true;
   programs.gnome-shell.extensions = [
     { package = pkgs.gnomeExtensions.caffeine; }
@@ -117,6 +120,9 @@ in
   dconf.settings = {
     "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
   };
+
+  ##### Sound stuff
+  services.easyeffects.enable = true;
 
   #### Shell/terminal
 
