@@ -103,6 +103,14 @@ in
   # would have sufficed.
   fonts.fontconfig.enable = true;
 
+  ### Desktop
+
+  programs.gnome-shell.enable = true;
+  programs.gnome-shell.extensions = [
+    { package = pkgs.gnomeExtensions.caffeine; }
+    { package = pkgs.gnomeExtensions.night-theme-switcher; }
+  ];
+
   #### Shell/terminal
 
   programs.navi = {
