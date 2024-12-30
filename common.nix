@@ -236,6 +236,9 @@ in
 
   home.file.".stack/config.yaml".source = files/stack-config.yaml;
 
+  #### Nix
+
+  programs.nh.enable = true;
 
   ### Versioning ###
 
