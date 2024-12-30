@@ -105,11 +105,15 @@ in
 
   ### Desktop
 
+  #### Gnome settings
   programs.gnome-shell.enable = true;
   programs.gnome-shell.extensions = [
     { package = pkgs.gnomeExtensions.caffeine; }
     { package = pkgs.gnomeExtensions.night-theme-switcher; }
   ];
+  dconf.settings = {
+    "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
+  };
 
   #### Shell/terminal
 
