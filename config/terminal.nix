@@ -144,5 +144,6 @@
       defaultCommand = "fd --type file";
     };
 
+  programs.nix-your-shell.enable = true;
 
 }
