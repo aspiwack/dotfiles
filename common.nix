@@ -65,9 +65,9 @@ in
     [ pkgs.cachix
 
       pkgs.evince
-      pkgs.gnome.eog
-      pkgs.gnome.nautilus
-      pkgs.gnome.file-roller
+      pkgs.eog
+      pkgs.nautilus
+      pkgs.file-roller
       pkgs.vlc
 
       # pkgs.darcs
@@ -90,7 +90,10 @@ in
       scripts.gitignoreio
 
       # Fonts
-      pkgs.nerdfonts
+      pkgs.nerd-fonts.dejavu-sans-mono
+      pkgs.nerd-fonts.ubuntu
+      pkgs.nerd-fonts.ubuntu-mono
+      pkgs.nerd-fonts.ubuntu-sans
       pkgs.google-fonts
       pkgs.libertine
     ];
