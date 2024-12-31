@@ -83,6 +83,7 @@ in
       (pkgs.aspellWithDicts
           (dicts: with dicts; [ en en-computers en-science es fr ]))
 
+      pkgs.nix-output-monitor
       pkgs.nodePackages.emoj
 
       pkgs.chrysalis
