@@ -1,99 +1,79 @@
-# Version of the Nixpkgs pkgs from
-# https://github.com/NixOS/nixpkgs/pull/277422
-{ stdenv, lib, buildFHSEnv, writeScript, makeDesktopItem }:
+# Fixes Dropbox service, from
+# https://github.com/nix-community/home-manager/pull/5923
 
-let platforms = [ "i686-linux" "x86_64-linux" ]; in
+{ config, lib, pkgs, ... }:
 
-assert lib.elem stdenv.hostPlatform.system platforms;
-
-# Dropbox client to bootstrap installation.
-# The client is self-updating, so the actual version may be newer.
-let
-  version = "185.4.6054";
-
-  arch = {
-    x86_64-linux = "x86_64";
-    i686-linux   = "x86";
-  }.${stdenv.hostPlatform.system};
-
-  installer = "https://clientupdates.dropboxstatic.com/dbx-releng/client/dropbox-lnx.${arch}-${version}.tar.gz";
-in
+with lib;
 
 let
-  desktopItem = makeDesktopItem {
-    name = "dropbox";
-    exec = "dropbox";
-    comment = "Sync your files across computers and to the web";
-    desktopName = "Dropbox";
-    genericName = "File Synchronizer";
-    categories = [ "Network" "FileTransfer" ];
-    startupNotify = false;
-    icon = "dropbox";
+
+  cfg = config.services.fixed-dropbox;
+  baseDir = ".dropbox-hm";
+  dropboxCmd = "${pkgs.dropbox}/bin/dropbox";
+  homeBaseDir = "${config.home.homeDirectory}/${baseDir}";
+
+in {
+  meta.maintainers = [ hm.maintainers.tph5595 ];
+
+  options = {
+    services.fixed-dropbox = {
+      enable = mkEnableOption "Dropbox daemon";
+
+      path = mkOption {
+        type = types.path;
+        default = "${config.home.homeDirectory}/Dropbox";
+        defaultText =
+          literalExpression ''"''${config.home.homeDirectory}/Dropbox"'';
+        apply = toString; # Prevent copies to Nix store.
+        description = "Where to put the Dropbox directory.";
+      };
+    };
   };
-in
 
-buildFHSEnv {
-  name = "dropbox";
+  config = mkIf cfg.enable {
+    assertions = [
+      (lib.hm.assertions.assertPlatform "services.fixed-dropbox" pkgs
+        lib.platforms.linux)
+    ];
 
-  # The dropbox-cli command `dropbox start` starts the dropbox daemon in a
-  # separate session, and wants the daemon to outlive the launcher.  Enabling
-  # `--die-with-parent` defeats this and causes the daemon to exit when
-  # dropbox-cli exits.
-  dieWithParent = false;
+    home.packages = [ pkgs.dropbox ];
 
-  # dropbox-cli (i.e. nautilus-dropbox) needs the PID to confirm dropbox is running.
-  # Dropbox's internal limit-to-one-instance check also relies on the PID.
-  unsharePid = false;
+    systemd.user.services.fixed-dropbox = {
+      Unit = { Description = "dropbox"; };
 
-  targetPkgs = pkgs: with pkgs; with xorg; [
-    libICE libSM libX11 libXcomposite libXdamage libXext libXfixes libXrender
-    libXxf86vm libxcb xkeyboardconfig
-    curl dbus firefox-bin fontconfig freetype gcc glib gnutar libxml2 libxslt
-    procps zlib mesa libxshmfence libpthreadstubs libappindicator
-  ];
+      Install = { WantedBy = [ "default.target" ]; };
 
-  extraInstallCommands = ''
-    mkdir -p "$out/share/applications"
-    cp "${desktopItem}/share/applications/"* $out/share/applications
-  '';
+      Service = {
+        Environment = [ "HOME=${homeBaseDir}" ];
 
-  runScript = writeScript "install-and-start-dropbox" ''
-    export BROWSER=firefox
+        PIDFile = "${homeBaseDir}/.dropbox/dropbox.pid";
 
-    set -e
+        Restart = "on-failure";
+        ProtectSystem = "full";
+        Nice = 10;
 
-    do_install=
-    if ! [ -d "$HOME/.dropbox-dist" ]; then
-        do_install=1
-    else
-        installed_version=$(cat "$HOME/.dropbox-dist/VERSION")
-        latest_version=$(printf "${version}\n$installed_version\n" | sort -rV | head -n 1)
-        if [ "x$installed_version" != "x$latest_version" ]; then
-            do_install=1
-        fi
-    fi
+        ExecReload = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+        ExecStop = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+        ExecStart = toString (pkgs.writeShellScript "dropbox-start" ''
+          # ensure we have the dirs we need
+          ${pkgs.coreutils}/bin/mkdir $VERBOSE_ARG -p \
+            ${homeBaseDir}/{.dropbox,.dropbox-dist,Dropbox}
+          ${pkgs.coreutils}/bin/touch ${homeBaseDir}/.dropbox-dist/VERSION
 
-    if [ -n "$do_install" ]; then
-        installer=$(mktemp)
-        # Dropbox is not installed.
-        # Download and unpack the client. If a newer version is available,
-        # the client will update itself when run.
-        curl '${installer}' >"$installer"
-        pkill dropbox || true
-        rm -fr "$HOME/.dropbox-dist"
-        tar -C "$HOME" -x -z -f "$installer"
-        rm "$installer"
-    fi
+          # symlink them as needed
+          if [[ ! -d ${config.home.homeDirectory}/.dropbox ]]; then
+            ${pkgs.coreutils}/bin/ln $VERBOSE_ARG -s \
+              ${homeBaseDir}/.dropbox ${config.home.homeDirectory}/.dropbox
+          fi
 
-    exec "$HOME/.dropbox-dist/dropboxd" "$@"
-  '';
+          if [[ ! -d ${escapeShellArg cfg.path} ]]; then
+            ${pkgs.coreutils}/bin/ln $VERBOSE_ARG -s \
+              ${homeBaseDir}/Dropbox ${escapeShellArg cfg.path}
+          fi
 
-  meta = with lib; {
-    description = "Online stored folders (daemon version)";
-    homepage    = "http://www.dropbox.com/";
-    license     = licenses.unfree;
-    maintainers = with maintainers; [ eclairevoyant ttuegel ];
-    platforms   = [ "i686-linux" "x86_64-linux" ];
-    mainProgram = "dropbox";
+          ${dropboxCmd}
+        '');
+      };
+    };
   };
 }
