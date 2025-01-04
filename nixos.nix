@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 let
   # See https://github.com/NixOS/nixpkgs/pull/277422
@@ -22,4 +22,15 @@ in
   # For now, let me enable Dropbox on Nixos only, as my non-Nixos
   # computer have it enabled by more traditional means at the moment.
   services.dropbox.enable = true;
+
+  programs.obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      wlrobs
+      obs-backgroundremoval
+      obs-pipewire-audio-capture
+      advanced-scene-switcher
+      obs-livesplit-one
+    ];
+  };
 }
