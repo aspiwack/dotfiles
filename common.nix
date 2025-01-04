@@ -70,6 +70,9 @@ in
       pkgs.file-roller
       pkgs.vlc
 
+      ## Images stuff
+      pkgs.gimp
+
       ## Sound stuff
       pkgs.qpwgraph
 
