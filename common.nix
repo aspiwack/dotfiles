@@ -120,6 +120,8 @@ in
   programs.gnome-shell.extensions = [
     { package = pkgs.gnomeExtensions.caffeine; }
     { package = pkgs.gnomeExtensions.night-theme-switcher; }
+    { package = pkgs.gnomeExtensions.appindicator; }
+
   ];
   dconf.settings = {
     "org/gnome/mutter".experimental-features = ["scale-monitor-framebuffer"];
