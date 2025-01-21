@@ -193,7 +193,10 @@ in
     enable = true;
     userName = "Arnaud Spiwack";
     extraConfig =
-      { pull.rebase = true;
+      {
+        pull.rebase = true;
+        rerere.enabled = "true";
+        rerere.autoupdate = "true";
       };
     lfs.enable = true;
 
