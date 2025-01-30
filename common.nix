@@ -204,6 +204,9 @@ in
     aliases =
       { ff = "pull --ff-only";
         create = "!git-create";
+        # doesn't work because happens in a subshell so doesn't change
+        # the directory
+        # root = ''!cd "$(git rev-parse --show-toplevel)"'';
       };
 
     # Enable difftastic [https://github.com/Wilfred/difftastic] as
