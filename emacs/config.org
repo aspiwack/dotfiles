@@ -1559,10 +1559,8 @@ References:
 Copilot
 #+begin_src emacs-lisp
   (use-package copilot
-    :quelpa
-     (copilot :fetcher github
-           :repo  "zerolfx/copilot.el"
-           :files ("*.el" "dist"))
+    ;; Note: copilot.el is provided by Nixpkgs. This way we have an
+    ;; appropriate Copilot server available
     :diminish (copilot-mode "✈")
     :config
     (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)

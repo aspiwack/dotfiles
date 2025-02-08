@@ -231,7 +231,7 @@ in
   programs.emacs =
     { enable = true;
       package = my-emacs;
-      extraPackages = epkgs: (with epkgs.melpaPackages; [vterm]);
+      extraPackages = epkgs: (with epkgs.melpaPackages; [vterm copilot]);
     };
 
   home.file.".emacs.d/init.el".source = emacs/bootstrap/init.el;
