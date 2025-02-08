@@ -1565,6 +1565,8 @@ Copilot
            :files ("*.el" "dist"))
     :diminish (copilot-mode "✈")
     :config
+    (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
+    (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
     (define-prefix-command 'aspiwack/copilot-map nil "copilot")
     (define-key aspiwack/boon-custom-map "k" aspiwack/copilot-map)
     (define-key aspiwack/copilot-map "c" 'copilot-complete)
