@@ -10,7 +10,7 @@
 
 
 let
-  my-emacs = pkgs.emacs30-pgtk;
+  my-emacs = pkgs.emacs29-pgtk;
   scripts = rec {
       ghci-with = pkgs.writeShellScriptBin "ghciwith" ''
           nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [$*])" --run ghci
