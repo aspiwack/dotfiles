@@ -1413,7 +1413,7 @@ because Typst doesn't parse well with regexps.
     :straight (:type git :host github :repo "Ziqi-Yang/typst-mode.el")
     :commands typst-mode
     :hook
-    ((typst-mode . lsp-deferred)))
+    ((typst-mode . eglot-ensure)))
 #+end_src
 
 *** Ott
@@ -1449,81 +1449,24 @@ References:
 
 *** Language server protocol
 
+I used to use [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]]. But it just tries to take over Emacs too
+much. It can hurt productivity as Emacs doesn't always behave
+well. These days, Emacs comes with [[https://github.com/joaotavora/eglot][Eglot]] built in, which is more
+lightweight.
+
 #+begin_src emacs-lisp
-  ;; See https://www.youtube.com/watch?v=E-NAM9U5JYE
-  (defun efs/lsp-mode-setup ()
-    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-    (lsp-headerline-breadcrumb-mode))
-
-  ;; I don't really make use of `lsp-keymap-prefix', since I really only
-  ;; want the lsp menu to trigger in the command state. However, it is
-  ;; used by the which-key integration to edit the menu. So, this
-  ;; function manipulated the `lsp-keymap-prefix' to do the appropriate
-  ;; which-key stuff.
-  (defun aspiwack/lsp-which-key ()
-    ;; Where I want the actual keymap to be located
-    (setq lsp-keymap-prefix "ml")
-    (lsp-enable-which-key-integration)
-    (setq lsp-keymap-prefix "C-c l"))
-
-  (use-package lsp-mode
-      :ensure t
-      :hook ( ;; Modes to enable lsp on
-              (haskell-mode . lsp-deferred)
-              ;; if you want which-key integration
-              (lsp-mode . lsp-enable-which-key-integration)
-              (lsp-mode . aspiwack/lsp-which-key)
-              )
-      :commands (lsp lsp-deferred)
-      :hook (lsp-mode . efs/lsp-mode-setup)
-      :init
-      ;; set prefix for lsp-command-map
-      (setq lsp-keymap-prefix "C-c l")
-      :config
-      ; Set the lsp keymap
-      ; The following should be `:bind-keymap'. But for some reason
-      ; `:bind-keymap' doesn't seem happy with the `:map' modifier. See
-      ; https://github.com/jwiegley/use-package/issues/736
-      (define-key aspiwack/boon-custom-map "l" lsp-command-map)
-      ; Config for Typst
-      (add-to-list 'lsp-language-id-configuration
-                   '("\\.typ$" . "typst"))
-      (lsp-register-client
-       (make-lsp-client :new-connection (lsp-stdio-connection "typst-lsp")
-                        :activation-fn (lsp-activate-on "typst")
-                        :server-id 'typst-lsp))
-      ; Config for Nickel
-      (add-to-list 'lsp-language-id-configuration '(nickel-mode . "nickel"))
-      (lsp-register-client (make-lsp-client
-                            :new-connection (lsp-stdio-connection "nls")
-                            :activation-fn (lsp-activate-on "nickel")
-                            :server-id 'nls
-                            :major-modes 'nickel-mode))
-      (add-hook 'nickel-mode-hook 'lsp-deferred))
-
-  ;; optionally
-  (use-package lsp-ui
-      :ensure t
-      :hook (lsp-mode . lsp-ui-mode)
-      :commands lsp-ui-mode
-  )
-
-  ;; if you are helm user
-  (use-package helm-lsp
-    :commands helm-lsp-workspace-symbol)
-
-  (use-package lsp-treemacs
+  ;; This lets Flycheck see Eglot's error. Otherwise only Flymake works.
+  ;; It doesn't make a ton of difference, I'm just used to Flycheck
+  ;; these days.
+  (use-package flycheck-eglot
     :ensure t
-    :commands (lsp-treemacs-symbols)
-    :after lsp)
+    :after (flycheck eglot)
+    :config
+    (global-flycheck-eglot-mode 1))
 #+end_src
 
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package company-tabnine
-  ;;   :ensure t
-  ;;   :config
-  ;;   (aspiwack/add-company-backend 'company-tabnine))
-#+END_SRC
+**** TODO Configure Nickel and Typst servers for Eglot
+I may want to check the commit where I wrote those line for some inspiration
 
 *** AI autocompletion
 
@@ -1580,7 +1523,7 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-
   (use-package tuareg
     :ensure t
     :hook
-    ((tuareg-mode . lsp-deferred)))
+    ((tuareg-mode . eglot-ensure)))
 #+end_src
 
 Some support for the [[https://dune.build/][Dune]] build system
@@ -1695,15 +1638,9 @@ The [[https://www.haskell.org/][Haskell]] programming language.
       (hindent-mode)
       )
     (add-hook 'haskell-mode-hook 'haskell-hook)
+    :hook
+    ((haskell-mode . eglot-ensure))
     :defer)
-
-  (use-package lsp-haskell
-   :ensure t
-   :config
-   (setq lsp-haskell-process-path-hie "haskell-language-server-wrapper")
-   ;; Comment/uncomment this line to see interactions between lsp client/server.
-   ;;(setq lsp-log-io t)
-  )
 #+END_SRC
 
 This is a more generic purpose package (split off Dante) to repair
@@ -1755,7 +1692,7 @@ Miscellaneous programming language (or adjacent) modes
   (use-package nickel-mode
     :ensure t
     :hook
-    ((nickel-mode . lsp-deferred)))
+    ((nickel-mode . eglot-ensure)))
 
 #+end_src
 
