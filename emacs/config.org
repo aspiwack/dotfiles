@@ -906,35 +906,6 @@ typing errors inline.
     :ensure t)
 #+END_SRC
 
-*** Zeal at point
-
-[[https://zealdocs.org/][Zeal]] is a API-documentation browser for Linux (Mac users can use the
-original, vastly superior, but apparently non-free application [[https://kapeli.com/dash][Dash]],
-the Windows port [[http://velocity.silverlakesoftware.com/][Velocity]] looks pretty nice too).
-
-The [[https://github.com/jinzhu/zeal-at-point][zeal-at-point]] Emacs package searches and opens Zeal for the
-documentation of the symbol under the cursor. Users of Dash and
-Velocity will need the respective packages.
-
-(I have this installed, but to be honest, I don't currently used it,
-and it may be rendered quite a bit less useful with lsp support being
-rolled out everywhere).
-#+BEGIN_SRC emacs-lisp
-  (use-package zeal-at-point
-    :ensure t
-    :bind
-    ; There is no default bindings, `C-c d` is the binding suggested by
-    ; the documentation.
-    ("C-c d" . zeal-at-point)
-    :config
-    ; searches for a symbol only in the doc corresponding to the
-    ; language being edited.
-    (add-to-list 'zeal-at-point-mode-alist '(tuareg-mode . "ocaml"))
-    (add-to-list 'zeal-at-point-mode-alist '(haskell-mode . "haskell")))
-#+END_SRC
-
-**** TODO Make Zeal a requirement
-
 ** Git
 
 [[http://magit.vc/][Magit]] is downright the best tool I've ever used to control git
