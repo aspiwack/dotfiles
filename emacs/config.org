@@ -1455,15 +1455,29 @@ well. These days, Emacs comes with [[https://github.com/joaotavora/eglot][Eglot]
 lightweight.
 
 #+begin_src emacs-lisp
-  ;; This lets Flycheck see Eglot's error. Otherwise only Flymake works.
-  ;; It doesn't make a ton of difference, I'm just used to Flycheck
-  ;; these days.
-  (use-package flycheck-eglot
-    :ensure t
-    :after (flycheck eglot)
-    :config
-    (global-flycheck-eglot-mode 1))
+    ;; This lets Flycheck see Eglot's error. Otherwise only Flymake works.
+    ;; It doesn't make a ton of difference, I'm just used to Flycheck
+    ;; these days.
+    (use-package flycheck-eglot
+      :ensure t
+      :after (flycheck eglot)
+      :config
+      (global-flycheck-eglot-mode 1))
+
+    ;; Adds breadcrumbs header.
+    (use-package breadcrumb
+      :ensure t
+      :defer 2)
 #+end_src
+
+**** TODO Eglot configuration
+
+
+***** TODO setup a keymap with
+- ~eldoc-doc-buffer~ (display full documentation)
+- ~eglot-format~ (format selection or buffer)
+- ~eglot-rename~ (rename symbol)
+- ~eglot-code-actions~ (list and pick code actions)
 
 **** TODO Configure Nickel and Typst servers for Eglot
 I may want to check the commit where I wrote those line for some inspiration
