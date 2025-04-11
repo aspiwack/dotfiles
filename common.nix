@@ -197,6 +197,7 @@ in
         pull.rebase = true;
         rerere.enabled = "true";
         rerere.autoupdate = "true";
+        github.user = "aspiwack";
       };
     lfs.enable = true;
 
