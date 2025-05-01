@@ -72,6 +72,12 @@ in
 
       ## Images stuff
       pkgs.gimp
+      pkgs.digikam # photo manager
+
+      ## Video stuff
+      pkgs.kdePackages.kdenlive
+
+      pkgs.libreoffice
 
       ## Sound stuff
       pkgs.qpwgraph
@@ -87,9 +93,15 @@ in
           (dicts: with dicts; [ en en-computers en-science es fr ]))
 
       pkgs.nix-output-monitor
+      pkgs.nix-tree
+
       pkgs.nodePackages.emoj
 
       pkgs.chrysalis
+
+      pkgs.asdf-vm # package manager, used for steam plugins
+
+      pkgs.deluge
 
       # Scripts
       scripts.ghci-with
