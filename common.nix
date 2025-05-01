@@ -72,7 +72,7 @@ in
 
       ## Images stuff
       pkgs.gimp
-      pkgs.digikam # photo manager
+      pkgs.shotwell # photo manager
 
       ## Video stuff
       pkgs.kdePackages.kdenlive
