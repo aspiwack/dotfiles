@@ -18,11 +18,6 @@ templates:
 # provided by Nix anyway.
 recommend-stack-upgrade: false
 
-# Use a template that provides Stack via Nix. See
-# https://www.tweag.io/blog/2022-06-02-haskell-stack-nix-shell/ for
-# the challenges
-default-template: "github:tweag/nix-integration"
-
 # The following parameter specifies stack's output styles; STYLES is a
 # colon-delimited sequence of key=value, where 'key' is a style name and
 # 'value' is a semicolon-delimited list of 'ANSI' SGR (Select Graphic
