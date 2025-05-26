@@ -64,6 +64,8 @@ in
   home.packages =
     [ pkgs.cachix
 
+      pkgs.aider-chat
+
       pkgs.evince
       pkgs.eog
       pkgs.nautilus

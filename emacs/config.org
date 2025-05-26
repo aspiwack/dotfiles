@@ -906,6 +906,20 @@ typing errors inline.
     :ensure t)
 #+END_SRC
 
+*** Aidermacs
+[[https://github.com/MatthewZMD/aidermacs][Aidermacs]] is an interface to LLM models (via the command-line tool
+[[https://aider.chat/][Aider]], reading Aider's documentation is probably necessary to get
+started)
+#+begin_src emacs-lisp
+  (use-package aidermacs
+    :ensure t
+    :config
+    (define-key aspiwack/boon-custom-map "o" 'aidermacs-transient-menu)
+    :custom
+    ; See the Configuration section below
+    (aidermacs-use-architect-mode t)
+    (aidermacs-default-model "sonnet"))
+#+end_src
 ** Git
 
 [[http://magit.vc/][Magit]] is downright the best tool I've ever used to control git
