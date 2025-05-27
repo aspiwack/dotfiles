@@ -263,6 +263,8 @@ called via ~use-package~ with the ~:diminish~ keyword.
   (set-face-attribute 'default nil :family "DejaVu Sans Mono" :height 98)
   (set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono" :inherit 'default :height 0.77)
   (set-face-attribute 'variable-pitch nil :family "Linux Biolinum O" :inherit 'default :height 1.3)
+  (defface aspiwack/programming '((t :inherit variable-pitch-face)) "Variable pitch font for programming")
+  (set-face-attribute 'aspiwack/programming nil :family "DejaVu Sans" :inherit 'default :height 1.05)
 #+end_src
 
 Note for debugging: calling ~C-u C-x =~ gives a lot of information at
@@ -1454,12 +1456,39 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
     :hook
     ; Get flyspell to spell-check the comments
     ((prog-mode . flyspell-prog-mode)
+     (prog-mode . (lambda () (buffer-face-set 'aspiwack/programming)))
      (prog-mode . aspiwack/fill-in-comments))
     )
 #+END_SRC
 
 References:
 - I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stackoverflow]].
+
+*** Elastic tabstops
+
+[[https://github.com/jyp/elastic-modes][Elastic-modes]] helps support programming with proportional fonts in two
+ways.
+- It changes the size of initial spaces on a line to match the
+  character on top of it. So that indentation looks the same with
+  proportional and monospace fonts.
+- It implements [[https://nick-gravgaard.com/elastic-tabstops/][elastic tabstops]] for vertical alignment (which is a
+  better way to align vertically even with monospace fonts).
+
+See [[http://jyp.github.io/posts/variable-pitch.html][Jean-Philippe Bernardy's blog post]].
+
+#+begin_src elisp
+  (use-package elastic-indent
+    :straight (:type git :host github :repo "jyp/elastic-modes")
+    :hook
+    ((prog-mode . elastic-indent-mode))
+    )
+
+  (use-package elastic-table
+    :straight (:type git :host github :repo "jyp/elastic-modes")
+    :hook
+    ((prog-mode . elastic-table-mode))
+    )
+#+end_src
 
 *** Language server protocol
 
