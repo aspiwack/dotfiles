@@ -576,44 +576,44 @@ work better.
 
 ** Editing
 
-*** Company
+*** Completion
 
-The [[https://company-mode.github.io/][company mode]] is a completion framework. I use it by default in my
-Emacs buffers.
-#+BEGIN_SRC emacs-lisp
-  (use-package company
+[[https://github.com/minad/corfu][Corfu]] is a lightweight completion-at-point extension for Emacs.
+
+#+begin_src emacs-lisp
+  (use-package corfu
     :ensure t
-    ; since company-mode is started globally, I don't need the mode line
-    ; showing that it's up. To avoid clutter, I deactivate it.
-    :diminish company-mode
-    ; company-mode is only activated due to `global-company-mode', so it
-    ; needs to be loaded. However, it is not critical for basic emacs
-    ; functionalities, so I delay its loading by a few seconds, to make
-    ; emacs more responsive.
-    :defer 2
+    :init
+    (global-corfu-mode)
     :config
-      (global-company-mode)
-    :custom
-      (company-minimum-prefix-length 1)
-      ; wait for the typing to be idle for 0.0s before suggesting
-      ; completions (default is 0.5).
-      (company-idle-delay 0.0))
+    (setq corfu-auto t
+         corfu-auto-delay 0
+         corfu-auto-prefix 2))
+#+end_src
 
-  ;; Adds icons and eye-candy
-  (use-package company-box
+[[https://github.com/minad/cape][Cape]] is a complement to Corfu (or really any completion engine) adding
+completion functions. It also provides a way to avoid caching LSP
+completions since these are regenerated all the time.
+
+#+begin_src emacs-lisp
+  (use-package cape
     :ensure t
-    :diminish company-box-mode
-    :hook (company-mode . company-box-mode))
-#+END_SRC
+    :init
+    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+    (add-hook 'completion-at-point-functions #'cape-file)
+    (add-hook 'completion-at-point-functions #'cape-emoji)
+    (add-hook 'completion-at-point-functions #'cape-tex))
+#+end_src
 
-Company has a few backends by default, but it is mostly meant to be
-extended. Many other package bring their extensions, but they must be
-registered after Company has started. I define a function to abstract
-this pattern.
-#+BEGIN_SRC emacs-lisp
-  (defun aspiwack/add-company-backend (backend)
-    (with-eval-after-load 'company (add-to-list 'company-backends backend)))
-#+END_SRC
+[[https://github.com/rainstormstudio/nerd-icons-completion][Nerd-icons-completion]] adds icons from Nerdfonts to the completion
+suggestions
+
+#+begin_src emacs-lisp
+  (use-package nerd-icons-completion
+    :ensure t
+    :config
+    (nerd-icons-completion-mode))
+#+end_src
 
 *** Swiper search
 
@@ -1388,20 +1388,6 @@ sources of Melt.
 *** Latex
 
 #+BEGIN_SRC emacs-lisp
-  (use-package company-math
-    :ensure t
-    :defer 2
-    :init
-    ;; local configuration for TeX modes
-    (defun company-math-latex-mode ()
-      ; Should be local to tex files. At least until I use company-math
-      ; to input unicode. (see variable `company-math--symbols')
-      (aspiwack/add-company-backend
-       '(company-math-symbols-latex company-latex-commands company-math-symbols-unicode))
-      ))
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
   (use-package tex
     :ensure auctex
     :defer ; the tex mode is, by default, in `automode-alist' auctex
@@ -1410,9 +1396,7 @@ sources of Melt.
     :config
     ; Help input and navigate references and such
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq reftex-plug-into-AUCTeX t)
-    ; Completion for math symbol, unicode symbols and latex commands
-    (add-hook 'LaTeX-mode-hook 'company-math-latex-mode))
+    (setq reftex-plug-into-AUCTeX t))
 #+END_SRC
 
 *** Typst
@@ -1630,39 +1614,14 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-c
 
 *** Coq
 
-The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]]
-and [[https://github.com/cpitclaudel/company-coq][company-coq]]. (this is quite a bit out of date)
+The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]].
 #+BEGIN_SRC emacs-lisp
   ;; ProofGeneral generic mode
   (use-package proof-general
     :ensure t)
-
-  ;; Company-coq
-  (use-package company-coq
-    :ensure t
-    ; Don't actually load the package until company-coq is called by
-    ; Proof general. As it happens, just loading company-coq is rather
-    ; slow (~0.15s last time I checked)
-    :commands company-coq-initialize
-    :init
-    ; Load company-coq when opening Coq files
-    (add-hook 'coq-mode-hook #'company-coq-initialize))
-
-  ;; Coq default directory
-  ; (setq coq-project-find-file t)
 #+END_SRC
 
-**** TODO Configure with use-package
-
 **** TODO Describe configuration
-
-**** TODO Split into sections
-
-**** TODO Update Proof general to latest version
-
-***** DONE Locally
-
-***** TODO When available, download with packages.el
 
 **** TODO Link to Quail configuration
 
@@ -2167,20 +2126,6 @@ input method called /math/.
     )
 #+END_SRC
 
-**** TODO Consider replacing quail with company-math
-See https://github.com/vspinu/company-math
-Company-math may be extensible by ~setq~-ing the "constant" ~company-math--symbols~.
-
-** Emojis
-
-[[https://github.com/dunn/company-emoji][company-emoji]] is a company backend to input Unicode emojis
-#+BEGIN_SRC emacs-lisp
-  (use-package company-emoji
-    :ensure t
-    :defer 2
-    :config
-    (aspiwack/add-company-backend 'company-emoji))
-#+END_SRC
 
 ** COMMENT Automatically upgrade packages
 
