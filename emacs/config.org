@@ -1825,9 +1825,10 @@ Dired is Emacs's built-in file manager.
 Add icons
 
 #+begin_src emacs-lisp
-  (use-package all-the-icons-dired
+  (use-package nerd-icons-dired
     :ensure t
-    :hook (dired-mode . all-the-icons-dired-mode))
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
 ** Running command
