@@ -243,22 +243,13 @@ in
 
   #### Emacs
 
-  programs.emacs =
+  programs.doom-emacs =
     { enable = true;
-      package = my-emacs;
+      doomDir = ./emacs/files;
+      doomLocalDir = "${config.xdg.configHome}/doom";
+      emacs = my-emacs;
       extraPackages = epkgs: (with epkgs; [melpaPackages.vterm copilot]);
-    };
-
-  home.file.".emacs.d/init.el".source = emacs/bootstrap/init.el;
-  home.file.".emacs.d/lisp/config.org" =
-    { source = emacs/config.org;
-      # The `config.el` produced by loading `config.org` in the Emacs
-      # configuration, is not always refreshed when `config.org`
-      # changes. So, let me delete the `config.el` file manually when
-      # `config.org` is updated.
-      onChange = ''
-        rm -f $HOME/.emacs.d/lisp/config.el
-      '';
+      tangleArgs = "--all config.org";
     };
 
   #### Papis

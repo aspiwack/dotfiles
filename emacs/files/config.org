@@ -62,41 +62,11 @@ your configuration and what is generated. It also makes it really hard
 to synchronise between computer or to check in a version control
 system. Your Emacs configuration is precious: keep it clean and tidy.
 
-* Use-package
+* COMMENT Use-package
 
 The [[https://github.com/jwiegley/use-package][~use-package~]] macro helps structure Emacs configurations by
 arranging and scoping the configuration by package.
 
-** Setting up Melpa
-
-Melpa is a package repository of the ~package.el~ package manager
-which is distributed with Emacs. The most robust way to use Melpa is
-via ~use-package~. But in case one wants to try a package without
-committing to it, here is a short cheat-sheet:
-- Open package list with ~M-x package-list-packages~.
-- Commands inside the list: *i* (install), *U* (upgrade all), *x*
-  (execute requests).
-- I used to use [[Automatically%20upgrade%20packages][~auto-package-update.el~]] to periodically update
-  packages.  This was in a time when the packages I used changed
-  often. Nowadays I don't need this, so it's not worth the occasional
-  breakage. To upgrade packages: ~M-x package-list-packages~ then ~U~ then
-  ~x~.
-
-The following sets up ~package.el~ to use the Melpa repository and
-loads the installed packages
-#+BEGIN_SRC emacs-lisp
-  (require 'package)
-  (setq package-enable-at-startup nil)
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/"))
-  (add-to-list 'package-archives
-               '("melpa-stable" . "http://stable.melpa.org/packages/"))
-  ; `package-initialize` must be called in the configuration otherwise
-  ; emacs calls it at startup
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
-#+END_SRC
 
 ** Bootstrapping use-package
 
@@ -111,50 +81,7 @@ ourselves started:
   (setq use-package-verbose t)
 #+END_SRC
 
-** Quelpa
 
-[[https://github.com/quelpa/quelpa][Quelpa]] is a tool to install non-melpa package from source.
-
-#+begin_src emacs-lisp
-  (use-package quelpa
-    :ensure t
-    :init
-    (setq quelpa-update-melpa-p nil))
-#+end_src
-
-Integrate Quelpa with use-package ([[https://github.com/quelpa/quelpa-use-package][source]])
-
-#+begin_src emacs-lisp
-  (quelpa
-   '(quelpa-use-package
-     :fetcher git
-     :url "https://github.com/quelpa/quelpa-use-package.git"))
-  (require 'quelpa-use-package)
-#+end_src
-
-** Bootstrapping straight.el
-
-[[https://github.com/radian-software/straight.el][Straight.el]] is an alternative package manager for Emacs. This code
-sets it up. I'm making very little use of it right now. But it does
-understand Melpa and all. I could replace pretty much all of
-packages.el with it. Not sure what the trade-offs are, except avoiding
-having two different package managers (it may also replace Quelpa? Not
-sure).
-
-#+begin_src emacs-lisp
-(defvar bootstrap-version)
-(let ((bootstrap-file
-      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-        'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-#+end_src
 
 * TODO Preliminaries
 
@@ -343,12 +270,14 @@ easily change between available themes.
 #+BEGIN_SRC emacs-lisp
   (defun dark-theme ()
     (interactive)
-    (switch-theme 'doom-dracula))
-
+    ;(switch-theme 'doom-dracula)
+    )
+    
   (defun light-theme ()
     (interactive)
-    (switch-theme 'solo-jazz))
-
+    ;(switch-theme 'solo-jazz)
+    )
+    
   ;; See https://stackoverflow.com/questions/22866733/emacs-disable-theme-after-loading-a-different-one-themes-conflict
   (defun aspiwack/disable-all-themes ()
     "Disable all active themes."
@@ -576,7 +505,7 @@ work better.
 
 ** Editing
 
-*** Completion
+*** COMMENT Completion
 
 [[https://github.com/minad/corfu][Corfu]] is a lightweight completion-at-point extension for Emacs.
 
@@ -626,7 +555,7 @@ suggestions
      ("C-s" . swiper)))
 #+END_SRC
 
-*** Helm
+*** COMMENT Helm
 
 [[https://emacs-helm.github.io/helm/][Helm]] is a powerful "narrowing" mode. It helps searching and selecting
 in files and lists (/e.g./ find-file).
@@ -679,8 +608,6 @@ helm.
     :commands helm-rg
     :ensure t)
 #+END_SRC
-
-**** TODO Add ~ag~ to requirements
 
 *** Counsel
 
@@ -741,7 +668,7 @@ colours so that it is easier to spot pairs of matching delimiters.
 
 **** TODO Improve colour scheme
 
-*** Spell checking
+*** COMMENT Spell checking
 The [[http://www-sop.inria.fr/members/Manuel.Serrano/flyspell/flyspell.html][Flyspell]] mode spell checks text (or just comments for programming
 languages with the ~flyspell-prog-mode~)
 #+BEGIN_SRC emacs-lisp
@@ -773,12 +700,12 @@ completion framework if you'd rather use Ivy or something).
     :after flyspell
     :commands (flyspell-correct-previous flyspell-correct-next))
 
-  (use-package flyspell-correct-helm
-    :after flyspell-correct)
+  ;; (use-package flyspell-correct-helm
+  ;;   :after flyspell-correct)
 #+end_src
 
 
-*** White-space butler
+*** COMMENT White-space butler
 
 The [[https://github.com/lewang/ws-butler][~ws-butler~ mode]] erases trailing white spaces which would pollute
 your diffs in version control systems. But only on those lines you
@@ -794,7 +721,7 @@ behind.
 
 I run ~ws-butler~ in all my buffers.
 
-*** hungry-delete-mode
+*** COMMENT hungry-delete-mode
 
 [[https://github.com/nflath/hungry-delete/][Hungry-delete mode]] deletes consecutive white-spaces as if they were a
 single character (See also
@@ -807,7 +734,7 @@ http://endlessparentheses.com/hungry-delete-mode.html).
   ;;   (global-hungry-delete-mode)
   ;;   :diminish hungry-delete-mode)
 #+END_SRC
-*** Yasnippet
+*** COMMENT Yasnippet
 
 [[https://github.com/joaotavora/yasnippet][Yasnippet]] inserts templates (with holes which can be navigated with
 tabs). I'm experimenting with it, I can't recommend it just yet.
@@ -868,10 +795,9 @@ being conservative and define most boon-type bindings here.
     ;; it does work just fine This whole section should be moved to a
     ;; `:bind' (with `:map' sections). But I'm lazy right now.
     (define-key boon-moves-map "e " 'swiper)
-    (define-key boon-moves-map "eg" 'helm-projectile-rg)
-    (define-key boon-moves-map "ey" 'helm-show-kill-ring)
-    (define-key boon-x-map "f" 'helm-find-files)
-    (define-key boon-x-map "x" 'helm-M-x)
+    ;; (define-key boon-moves-map "eg" 'helm-projectile-rg)
+    ;; (define-key boon-moves-map "ey" 'helm-show-kill-ring)
+    (define-key boon-x-map "f" 'find-file)
     (define-key boon-moves-map "wj" 'flyspell-correct-previous)
     (define-key boon-moves-map "ej" 'flyspell-correct-next)
     (define-key boon-goto-map "d" 'dired-jump)
@@ -899,7 +825,7 @@ being conservative and define most boon-type bindings here.
 
 ** Programming
 
-*** Flycheck
+*** COMMENT Flycheck
 
 [[http://www.flycheck.org/][Flycheck]] continuously compiles a project and reports compilation and
 typing errors inline.
@@ -922,7 +848,7 @@ started)
     (aidermacs-use-architect-mode t)
     (aidermacs-default-model "sonnet"))
 #+end_src
-** Git
+** COMMENT Git
 
 [[http://magit.vc/][Magit]] is downright the best tool I've ever used to control git
 repositories. And I've used quite a few.
@@ -1083,8 +1009,6 @@ C projects).
                 (git (aspiwack/git-repo-name project-root))
                 (otherwise (projectile-default-project-name project-root))))))
     ; replaces ido-based completion for projectile command with
-    ; helm-based ones (see `helm-projectile').
-    (helm-projectile-on)
     :defer 0 ; loads immediately, overrides the autoloads.
     )
 #+END_SRC
@@ -1385,7 +1309,7 @@ sources of Melt.
 
 ***** TODO Links to some of my articles written with Melt
 
-*** Latex
+*** COMMENT Latex
 
 #+BEGIN_SRC emacs-lisp
   (use-package tex
@@ -1399,7 +1323,7 @@ sources of Melt.
     (setq reftex-plug-into-AUCTeX t))
 #+END_SRC
 
-*** Typst
+*** COMMENT Typst
 [[https://typst.app/][Typst]] is a new authoring format (at time of writing [2023-06-05 lun.],
 it's still quite fresh). Aims roughly at the same market as Latex, but
 is a better designed language. It's still new, I don't know whether
@@ -1410,7 +1334,6 @@ because Typst doesn't parse well with regexps.
 
 #+begin_src emacs-lisp
   (use-package typst-mode
-    :straight (:type git :host github :repo "Ziqi-Yang/typst-mode.el")
     :commands typst-mode
     :hook
     ((typst-mode . eglot-ensure)))
@@ -1423,8 +1346,7 @@ main use of it is in conjunction to Latex for authoring purposes
 (everything is macros, and it's much more readable), hence its being here.
 
 #+begin_src emacs-lisp
-  (use-package ott-mode
-    :straight (:type git :host github :repo "ott-lang/ott" :files ("emacs/*")))
+  (use-package ott-mode)
 #+end_src
 ** Programming languages
 
@@ -1440,7 +1362,7 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
     :hook
     ; Get flyspell to spell-check the comments
     ((prog-mode . flyspell-prog-mode)
-     (prog-mode . (lambda () (buffer-face-set 'aspiwack/programming)))
+     ; (prog-mode . (lambda () (buffer-face-set 'aspiwack/programming)))
      (prog-mode . aspiwack/fill-in-comments))
     )
 #+END_SRC
@@ -1448,7 +1370,7 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
 References:
 - I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stackoverflow]].
 
-*** Elastic tabstops
+*** COMMENT Elastic tabstops
 
 [[https://github.com/jyp/elastic-modes][Elastic-modes]] helps support programming with proportional fonts in two
 ways.
@@ -1462,13 +1384,11 @@ See [[http://jyp.github.io/posts/variable-pitch.html][Jean-Philippe Bernardy's b
 
 #+begin_src elisp
   (use-package elastic-indent
-    :straight (:type git :host github :repo "jyp/elastic-modes")
     :hook
     ((prog-mode . elastic-indent-mode))
     )
 
   (use-package elastic-table
-    :straight (:type git :host github :repo "jyp/elastic-modes")
     :hook
     ((prog-mode . elastic-table-mode))
     )
@@ -1491,15 +1411,6 @@ lightweight.
     (define-key aspiwack/eglot-command-map "r" 'eglot-rename)
     (define-key aspiwack/eglot-command-map "a" 'eglot-code-actions)
     )
-
-  ;; This lets Flycheck see Eglot's error. Otherwise only Flymake works.
-  ;; It doesn't make a ton of difference, I'm just used to Flycheck
-  ;; these days.
-  (use-package flycheck-eglot
-    :ensure t
-    :after (flycheck eglot)
-    :config
-    (global-flycheck-eglot-mode 1))
 
   ;; Adds breadcrumbs header.
   (use-package breadcrumb
@@ -1551,7 +1462,7 @@ Richer (and prettier) help for Emacs functions can be provided by [[https://gith
     ([remap describe-variable] . helpful-variable))
 #+end_src
 
-*** Nix
+*** COMMENT Nix
 
 The [[http://nixos.org/nix/][Nix]] language and package manager.
 #+BEGIN_SRC emacs-lisp
@@ -1559,7 +1470,7 @@ The [[http://nixos.org/nix/][Nix]] language and package manager.
     :ensure t)
 #+END_SRC
 
-*** Ocaml
+*** COMMENT Ocaml
 
 The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-lsp][ocaml-lsp-server]]
 
@@ -1612,13 +1523,13 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-c
   (setq merlin-command 'opam)
 #+END_SRC
 
-*** Coq
+*** COMMENT Coq
 
 The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]].
 #+BEGIN_SRC emacs-lisp
   ;; ProofGeneral generic mode
-  (use-package proof-general
-    :ensure t)
+  ;; (use-package proof-general
+  ;;  :ensure t)
 #+END_SRC
 
 **** TODO Describe configuration
@@ -1628,9 +1539,9 @@ The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, wit
 **** TODO Steal ideas from this config?
 http://endlessparentheses.com/proof-general-configuration-for-the-coq-software-foundations-tutorial.html
 
-*** Haskell
+*** COMMENT Haskell
 
-The [[https://www.haskell.org/][Haskell]] programming language.
+The [[https:y//www.haskell.org/][Haskell]] programming language.
 #+BEGIN_SRC emacs-lisp
   ;;;; hindent: indentation mode for Haskell
   (use-package hindent
@@ -2182,7 +2093,7 @@ See the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Noti
 
 * Things that must be late
 
-** Direnv
+** COMMENT Direnv
 
 [[https://github.com/purcell/envrc][Envrc]] is a buffer-local mode for [[https://direnv.net/][direnv]]. When working on several
 project in the same Emacs session, the direnv environment of each

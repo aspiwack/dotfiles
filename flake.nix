@@ -9,9 +9,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     ghostty.url = "github:ghostty-org/ghostty";
+    doom-emacs = {
+      url = "github:marienz/nix-doom-emacs-unstraightened";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ghostty }:
+  outputs = { self, nixpkgs, home-manager, ghostty, doom-emacs }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
@@ -23,6 +27,7 @@
         # the path to your home.nix.
         modules = [
           ./nixos.nix
+          doom-emacs.homeModule
           { home.packages = [ghostty.packages.x86_64-linux.default]; }
         ];
 

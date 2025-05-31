@@ -10,7 +10,10 @@ in
 
 
 {
-  imports = [ ./common.nix ./dropbox.nix ];
+  imports = [
+    ./common.nix
+    ./dropbox.nix
+  ];
 
   # nixpkgs.overlays = [ fixed-dropbox ];
 
