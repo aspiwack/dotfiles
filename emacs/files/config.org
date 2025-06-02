@@ -795,7 +795,7 @@ being conservative and define most boon-type bindings here.
     ;; it does work just fine This whole section should be moved to a
     ;; `:bind' (with `:map' sections). But I'm lazy right now.
     (define-key boon-moves-map "e " 'swiper)
-    ;; (define-key boon-moves-map "eg" 'helm-projectile-rg)
+    (define-key boon-moves-map "eg" 'consult-ripgrep)
     ;; (define-key boon-moves-map "ey" 'helm-show-kill-ring)
     (define-key boon-x-map "f" 'find-file)
     (define-key boon-moves-map "wj" 'flyspell-correct-previous)
