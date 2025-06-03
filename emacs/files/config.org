@@ -315,100 +315,6 @@ during the day, I'm moving on.
     (interactive)
     (switch-theme 'adwaita))
 #+end_src
-*** Powerline
-
- [[https://github.com/milkypostman/powerline][Powerline]] is a customisation engine for the powerline. I used to use it with
- boon in order to display colours for different modes. (This
- configuration currently uses ~doom-modeline~)
- #+BEGIN_SRC emacs-lisp
-   (use-package powerline
-     :config
-     ; correct an illegible font colour in the light mode
-     (face-spec-set 'powerline-active1 '((((background light)) :foreground "white smoke"))))
- #+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (defun aspiwack/boon-powerline-theme ()
-    "Set up a powerline based on powerline-default-theme which also displays boon-state."
-    (interactive)
-    (setq-default mode-line-format
-                  '("%e"
-                    (:eval
-                     (let* ((active (powerline-selected-window-active))
-                            (mode-line (if active 'mode-line 'mode-line-inactive))
-                            (face0 (if active (boon-state-face) 'mode-line-inactive))
-                            (face1 (if active 'powerline-active1 'powerline-inactive1))
-                            (face2 (if active 'powerline-active2 'powerline-inactive2))
-                            (separator-left (intern (format "powerline-%s-%s"
-                                                            powerline-default-separator
-                                                            (car powerline-default-separator-dir))))
-                            (separator-right (intern (format "powerline-%s-%s"
-                                                             powerline-default-separator
-                                                                (cdr powerline-default-separator-dir))))
-                            (boon (when (bound-and-true-p boon-mode)
-                                    (list
-                                     (powerline-raw " " face0)
-                                     (powerline-raw (boon-state-string) face0 'r)
-                                     (funcall separator-left face0 mode-line)
-                                     )))
-                            (lhs (list
-                                       (powerline-raw (if (buffer-modified-p) "*" "-" ) mode-line 'l)
-                                       (powerline-raw mode-line-mule-info mode-line)
-                                       (powerline-buffer-id mode-line 'l)
-                                       (when (and (boundp 'which-func-mode) which-func-mode)
-                                         (powerline-raw which-func-format mode-line 'l))
-                                       (powerline-raw " " mode-line)
-                                       (funcall separator-left mode-line face1)
-                                       (when (boundp 'erc-modified-channels-object)
-                                         (powerline-raw erc-modified-channels-object face1 'l))
-                                       (powerline-major-mode face1 'l)
-                                       (powerline-process face1)
-                                       (powerline-minor-modes face1 'l)
-                                       (powerline-narrow face1 'l)
-                                       (powerline-raw " " face1)
-                                       (funcall separator-left face1 face2)
-                                       (powerline-vc face2 'r)))
-                            (rhs (list (powerline-raw global-mode-string face2 'r)
-                                       (funcall separator-right face2 face1)
-                                       (powerline-raw "%l" face1 'l)
-                                       (powerline-raw ":" face1)
-                                       (powerline-raw "%c" face1 'r)
-                                       (funcall separator-right face1 mode-line)
-                                       (powerline-raw " " mode-line)
-                                       (powerline-raw "%p" mode-line)
-                                       (powerline-raw " " mode-line)
-                                       (powerline-buffer-size mode-line nil)
-                                       (powerline-raw " " mode-line)
-                                       (powerline-hud mode-line face1)
-                                       )))
-                       (concat (powerline-render boon)
-                               (powerline-render lhs)
-                               (powerline-fill face2 (powerline-width rhs))
-                               (powerline-render rhs)))))))
-#+END_SRC
-
-*** Doom-modeline
-
-The [[https://seagle0128.github.io/doom-modeline][doom-modeline]] is a clean modeline which seems to be inspired by
-Vs Code. It's used by default in Doom Emacs. The is a one-time setup
-thing to do, which is to run ~M-x all-the-icons-install-fonts~ (does
-it work on Nixos?), otherwise many icons won't show.
-
-#+begin_src emacs-lisp
-  (use-package doom-modeline
-    :config
-    ;; configures modal state indicator's colours
-    (face-spec-set 'doom-modeline-evil-insert-state `((((background light)) :foreground "indian red") (((background dark)) :foreground "red")))
-    (face-spec-set 'doom-modeline-evil-normal-state `((((background light)) :foreground "dodger blue") (((background dark)) :foreground "DeepSkyBlue")))
-    (face-spec-set 'doom-modeline-evil-emacs-state `((((background light)) :foreground "spring green") (((background dark)) :foreground "green")))
-    (doom-modeline-mode 1)
-    :custom
-     ((doom-modeline-height 15 "Reduces the height of the modeline")
-      (doom-modeline-minor-modes t "Display the minor mode in the modeline")
-      (doom-modeline-modal-icon t "Shows the editing state."))
-   )
-#+end_src
-
 *** Misc
 
 #+begin_src emacs-lisp
@@ -730,15 +636,6 @@ being conservative and define most boon-type bindings here.
     (define-key boon-moves-map "wj" 'flyspell-correct-previous)
     (define-key boon-moves-map "ej" 'flyspell-correct-next)
     (define-key boon-goto-map "d" 'dired-jump)
-    ; powerline configuration
-    ;; (require 'boon-powerline)
-    ;; ;; configures different colours for the light and dark themes
-    ;; (face-spec-set 'boon-modeline-ins `((((background light)) :background "indian red") (((background dark)) :background "red")))
-    ;; (face-spec-set 'boon-modeline-cmd `((((background light)) :background "dodger blue") (((background dark)) :background "blue")))
-    ;; (face-spec-set 'boon-modeline-spc `((((background light)) :background "spring green") (((background dark)) :background "dark green")))
-    ;; ; starts the powerline
-    ;; (aspiwack/boon-powerline-theme)
-    ; end powerline configuration
     ; return to command mode on `keyboard-quit`
     (defadvice keyboard-quit (before aspiwack/set-cmd-when-quit activate)
       "On `C-g' (`keyboard-quit'), return to Boon command mode."
@@ -886,8 +783,6 @@ C projects).
                (s-trim (shell-command-to-string "git remote -v | head -n1 | cut -f2 | cut -d ' ' -f1 | xargs basename | sed -e 's/.git$//'")))
               (branch-name
                (s-trim (shell-command-to-string "git branch --no-color | grep '^*' | cut -c3-"))))
-          ; I don't need the branch name with doom-modeline
-          ;(format "%s/%s" repo-name branch-name)
           (format "%s" repo-name)))
       ))
 
