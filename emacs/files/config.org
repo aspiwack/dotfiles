@@ -258,25 +258,6 @@ adapted from [[https://www.reddit.com/r/emacs/comments/o49v2w/comment/i5ibcyv/?u
       (which-key-idle-delay 0.3))
 #+end_src
 
-*** Default text scale
-
-The standard text-scaling functions (see ~text-scale-adjust~) only
-adjust the current buffer size. But , most of the time, I want to
-adjust the font of an entire Emacs frame (a window in the sense of the
-window manager). This package lets me do so (but it only seems to work
-with open buffers, and doesn't transmit to new buffers that I open, so
-it's not quite what I want yet). See
-https://www.emacswiki.org/emacs/zoom-frm.el for something which may
-work better.
-
-#+begin_src emacs-lisp
-  ;; TODO: configure convenient bindings. Possibly with Hydra
-  (use-package default-text-scale
-    :diminish default-text-scale-mode
-    :config
-    (default-text-scale-mode 1))
-#+end_src
-
 ** Editing
 
 *** COMMENT Completion
