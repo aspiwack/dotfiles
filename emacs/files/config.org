@@ -236,27 +236,6 @@ adapted from [[https://www.reddit.com/r/emacs/comments/o49v2w/comment/i5ibcyv/?u
    "color-scheme"
    )
 #+end_src
-**** COMMENT Former themes
-
-For a while my dark (and default) theme was the [[https://github.com/synic/jbeans-emacs][jbeans theme]]. It is a theme
-with a black background.
-#+BEGIN_SRC emacs-lisp
-  (use-package jbeans-theme
-    ;; :config
-    ;; ; sets the theme at startup
-    ;; (load-theme 'jbeans t)
-    )
-#+END_SRC
-
-[2023-05-22 Mon]
-I've used Adwaita as my light theme for a long time, but it never
-quite scratched my itch. Now that I'm moving to use more light theme
-during the day, I'm moving on.
-#+begin_src emacs-lisp
-  (defun light-theme ()
-    (interactive)
-    (switch-theme 'adwaita))
-#+end_src
 *** Misc
 
 #+begin_src emacs-lisp
