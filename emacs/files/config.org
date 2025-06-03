@@ -122,6 +122,10 @@ The code for this comes from [[http://stackoverflow.com/a/18330742][a stack over
 #+begin_src emacs-lisp
   (setq native-comp-async-report-warnings-errors nil)
 #+end_src
+** Initial theme
+#+begin_src emacs-lisp
+(setq doom-theme 'catppuccin)
+#+end_src
 
 * General purpose packages
 
@@ -167,23 +171,10 @@ point, including the face.
 
 *** Colour themes
 
-I use the adwaita theme as a light theme, when this is more
-appropriate (for instance when there is a lot of ambient light).
-#+BEGIN_SRC emacs-lisp
-  ; The Adwaita theme is available by default. This just declares the
-  ; adwaita theme as available for `enable-theme' (the second `t'
-  ; ensures that the theme is not displayed)
-  (load-theme 'adwaita t t)
-#+END_SRC
+I use themes of the Catppuccin theme set. This lets me have some consistent
+theming between light and dark theme.
 
-Other theme packages
-#+begin_src emacs-lisp
-  (use-package solo-jazz-theme)
-
-  (use-package lab-themes)
-#+end_src
-
-Let me also define two functions (~M-x dark-theme~) and (~M-x
+Let me define two functions (~M-x dark-theme~) and (~M-x
 light-theme~) to switch between them. Let me also define a more general
 function ~switch-theme~ which acts as ~load-theme~ (it loads and activates
 a theme), but also deactivates all other custom themes, so that we can
@@ -191,33 +182,15 @@ easily change between available themes.
 #+BEGIN_SRC emacs-lisp
   (defun dark-theme ()
     (interactive)
-    ;(switch-theme 'doom-dracula)
+    (setq catppuccin-flavor 'mocha)
+    (catppuccin-reload)
     )
-    
+
   (defun light-theme ()
     (interactive)
-    ;(switch-theme 'solo-jazz)
+    (setq catppuccin-flavor 'latte)
+    (catppuccin-reload)
     )
-    
-  ;; See https://stackoverflow.com/questions/22866733/emacs-disable-theme-after-loading-a-different-one-themes-conflict
-  (defun aspiwack/disable-all-themes ()
-    "Disable all active themes."
-    (dolist (i custom-enabled-themes)
-      (disable-theme i)))
-
-  (defun switch-theme (theme)
-    "Loads a theme, and deactivate all others"
-    (interactive
-     (list
-      (intern (completing-read "Load custom theme: "
-                               (mapcar #'symbol-name
-                                       (custom-available-themes))))))
-    (aspiwack/disable-all-themes)
-    (load-theme theme)
-    ; If powerline is running, it needs to be reset after changing theme
-    ; (otherwise theme elements from the previous theme will spill to
-    ; the new theme).
-    (if (fboundp 'powerline-reset) (powerline-reset)))
 #+END_SRC
 **** Switch theme based on the desktop theme
 
