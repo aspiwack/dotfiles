@@ -60,8 +60,6 @@
 (package! darcsum)
 (package! default-text-scale)
 (package! diminish)
-(package! doom-modeline)
-(package! doom-themes)
 (package! dune)
 (package! eat)
 (package! dash) ;; dependency of elastic-modes

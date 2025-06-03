@@ -178,8 +178,7 @@ be used to remove the mention of the minor-mode in the line when we
 don't want to be reminded of it. The ~diminish~ functionality is
 called via ~use-package~ with the ~:diminish~ keyword.
 #+BEGIN_SRC emacs-lisp
-  (use-package diminish
-    :ensure t)
+  (use-package diminish)
 #+END_SRC
 
 *** Fonts
@@ -208,21 +207,11 @@ appropriate (for instance when there is a lot of ambient light).
   (load-theme 'adwaita t t)
 #+END_SRC
 
-A lot of themes which come bundled with Doom Emacs. Many look nice.
-#+begin_src emacs-lisp
-  (use-package doom-themes
-    :ensure t
-    :config
-    (load-theme 'doom-dracula t t))
-#+end_src
-
 Other theme packages
 #+begin_src emacs-lisp
-  (use-package solo-jazz-theme
-    :ensure t)
+  (use-package solo-jazz-theme)
 
-  (use-package lab-themes
-    :ensure t)
+  (use-package lab-themes)
 #+end_src
 
 Let me also define two functions (~M-x dark-theme~) and (~M-x
@@ -311,7 +300,6 @@ For a while my dark (and default) theme was the [[https://github.com/synic/jbean
 with a black background.
 #+BEGIN_SRC emacs-lisp
   (use-package jbeans-theme
-    :ensure t
     ;; :config
     ;; ; sets the theme at startup
     ;; (load-theme 'jbeans t)
@@ -334,7 +322,6 @@ during the day, I'm moving on.
  configuration currently uses ~doom-modeline~)
  #+BEGIN_SRC emacs-lisp
    (use-package powerline
-     :ensure t
      :config
      ; correct an illegible font colour in the light mode
      (face-spec-set 'powerline-active1 '((((background light)) :foreground "white smoke"))))
@@ -409,7 +396,6 @@ it work on Nixos?), otherwise many icons won't show.
 
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :ensure t
     :config
     ;; configures modal state indicator's colours
     (face-spec-set 'doom-modeline-evil-insert-state `((((background light)) :foreground "indian red") (((background dark)) :foreground "red")))
@@ -438,7 +424,6 @@ it work on Nixos?), otherwise many icons won't show.
 
 #+begin_src emacs-lisp
   (use-package which-key
-      :ensure t
       :diminish which-key-mode
       :config
       (which-key-mode)
@@ -460,7 +445,6 @@ work better.
 #+begin_src emacs-lisp
   ;; TODO: configure convenient bindings. Possibly with Hydra
   (use-package default-text-scale
-    :ensure t
     :diminish default-text-scale-mode
     :config
     (default-text-scale-mode 1))
@@ -474,7 +458,6 @@ work better.
 
 #+begin_src emacs-lisp
   (use-package corfu
-    :ensure t
     :init
     (global-corfu-mode)
     :config
@@ -489,7 +472,6 @@ completions since these are regenerated all the time.
 
 #+begin_src emacs-lisp
   (use-package cape
-    :ensure t
     :init
     (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
     (add-hook 'completion-at-point-functions #'cape-file)
@@ -502,7 +484,6 @@ suggestions
 
 #+begin_src emacs-lisp
   (use-package nerd-icons-completion
-    :ensure t
     :config
     (nerd-icons-completion-mode))
 #+end_src
@@ -512,7 +493,6 @@ suggestions
 [[https://github.com/abo-abo/swiper][Swiper]] is a tool to improve the search capabilities of Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
-    :ensure t
     :bind
     (; Rebinds the search key binding `C-s` to Swiper search function
      ("C-s" . swiper)))
@@ -524,7 +504,6 @@ suggestions
 in files and lists (/e.g./ find-file).
 #+BEGIN_SRC emacs-lisp
   (use-package helm
-    :ensure t
     :config
     (helm-mode t)
     :defer 2 ; still enables helm mode after a short while if no
@@ -559,7 +538,6 @@ command. It also replaces the ido-based completion in projectile with
 helm.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-projectile
-    :ensure t
     :commands helm-projectile-on
     :bind
     ("C-S-s" . helm-projectile-rg))
@@ -568,8 +546,7 @@ helm.
   ;; automatically instead of doing this on the first call to
   ;; `helm-projectile-rg' on each installation.
   (use-package helm-rg
-    :commands helm-rg
-    :ensure t)
+    :commands helm-rg)
 #+END_SRC
 
 *** Counsel
@@ -579,8 +556,7 @@ but sometimes Counsel does a better job for me. Notably to replace
 ~org-goto~ in Org mode.
 
 #+begin_src emacs-lisp
-  (use-package counsel
-    :ensure t)
+  (use-package counsel)
 #+end_src
 
 *** Multiple cursors
@@ -591,7 +567,6 @@ the buffer.
 
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-    :ensure t
     :bind
     (; change a multi-line region in multiple cursors
      ("C-S-c C-S-c" . mc/edit-lines)
@@ -624,7 +599,6 @@ colours so that it is easier to spot pairs of matching delimiters.
 
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
-    :ensure t
     :hook
     (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
@@ -659,7 +633,6 @@ completion framework if you'd rather use Ivy or something).
 
 #+begin_src emacs-lisp
   (use-package flyspell-correct
-    :ensure t
     :after flyspell
     :commands (flyspell-correct-previous flyspell-correct-next))
 
@@ -677,7 +650,6 @@ if you are working with people who, for any reason, leave white spaces
 behind.
 #+BEGIN_SRC emacs-lisp
   (use-package ws-butler
-    :ensure t
     :diminish ws-butler-mode
     :config (ws-butler-global-mode))
 #+END_SRC
@@ -692,7 +664,6 @@ http://endlessparentheses.com/hungry-delete-mode.html).
 
 #+BEGIN_SRC emacs-lisp
   ;; (use-package hungry-delete
-  ;;   :ensure t
   ;;   :config
   ;;   (global-hungry-delete-mode)
   ;;   :diminish hungry-delete-mode)
@@ -703,7 +674,6 @@ http://endlessparentheses.com/hungry-delete-mode.html).
 tabs). I'm experimenting with it, I can't recommend it just yet.
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-    :ensure t
     :config
     (yas-global-mode)
     :diminish yas-minor-mode
@@ -719,7 +689,6 @@ it on ~C-x o~ (usually ~other-window~) since it behaves like
 switch to said window.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
-    :ensure t
     :bind ("C-x o" . ace-window)
     :config
     (ace-window-display-mode 1))
@@ -731,8 +700,7 @@ switch to said window.
 between windows as well). I haven't set bindings because I use Avy via
 [[https://github.com/jyp/boon][Boon]].
 #+BEGIN_SRC emacs-lisp
-  (use-package avy
-    :ensure t)
+  (use-package avy)
 #+END_SRC
 
 *** Boon
@@ -749,8 +717,6 @@ being conservative and define most boon-type bindings here.
 
 #+BEGIN_SRC emacs-lisp
   (use-package boon
-    :ensure t
-    ;; :load-path "~/projects/contributions/boon/master"
     :config
     (require 'boon-qwerty)
     (boon-mode)
@@ -793,8 +759,7 @@ being conservative and define most boon-type bindings here.
 [[http://www.flycheck.org/][Flycheck]] continuously compiles a project and reports compilation and
 typing errors inline.
 #+BEGIN_SRC emacs-lisp
-  (use-package flycheck
-    :ensure t)
+  (use-package flycheck)
 #+END_SRC
 
 *** Aidermacs
@@ -803,7 +768,6 @@ typing errors inline.
 started)
 #+begin_src emacs-lisp
   (use-package aidermacs
-    :ensure t
     :config
     (define-key aspiwack/boon-custom-map "o" 'aidermacs-transient-menu)
     :custom
@@ -817,7 +781,6 @@ started)
 repositories. And I've used quite a few.
 #+BEGIN_SRC emacs-lisp
   (use-package magit
-    :ensure t
     ; magit is only loaded when `magit-status' is called
     :commands magit-status
     :custom
@@ -849,7 +812,6 @@ automated. This is described [[https://magit.vc/manual/forge/Getting-Started.htm
 
 #+begin_src emacs-lisp
   (use-package forge
-    :ensure t
     :after magit)
 #+end_src
 
@@ -875,8 +837,7 @@ Magit. But it's serviceable.
 #+BEGIN_SRC emacs-lisp
   (use-package darcsum
     ; darcsum is only loaded when `darcsum-whatsnew' is called
-    :commands darcsum-whatsnew
-    :ensure t)
+    :commands darcsum-whatsnew)
 #+END_SRC
 
 The ~projective-vc~ function from the [[http://batsov.com/projectile/][Projectile]] project management
@@ -931,7 +892,6 @@ C projects).
       ))
 
   (use-package projectile
-    :ensure t
     :commands ; entry points for projectile
     (projectile-project-vcs
      projectile-project-root
@@ -1034,7 +994,6 @@ work with functions defined below]].
     (define-key global-map "\C-cc" 'org-capture))
 
   (use-package org
-    :ensure t
     :defer t ; defer doesn't work on org, apparently and the
              ; configuration is rather slow. Need to figure something
              ; out.
@@ -1061,7 +1020,6 @@ replaces them by cute Unicode bullets.
 
 #+begin_src emacs-lisp
     (use-package org-bullets
-      :ensure t
       :hook (org-mode . org-bullets-mode)
       :after org)
 #+end_src
@@ -1181,7 +1139,6 @@ as a set of slides.
 
 #+BEGIN_SRC emacs-lisp
   ;; (use-package org-present
-  ;;   :ensure t
   ;;   :commands org-present)
 #+END_SRC
 
@@ -1190,7 +1147,7 @@ as a set of slides.
 The [[https://www.emacswiki.org/emacs/Htmlize][htmlize]] package is used to export Org mode document to html with
 syntax highlighted code blocks.
 #+BEGIN_SRC emacs-lisp
-  (use-package htmlize :ensure t)
+  (use-package htmlize)
 #+END_SRC
 
 **** TODO Global default font choice?
@@ -1226,7 +1183,6 @@ http://endlessparentheses.com/better-time-stamps-in-org-export.html
 The popular formatting language has an [[http://jblevins.org/projects/markdown-mode/][Emacs mode]].
 #+BEGIN_SRC emacs-lisp
   (use-package markdown-mode
-    :ensure t
     :commands (markdown-mode gfm-mode)
     :mode (("README\\.md\\'" . gfm-mode)
            ("\\.md\\'" . markdown-mode)
@@ -1360,7 +1316,6 @@ lightweight.
 
   ;; Adds breadcrumbs header.
   (use-package breadcrumb
-    :ensure t
     :config
     (breadcrumb-mode)
     :defer 2)
@@ -1401,7 +1356,6 @@ Richer (and prettier) help for Emacs functions can be provided by [[https://gith
 
 #+begin_src emacs-lisp
   (use-package helpful
-    :ensure t
     :bind
     ([remap describe-function] . helpful-callable)
     ([remap describe-command] . helpful-command)
@@ -1412,8 +1366,7 @@ Richer (and prettier) help for Emacs functions can be provided by [[https://gith
 
 The [[http://nixos.org/nix/][Nix]] language and package manager.
 #+BEGIN_SRC emacs-lisp
-  (use-package nix-mode
-    :ensure t)
+  (use-package nix-mode)
 #+END_SRC
 
 *** COMMENT Ocaml
@@ -1422,7 +1375,6 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-
 
 #+begin_src emacs-lisp
   (use-package tuareg
-    :ensure t
     :hook
     ((tuareg-mode . eglot-ensure)))
 #+end_src
@@ -1430,15 +1382,13 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/ocaml/ocaml-
 Some support for the [[https://dune.build/][Dune]] build system
 
 #+begin_src emacs-lisp
-  (use-package dune
-    :ensure t)
+  (use-package dune)
 #+end_src
 
 And for [[https://opam.ocaml.org/][Opam]]
 
 #+begin_src emacs-lisp
-  (use-package opam
-    :ensure t)
+  (use-package opam)
 #+end_src
 
 **** TODO should I add an indenter (ocp-indent)?
@@ -1474,8 +1424,7 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-c
 The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]].
 #+BEGIN_SRC emacs-lisp
   ;; ProofGeneral generic mode
-  ;; (use-package proof-general
-  ;;  :ensure t)
+  ;; (use-package proof-general)
 #+END_SRC
 
 **** TODO Describe configuration
@@ -1491,7 +1440,6 @@ The [[https:y//www.haskell.org/][Haskell]] programming language.
 #+BEGIN_SRC emacs-lisp
   ;;;; hindent: indentation mode for Haskell
   (use-package hindent
-    :ensure t
     :commands hindent
     :init
     ; HACK: hident installed with nix. Can I get rid of it?
@@ -1503,7 +1451,6 @@ The [[https:y//www.haskell.org/][Haskell]] programming language.
 
   ;;; haskell-mode proper
   (use-package haskell-mode
-    :ensure t
     :config
     (defun haskell-hook ()
       ; set maximum column length
@@ -1524,7 +1471,6 @@ errors using flycheck. It's here because I currently only use it for
 Haskell.
 #+BEGIN_SRC emacs-lisp
   (use-package attrap
-    :ensure t
     ;; :load-path "~/projects/contributions/attrap/master"
     :bind (("C-x /" . attrap-attrap)))
 #+END_SRC
@@ -1544,8 +1490,7 @@ Haskell.
 *** Rust
 
 #+begin_src emacs-lisp
-  (use-package rust-mode
-    :ensure t)
+  (use-package rust-mode)
 #+end_src
 
 *** Misc
@@ -1553,20 +1498,17 @@ Haskell.
 Miscellaneous programming language (or adjacent) modes
 
 #+BEGIN_SRC emacs-lisp
-  (use-package terraform-mode
-    :ensure t)
+  (use-package terraform-mode)
 #+END_SRC
 
 ** Configuration formats
 *** Yaml
 #+begin_src emacs-lisp
-  (use-package yaml-mode
-    :ensure t)
+  (use-package yaml-mode)
 #+end_src
 *** Nickel
 #+begin_src emacs-lisp
   (use-package nickel-mode
-    :ensure t
     :hook
     ((nickel-mode . eglot-ensure)))
 
@@ -1587,14 +1529,12 @@ problematic.
 
 [[https://github.com/leon-barrett/just-mode.el][Just-mode]] is a highlighting mode for ~justfile~
 #+begin_src emacs-lisp
-  (use-package just-mode
-    :ensure t)
+  (use-package just-mode)
 #+end_src
 
 [[https://github.com/psibi/justl.el][Justl]] helps with calling Just commands from within Emacs. The entry point is ~M-x justl~.
 #+begin_src emacs-lisp
   (use-package justl
-    :ensure t
     :bind
     (:map aspiwack/boon-custom-map
           ("j" . justl)))
@@ -1605,8 +1545,7 @@ I use [[https://polymode.github.io/][Polymode]] to mix several modes in the same
 to have ~haskell-mode~ in Latex/Haskell Literate Haskell files.
 
 #+begin_src emacs-lisp
-  (use-package polymode
-    :ensure t)
+  (use-package polymode)
 #+end_src
 
 ** Latex/Haskell
@@ -1683,7 +1622,6 @@ Add icons
 
 #+begin_src emacs-lisp
   (use-package nerd-icons-dired
-    :ensure t
     :hook
     (dired-mode . nerd-icons-dired-mode))
 #+end_src
@@ -1709,10 +1647,8 @@ within Emacs.
 Some dependencies
 #+begin_src emacs-lisp
   (use-package ctable
-    :ensure t
     :pin melpa-stable)
   (use-package epc
-    :ensure t
     :pin melpa-stable)
 #+end_src
 
@@ -1733,8 +1669,7 @@ this makes the integration smoother. More normal a terminal than
 Eshell. It's become my default choice of terminal inside Emacs.
 
 #+begin_src emacs-lisp
-  (use-package eat
-    :ensure t)
+  (use-package eat)
 #+end_src
 * Applications
 
@@ -1743,7 +1678,6 @@ Eshell. It's become my default choice of terminal inside Emacs.
 [[https://github.com/the-kenny/weechat.el][Emacs client]] to connect to a [[http://weechat.org/][Weechat]] server.
 #+BEGIN_SRC emacs-lisp
   ;; (use-package weechat
-  ;;   :ensure t
   ;;   ; does not load the mode until the `weechat-connect` command has
   ;;   ; been used.
   ;;   :commands weechat-connect
@@ -1812,8 +1746,7 @@ to connect via [[http://www.gnu.org/software/tramp/][TRAMP]]. Connect to a vagra
 /vagrant:~.
 
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package vagrant-tramp
-  ;;   :ensure t)
+  ;; (use-package vagrant-tramp)
 #+END_SRC
 
 * Misc
@@ -1954,7 +1887,6 @@ Then, the [[https://github.com/vspinu/math-symbol-lists][math-symbol-lists]] pac
 input method called /math/.
 #+BEGIN_SRC emacs-lisp
   (use-package math-symbol-lists
-    :ensure t
     ;:after quail
 
     :init
@@ -1993,7 +1925,6 @@ With [[https://github.com/rranelli/auto-package-update.el][~auto-package-update.
 are automatically upgraded regularly.
 #+BEGIN_SRC emacs-lisp
   (use-package auto-package-update
-    :ensure t
     :init
     ; update every 30 days (bonus: 30 is coprime with 7, hence update
     ; happens, in turn, on each of the 7 week days)
@@ -2047,7 +1978,6 @@ buffer is picked up.
 
 #+begin_src emacs-lisp
   (use-package envrc
-    :ensure t
     :config
     (envrc-global-mode))
 #+end_src
