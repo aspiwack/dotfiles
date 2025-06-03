@@ -25,42 +25,11 @@ that). Mostly, it's horrible. The following makes binders /lexical/
 
 * Use this file
 
-I usually put this file in the directory ~.emacs.d/lisp/~. Then, to
-load the file at start up, put the following line in your
-~.emacs.d/init.el~ (or ~.emacs~) file:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (org-babel-load-file "~/.emacs.d/lisp/config.org" nil)
-#+END_SRC
-Note: the ~nil~ argument makes sure that this file is /not/ byte-compiled.
-It is optional, and this is the default behaviour. However, it so
-happens that compiling this file breaks the package manager
-configuration. My understanding, at this point, it that Emacs looks
-into the ~init.el~ to see if there is a call to ~(package-initialize)~, if
-there isn't, Emacs calls ~(package-initialize)~ before loading the
-~init.el~. Since the configuration of repositories must happen before
-~(package-initialize)~ is called, it is imperative that
-~(package-initialize)~ not be called before my configuration. However,
-it seems that byte compiling this file prevents Emacs from realising
-that I'm calling ~(package-initialize)~ myself. And breaks my calls to
-~use-package~. Also note that according to [[http://ergoemacs.org/emacs/emacs_byte_compile.html][this page]], byte-compiling
-~init.el~ is not actually useful.
-
-I usually also add:
-#+BEGIN_SRC emacs-lisp :tangle no
-  (add-to-list 'load-path "~/.emacs.d/lisp/")
-#+END_SRC
-So that I can tuck custom ~.el~ files in the ~.emacs.d/lisp/~
-directory.
-
-As a general remark, it is good to keep your ~.emacs.d/init.el~ (or
-~.emacs~ if you must, but it is tidier to have a ~.emacs.d/~ directory
-and have everything Emacs related there) just a few lines long. As I'm
-using a Babel file for my configuration I don't have a choice. But
-even if you don't, Emacs will add local configuration (such as safe
-local variables) to your ~init.el~ file, obscuring what comes from
-your configuration and what is generated. It also makes it really hard
-to synchronise between computer or to check in a version control
-system. Your Emacs configuration is precious: keep it clean and tidy.
+In my ~.dotfiles~, I call this file from Nix. A more standard way of setting up a
+Doom Emacs config is to have this file, as well as ~init.el~ and ~packages.el~ be in
+the ~.config/doom.d/~ directory. Don't forget to activate the ~literate~ module in
+~init.el~ which lets Doom read this Org file and turn it into a ~config.el~ file
+that Emacs can read.
 
 * COMMENT Use-package
 
