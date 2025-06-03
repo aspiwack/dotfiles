@@ -96,7 +96,7 @@
 (package! nickel-mode)
 (package! nix-mode)
 (package! opam)
-;; (package! org)
+(package! org-modern :disable t)
 (package! org-bullets)
 (package! ott-mode
   :recipe (:type git :host github :repo "ott-lang/ott" :files ("emacs/*"))

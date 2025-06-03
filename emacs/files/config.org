@@ -901,8 +901,10 @@ work with functions defined below]].
     :custom
     ; Changes the symbol representing folding sections (default is `...`
     ; which I rather dislike)
+    ; TODO: doesn't work, I don't know why
     (org-ellipsis "⤵" "Changes the symbol to denote folding sections")
-    ; I'm not sure about the following, but it does look nice.
+    ; Combines with org-appear-mode so that marks reappear when the cursor is on
+    ; the text.
     (org-hide-emphasis-markers t "Hides markup on bold, italics,…")
     :config
     (aspiwack/org-setup-babel)
