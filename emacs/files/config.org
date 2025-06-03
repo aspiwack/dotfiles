@@ -1059,19 +1059,6 @@ work with functions defined below]].
     ; Turns on syntax highlighting in code blocks
     (setq org-src-fontify-natively t)
 
-    ; Active Babel languages: snippets in these languages can be
-    ; executed inside Org mode
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '(;(coq . t)
-       (ditaa . t)
-       (dot . t)
-       (emacs-lisp . t)
-       (haskell . t)
-       (ocaml . t)
-       (shell . t)
-       ))
-
     ; Sets ditaa path to Ubuntu installation path. This is rather
     ; inelegant and I'd rather find a more robust way to do it.
     (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar"))
