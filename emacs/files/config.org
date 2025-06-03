@@ -1075,7 +1075,7 @@ See
 See
 http://endlessparentheses.com/better-time-stamps-in-org-export.html
 
-*** Markdown
+*** COMMENT Markdown
 
 The popular formatting language has an [[http://jblevins.org/projects/markdown-mode/][Emacs mode]].
 #+BEGIN_SRC emacs-lisp
