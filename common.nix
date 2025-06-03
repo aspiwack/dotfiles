@@ -76,6 +76,9 @@ in
       pkgs.gimp
       pkgs.shotwell # photo manager
 
+      ## Preview Markdown
+      pkgs.go-grip
+
       ## Video stuff
       pkgs.kdePackages.kdenlive
 
