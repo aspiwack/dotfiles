@@ -197,43 +197,6 @@ called via ~use-package~ with the ~:diminish~ keyword.
 Note for debugging: calling ~C-u C-x =~ gives a lot of information at
 point, including the face.
 
-Establishes Unicode font mapping, to display unicode characters
-better. It also lets me display emojis with coloured fonts 🙂. For the
-latter feature, the [[https://www.google.com/get/noto/help/emoji/][Noto Color Emoji]] font must be installed. (/e.g./ on
-Ubuntu, there is a ~fonts-noto-color-emoji~ package). The specific
-colour emoji font it added in the configuration, see below. By
-default, ~unicode-fonts~ uses Apple's font. But it's not easy to install
-it on Linux.
-
-#+begin_src emacs-lisp
-  ;; I don't fully understand this function, I've adapted it from
-  ;; `dw/replace-unicode-font-mapping' in
-  ;; https://github.com/daviwil/dotfiles/blob/f2c6fb1c80a8fe2f90f1a22e975b8b37dc9cf324/Emacs.org#enable-proper-unicode-glyph-support
-  (defun aspiwack/prepend-to-font-mapping (block-name new-font)
-    (let* ((block-idx (cl-position-if
-                           (lambda (i) (string-equal (car i) block-name))
-                           unicode-fonts-block-font-mapping))
-           (block-fonts (cadr (nth block-idx unicode-fonts-block-font-mapping)))
-           (updated-block (cons new-font block-fonts)))
-      (setf (cdr (nth block-idx unicode-fonts-block-font-mapping))
-            `(,updated-block))))
-
-  ;; Not needed since Emacs 28: emojis are supported natively
-  ;;
-  ;; (use-package unicode-fonts
-  ;;   :ensure t
-  ;;   :config
-  ;;   ;; Display emojis with the Noto Emoji font first.
-  ;;   (mapcar
-  ;;     (lambda (block-name)
-  ;;       (aspiwack/prepend-to-font-mapping block-name "Noto Color Emoji"))
-  ;;     '("Dingbats"
-  ;;       "Emoticons"
-  ;;       "Miscellaneous Symbols and Pictographs"
-  ;;       "Transport and Map Symbols"))
-  ;;    ;; Trigger mapping
-  ;;   (unicode-fonts-setup))
-#+end_src
 *** Colour themes
 
 I use the adwaita theme as a light theme, when this is more
