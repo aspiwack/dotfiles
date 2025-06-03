@@ -106,7 +106,6 @@
   )
 (package! polymode)
 (package! powerline)
-;; (package! projectile)
 (package! rainbow-delimiters)
 ;; (package! rust-mode)
 (package! solo-jazz-theme)

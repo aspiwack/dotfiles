@@ -1057,11 +1057,7 @@ work with functions defined below]].
 
   (defun aspiwack/org-setup-babel ()
     ; Turns on syntax highlighting in code blocks
-    (setq org-src-fontify-natively t)
-
-    ; Sets ditaa path to Ubuntu installation path. This is rather
-    ; inelegant and I'd rather find a more robust way to do it.
-    (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar"))
+    (setq org-src-fontify-natively t))
 
   (defun aspiwack/org-setup-capture ()
     ; Sets up capture in org mode see http://orgmode.org/org.html#Capture
