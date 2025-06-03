@@ -110,7 +110,6 @@
 ;; (package! terraform-mode)
 ;; (package! tuareg)
 ;; (package! typst-mode)
-(package! which-key)
 ;; (package! ws-butler)
 ;; (package! yaml-mode)
 (package! yasnippet)

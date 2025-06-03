@@ -251,9 +251,6 @@ adapted from [[https://www.reddit.com/r/emacs/comments/o49v2w/comment/i5ibcyv/?u
 
 #+begin_src emacs-lisp
   (use-package which-key
-      :diminish which-key-mode
-      :config
-      (which-key-mode)
       :custom
       (which-key-idle-delay 0.3))
 #+end_src
