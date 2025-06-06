@@ -235,6 +235,8 @@ in
         background = "dark";
       };
   };
+  programs.gh.enable = true;
+  programs.gh-dash.enable = true;
 
   # Globally-configured ignored patterns
   home.file.".config/git/ignore".source = files/gitignore;
