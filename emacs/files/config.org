@@ -535,6 +535,7 @@ being conservative and define most boon-type bindings here.
     (define-key boon-moves-map "wj" 'flyspell-correct-previous)
     (define-key boon-moves-map "ej" 'flyspell-correct-next)
     (define-key boon-goto-map "d" 'dired-jump)
+    (define-key boon-command-map "_" 'undo-tree-redo)
     ; return to command mode on `keyboard-quit`
     (defadvice keyboard-quit (before aspiwack/set-cmd-when-quit activate)
       "On `C-g' (`keyboard-quit'), return to Boon command mode."
