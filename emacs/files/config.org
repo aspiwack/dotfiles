@@ -1060,7 +1060,7 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
     :hook
     ; Get flyspell to spell-check the comments
     ((prog-mode . flyspell-prog-mode)
-     ; (prog-mode . (lambda () (buffer-face-set 'aspiwack/programming)))
+     (prog-mode . (lambda () (buffer-face-set 'aspiwack/programming)))
      (prog-mode . aspiwack/fill-in-comments))
     )
 #+END_SRC
@@ -1068,7 +1068,7 @@ mode, and modes like ~haskell-mode~ derive from ~prog-mode~).
 References:
 - I found the fill-in-comments method on [[http://stackoverflow.com/questions/4477357/how-to-turn-on-emacs-auto-fill-mode-only-for-code-comments][Stackoverflow]].
 
-*** COMMENT Elastic tabstops
+*** Elastic tabstops
 
 [[https://github.com/jyp/elastic-modes][Elastic-modes]] helps support programming with proportional fonts in two
 ways.

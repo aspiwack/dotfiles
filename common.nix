@@ -247,11 +247,41 @@ in
   #### Emacs
 
   programs.doom-emacs =
+    let elastic-indent = epkgs:
+          (epkgs.melpaBuild {
+                    pname = "elastic-indent";
+                    version = "9999snapshot1";
+                    packageRequires = [ epkgs.dash ];
+                    src = builtins.fetchTree {
+                      type = "github";
+                      owner = "jyp";
+                      repo = "elastic-modes";
+                      rev = "c577e8921a4d9bd77742729707152bc557fae3e2";
+                    };
+          });
+        elastic-table = epkgs:
+          (epkgs.melpaBuild {
+                    pname = "elastic-indent";
+                    version = "9999snapshot1";
+                    packageRequires = [ epkgs.dash ];
+                    src = builtins.fetchTree {
+                      type = "github";
+                      owner = "jyp";
+                      repo = "elastic-modes";
+                      rev = "c577e8921a4d9bd77742729707152bc557fae3e2";
+                    };
+          });
+    in
     { enable = true;
       doomDir = ./emacs/files;
       doomLocalDir = "${config.xdg.configHome}/doom";
       emacs = my-emacs;
-      extraPackages = epkgs: (with epkgs; [melpaPackages.vterm copilot]);
+      extraPackages = epkgs: (with epkgs; [
+        melpaPackages.vterm
+        copilot
+        (elastic-indent epkgs)
+        (elastic-table epkgs)
+      ]);
       tangleArgs = "--all config.org";
     };
 
