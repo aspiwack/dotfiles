@@ -247,42 +247,6 @@ adapted from [[https://www.reddit.com/r/emacs/comments/o49v2w/comment/i5ibcyv/?u
 
 ** Editing
 
-*** COMMENT Completion
-
-[[https://github.com/minad/corfu][Corfu]] is a lightweight completion-at-point extension for Emacs.
-
-#+begin_src emacs-lisp
-  (use-package corfu
-    :init
-    (global-corfu-mode)
-    :config
-    (setq corfu-auto t
-         corfu-auto-delay 0
-         corfu-auto-prefix 2))
-#+end_src
-
-[[https://github.com/minad/cape][Cape]] is a complement to Corfu (or really any completion engine) adding
-completion functions. It also provides a way to avoid caching LSP
-completions since these are regenerated all the time.
-
-#+begin_src emacs-lisp
-  (use-package cape
-    :init
-    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-    (add-hook 'completion-at-point-functions #'cape-file)
-    (add-hook 'completion-at-point-functions #'cape-emoji)
-    (add-hook 'completion-at-point-functions #'cape-tex))
-#+end_src
-
-[[https://github.com/rainstormstudio/nerd-icons-completion][Nerd-icons-completion]] adds icons from Nerdfonts to the completion
-suggestions
-
-#+begin_src emacs-lisp
-  (use-package nerd-icons-completion
-    :config
-    (nerd-icons-completion-mode))
-#+end_src
-
 *** Swiper search
 
 [[https://github.com/abo-abo/swiper][Swiper]] is a tool to improve the search capabilities of Emacs.
@@ -291,57 +255,6 @@ suggestions
     :bind
     (; Rebinds the search key binding `C-s` to Swiper search function
      ("C-s" . swiper)))
-#+END_SRC
-
-*** COMMENT Helm
-
-[[https://emacs-helm.github.io/helm/][Helm]] is a powerful "narrowing" mode. It helps searching and selecting
-in files and lists (/e.g./ find-file).
-#+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :config
-    (helm-mode t)
-    :defer 2 ; still enables helm mode after a short while if no
-             ; autoload has been used.
-    :bind
-    (("M-x" . helm-M-x)
-     ("C-x C-f" . helm-find-files)
-     ("C-x b" . helm-mini)
-     ;; helm-occur is helm's search command. For most uses Swiper
-     ;; offers a superior experience (the only point in favour of helm
-     ;; is that it makes it possible to search patterns typing words
-     ;; in the wrong order
-     ;; (e.g. "list type" maches "type 'a list")).
-     ;; ("C-s" . helm-occur)
-     ; The 3 following commands override unpleasant default from
-     ; Helm. Mostly this sets up `tab` to do things like select a
-     ; directory in `find-file` buffers, rather than open a
-     ; menu. (default was `C-z`, both are switch. I am not sure what the
-     ; `C-i` rebinding is for). These are taken from the internet [
-     ; http://tuhdo.github.io/helm-intro.html ]
-     :map helm-map
-     ("<tab>" . helm-execute-persistent-action) ; rebind tab to do persistent action
-     ("C-i" . helm-execute-persistent-action) ; make TAB works in terminal
-     ("C-z" . helm-select-action) ; list actions using C-z
-     )
-    :diminish helm-mode)
-#+END_SRC
-
-To search files in a project (git, darcs, etc…), I use
-[[https://github.com/bbatsov/helm-projectile][helm-projectile]]. In particular for the ~helm-projectile-ag~
-command. It also replaces the ido-based completion in projectile with
-helm.
-#+BEGIN_SRC emacs-lisp
-  (use-package helm-projectile
-    :commands helm-projectile-on
-    :bind
-    ("C-S-s" . helm-projectile-rg))
-
-  ;; Dynamic dependency of `helm-projectile'. I might as well install it
-  ;; automatically instead of doing this on the first call to
-  ;; `helm-projectile-rg' on each installation.
-  (use-package helm-rg
-    :commands helm-rg)
 #+END_SRC
 
 *** Counsel
