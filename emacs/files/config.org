@@ -268,17 +268,6 @@ the buffer.
      ("C-c C-<" . mc/mark-all-like-this)))
 #+END_SRC
 
-*** Electric pairs
-
-The [[https://www.emacswiki.org/emacs/ElectricPair][electric pair mode]] creates delimiters by pairs (/e.g./ when
-writing an opening parenthesis, it will output a matching closing
-parenthesis). The choice of delimiters to consider is based on the
-syntax of the current major mode.
-
-#+BEGIN_SRC emacs-lisp
-  (electric-pair-mode 1)
-#+END_SRC
-
 *** Rainbow delimiters
 
 The [[https://www.emacswiki.org/emacs/RainbowDelimiters][rainbow-delimiters mode]] colours nested delimiters in different
