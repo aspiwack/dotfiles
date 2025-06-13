@@ -1555,33 +1555,6 @@ input method called /math/.
 #+END_SRC
 
 
-** COMMENT Automatically upgrade packages
-
-Commented as I don't use this anymore.
-
-With [[https://github.com/rranelli/auto-package-update.el][~auto-package-update.el~]], packages installed with ~package.el~
-are automatically upgraded regularly.
-#+BEGIN_SRC emacs-lisp
-  (use-package auto-package-update
-    :init
-    ; update every 30 days (bonus: 30 is coprime with 7, hence update
-    ; happens, in turn, on each of the 7 week days)
-    (setq auto-package-update-interval 30)
-    ; Delete older version of packages
-    (setq auto-package-update-delete-old-versions t)
-    :config
-    ; If there are upgrades pending, upgrade the corresponding package
-    ; when loaded.
-    (auto-package-update-maybe)
-    ; Do not load at startup (it would needlessly slow down startup
-    ; while very few startups will actually trigger an update). Instead,
-    ; load after sufficient idle time as to indicate that I'm probably
-    ; not typing in that buffer (that way updates will most likely not
-    ; affect my typing).
-    :defer 30)
-
-#+END_SRC
-
 ** Push desktop notifications
 
 See the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Notifications.html][documentation]].
