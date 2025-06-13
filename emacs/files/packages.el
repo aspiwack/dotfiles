@@ -56,10 +56,8 @@
 (package! counsel)
 (package! catppuccin-theme)
 (package! darcsum)
-(package! default-text-scale)
 (package! dune)
 (package! eat)
-(package! dash) ;; dependency of elastic-modes
 ;; (package! elastic-indent
 ;;   :recipe (:type git :host github :repo "jyp/elastic-modes")
 ;;   :pin "c577e8921a4d9bd77742729707152bc557fae3e2"
@@ -69,7 +67,6 @@
 ;;   :pin "c577e8921a4d9bd77742729707152bc557fae3e2"
 ;;   )
 (package! flycheck)
-;; (package! flyspell)
 (package! flyspell-correct)
 (package! forge)
 ;; (package! haskell-mode)
@@ -78,7 +75,6 @@
 (package! htmlize)
 (package! justl)
 (package! just-mode)
-;; (package! magit)
 (package! markdown-mode)
 (package! math-symbol-lists)
 ;; (package! multiple-cursors)
@@ -94,13 +90,10 @@
   :pin "fc38245836ef29de862580864fa762163bc87b97"
   )
 (package! polymode)
-(package! powerline)
 (package! rainbow-delimiters)
 ;; (package! rust-mode)
 (package! swiper)
 ;; (package! terraform-mode)
 ;; (package! tuareg)
 ;; (package! typst-mode)
-;; (package! ws-butler)
 ;; (package! yaml-mode)
-(package! yasnippet)
