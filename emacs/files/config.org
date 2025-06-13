@@ -1008,20 +1008,6 @@ sources of Melt.
 
 ***** TODO Links to some of my articles written with Melt
 
-*** COMMENT Latex
-
-#+BEGIN_SRC emacs-lisp
-  (use-package tex
-    :ensure auctex
-    :defer ; the tex mode is, by default, in `automode-alist' auctex
-           ; seems to merely override the tex mode. So no configuration
-           ; is necessary beyon `:defer'.
-    :config
-    ; Help input and navigate references and such
-    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-    (setq reftex-plug-into-AUCTeX t))
-#+END_SRC
-
 *** COMMENT Typst
 [[https://typst.app/][Typst]] is a new authoring format (at time of writing [2023-06-05 lun.],
 it's still quite fresh). Aims roughly at the same market as Latex, but
