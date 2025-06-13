@@ -144,16 +144,6 @@ The code for this comes from [[http://stackoverflow.com/a/18330742][a stack over
   (scroll-bar-mode -1)
 #+end_src
 
-*** Diminish
-
-The [[https://github.com/myrjola/diminish.el][~diminish~]] package is used to unclutter the minor-mode line. It can
-be used to remove the mention of the minor-mode in the line when we
-don't want to be reminded of it. The ~diminish~ functionality is
-called via ~use-package~ with the ~:diminish~ keyword.
-#+BEGIN_SRC emacs-lisp
-  (use-package diminish)
-#+END_SRC
-
 *** Fonts
 #+begin_src emacs-lisp
   ; Don't set an absolute size for any but the default face, otherwise,

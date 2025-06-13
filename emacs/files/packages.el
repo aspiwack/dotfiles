@@ -60,7 +60,6 @@
 (package! catppuccin-theme)
 (package! darcsum)
 (package! default-text-scale)
-(package! diminish)
 (package! dune)
 (package! eat)
 (package! dash) ;; dependency of elastic-modes
