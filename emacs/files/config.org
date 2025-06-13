@@ -349,45 +349,6 @@ completion framework if you'd rather use Ivy or something).
 #+end_src
 
 
-*** COMMENT White-space butler
-
-The [[https://github.com/lewang/ws-butler][~ws-butler~ mode]] erases trailing white spaces which would pollute
-your diffs in version control systems. But only on those lines you
-have actually edited to keep your commits minimal and meaningful even
-if you are working with people who, for any reason, leave white spaces
-behind.
-#+BEGIN_SRC emacs-lisp
-  (use-package ws-butler
-    :diminish ws-butler-mode
-    :config (ws-butler-global-mode))
-#+END_SRC
-
-I run ~ws-butler~ in all my buffers.
-
-*** COMMENT hungry-delete-mode
-
-[[https://github.com/nflath/hungry-delete/][Hungry-delete mode]] deletes consecutive white-spaces as if they were a
-single character (See also
-http://endlessparentheses.com/hungry-delete-mode.html).
-
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package hungry-delete
-  ;;   :config
-  ;;   (global-hungry-delete-mode)
-  ;;   :diminish hungry-delete-mode)
-#+END_SRC
-*** COMMENT Yasnippet
-
-[[https://github.com/joaotavora/yasnippet][Yasnippet]] inserts templates (with holes which can be navigated with
-tabs). I'm experimenting with it, I can't recommend it just yet.
-#+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :config
-    (yas-global-mode)
-    :diminish yas-minor-mode
-    :defer 2)
-#+END_SRC
-
 *** Ace windows
 
 [[https://github.com/abo-abo/ace-window][Ace-window]] provides a faster way to navigate between windows. I rebind
