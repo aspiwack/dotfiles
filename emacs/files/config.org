@@ -1579,16 +1579,3 @@ See the [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Desktop-Noti
   (global-set-key (kbd "C-c C-s") 'send-to-eshell)
 #+END_SRC
 
-* Things that must be late
-
-** COMMENT Direnv
-
-[[https://github.com/purcell/envrc][Envrc]] is a buffer-local mode for [[https://direnv.net/][direnv]]. When working on several
-project in the same Emacs session, the direnv environment of each
-buffer is picked up.
-
-#+begin_src emacs-lisp
-  (use-package envrc
-    :config
-    (envrc-global-mode))
-#+end_src

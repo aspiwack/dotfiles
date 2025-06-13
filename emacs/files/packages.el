@@ -68,7 +68,6 @@
 ;;   :recipe (:type git :host github :repo "jyp/elastic-modes")
 ;;   :pin "c577e8921a4d9bd77742729707152bc557fae3e2"
 ;;   )
-(package! envrc)
 (package! flycheck)
 ;; (package! flyspell)
 (package! flyspell-correct)
