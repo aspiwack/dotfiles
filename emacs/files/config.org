@@ -31,27 +31,6 @@ the ~.config/doom.d/~ directory. Don't forget to activate the ~literate~ module 
 ~init.el~ which lets Doom read this Org file and turn it into a ~config.el~ file
 that Emacs can read.
 
-* COMMENT Use-package
-
-The [[https://github.com/jwiegley/use-package][~use-package~]] macro helps structure Emacs configurations by
-arranging and scoping the configuration by package.
-
-
-** Bootstrapping use-package
-
-The ~use-package~ macro can install packages from Melpa, but it cannot
-install itself. So we need a bit of bootstrapping code to get
-ourselves started:
-#+BEGIN_SRC emacs-lisp
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-  (require 'use-package)
-  (setq use-package-minimum-reported-time 0.05)
-  (setq use-package-verbose t)
-#+END_SRC
-
-
-
 * TODO Preliminaries
 
 Move opam stuff (from Melt & Ocaml) to here.
