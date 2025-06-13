@@ -51,7 +51,6 @@
 (package! ace-window)
 (package! aidermacs)
 (package! attrap)
-(package! avy)
 (package! boon)
 (package! breadcrumb)
 (package! counsel)

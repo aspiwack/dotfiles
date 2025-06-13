@@ -363,15 +363,6 @@ switch to said window.
     (ace-window-display-mode 1))
 #+END_SRC
 
-*** Avy
-
-[[https://github.com/abo-abo/avy][Avy]] provides fast ways to jump to a word on screen (it can jump
-between windows as well). I haven't set bindings because I use Avy via
-[[https://github.com/jyp/boon][Boon]].
-#+BEGIN_SRC emacs-lisp
-  (use-package avy)
-#+END_SRC
-
 *** Boon
 
 [[https://github.com/jyp/boon][Boon]] is a modal binding for Emacs. An alternative is [[https://bitbucket.org/lyro/evil/wiki/Home][Evil]] (together
