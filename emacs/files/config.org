@@ -219,9 +219,8 @@ adapted from [[https://www.reddit.com/r/emacs/comments/o49v2w/comment/i5ibcyv/?u
 [[https://github.com/justbur/emacs-which-key#manual-activation][Which-key]] display key binding completions.
 
 #+begin_src emacs-lisp
-  (use-package which-key
-      :custom
-      (which-key-idle-delay 0.3))
+  (after! which-key
+      (setq which-key-idle-delay 0.3))
 #+end_src
 
 ** Editing
@@ -1275,7 +1274,8 @@ this makes the integration smoother. More normal a terminal than
 Eshell. It's become my default choice of terminal inside Emacs.
 
 #+begin_src emacs-lisp
-  (use-package eat)
+  (use-package eat
+    :commands eat)
 #+end_src
 * Applications
 
