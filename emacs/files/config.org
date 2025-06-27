@@ -728,17 +728,7 @@ code blocks (and ~<q~ into quotes, etc…).
 (As I'm writing this, ~org-tempo~ stopped working for me, I don't know
 why. An alternative is ~C-c ~C-,~ (which is awkward in Boon))
 #+begin_src emacs-lisp
-  ;; In recent Org mode syntax tables, `</>' are declared as delimiters
-  ;; (possibly because of timestamp, I don't know), therefore, typing
-  ;; `<' is completed by a matching `>' which prevents `org-tempo''s
-  ;; expansions. So I deactivate `electric-pair' for this specific
-  ;; delimiter.
-  (defun aspiwack/no-electric-< ()
-    (add-function :before-until electric-pair-inhibit-predicate (lambda (c) (eq c ?<))))
-
   (use-package org-tempo
-    :hook
-    (org-mode . aspiwack/no-electric-<)
     :config
     (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
     (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
@@ -746,9 +736,6 @@ why. An alternative is ~C-c ~C-,~ (which is awkward in Boon))
     (add-to-list 'org-structure-template-alist '("hask" . "src haskell"))
     )
 #+end_src
-
-References:
--  For ~no-electric-<~: [[https://www.reddit.com/r/emacs/comments/j1xdpv/mode_specific_electricpair_behavior/g726o7j/][Reddit]], [[https://emacs.stackexchange.com/questions/55570/yasnippet-avoid-electric-pairs-at-expansion-time/55643#55643][Stackoverflow]]
 
 **** Org-present
 
