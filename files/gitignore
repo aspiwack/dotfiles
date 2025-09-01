@@ -1,2 +1,7 @@
+# Direnv stuff
 .envrc
 .direnv
+
+# Aider stuff
+.aider.chat.history.md
+.aider.tags.cache.*
