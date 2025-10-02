@@ -4,6 +4,14 @@
 
 {
 
+  ### Terminal emulators
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      theme = "light:Catppuccin Latte,dark:Catppuccin Mocha";
+    };
+  };
+
   ### Terminal shells
 
   # Sets up the shells I use to have their configuration managed by
