@@ -47,6 +47,8 @@ in
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  # Periodically delete old Home-manager generations
+  services.home-manager.autoExpire.enable = true;
 
   # Note to self: pre-switch
   # $ echo $XDG_DATA_DIRS
