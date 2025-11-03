@@ -144,12 +144,15 @@
   # - Cd to subdirectory (Alt+C)
   programs.fzf =
     { enable = true;
-      enableFishIntegration = true;
-      enableBashIntegration = true;
       defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
       # Use fd to find files
       changeDirWidgetCommand = "fd --type d";
       defaultCommand = "fd --type file";
+    };
+  programs.atuin =
+    { enable = true;
+      # Below: do not override the up arrow behaviour
+      # flags = [ "--disable-up-arrow" ]
     };
 
   programs.nix-your-shell.enable = true;
