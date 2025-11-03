@@ -154,7 +154,6 @@
       settings = {
         inline_height = "20";
         filter_mode_shell_up_key_binding = "session";
-        invert = "true";
       };
       # Below: do not override the up arrow behaviour
       # flags = [ "--disable-up-arrow" ]
