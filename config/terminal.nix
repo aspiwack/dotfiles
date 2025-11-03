@@ -149,6 +149,7 @@
       changeDirWidgetCommand = "fd --type d";
       defaultCommand = "fd --type file";
     };
+
   programs.atuin =
     { enable = true;
       settings = {
@@ -158,6 +159,9 @@
       # Below: do not override the up arrow behaviour
       # flags = [ "--disable-up-arrow" ]
     };
+
+  # Carapace completion engine (works on all shells)
+   programs.carapace.enable = true;
 
   programs.nix-your-shell.enable = true;
 
