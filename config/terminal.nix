@@ -41,6 +41,12 @@
   # to Nushell as my main shell.
   programs.nushell = {
     enable = true;
+    settings = {
+      # See https://www.nushell.sh/book/hooks.html#command-not-found-hook-in-nixos
+      hooks.command_not_found = ''
+        { |command_name| print (command-not-found $command_name | str trim) }
+      '';
+    };
   };
 
   ### Theming
