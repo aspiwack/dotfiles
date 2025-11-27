@@ -69,6 +69,7 @@ in
       pkgs.aider-chat
 
       pkgs.eog
+      pkgs.resources
       pkgs.vlc
 
       ## Images stuff
