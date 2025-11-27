@@ -68,10 +68,7 @@ in
 
       pkgs.aider-chat
 
-      pkgs.evince
       pkgs.eog
-      pkgs.nautilus
-      pkgs.file-roller
       pkgs.vlc
 
       ## Images stuff
