@@ -17,8 +17,10 @@
     pkgs.tokei
     # Replacement for `ps`
     pkgs.procs
-    # Replacement for `du`
+    # Replacement for `df`
     pkgs.duf
+    # TUI for `du`
+    pkgs.ncdu
     # A variant of ssh which deals with disconnection and latency
     pkgs.mosh
     # Provides an interactive interface to systemctl
