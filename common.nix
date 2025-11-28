@@ -283,6 +283,8 @@ in
         copilot
         (elastic-indent epkgs)
         (elastic-table epkgs)
+        # Add some tree-sitter grammars
+        (treesit-grammars.with-grammars (gr: [ gr.tree-sitter-julia ]))
       ]);
       tangleArgs = "--all config.org";
     };
