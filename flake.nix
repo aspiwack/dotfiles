@@ -12,9 +12,19 @@
       url = "github:marienz/nix-doom-emacs-unstraightened";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # The part of my configuration which, sadly, shouldn't be public
+    # I'm trying to keep it to a minimum.
+    # Sits in a sister directory so that updates are convenient. The setup isn't
+    # perfect, I still need to manually update the flake input when I change the
+    # private configuration.
+    private = {
+      url = git+file:../dotfiles-private;
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, doom-emacs }:
+  outputs = { self, nixpkgs, home-manager, doom-emacs, private }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
@@ -27,6 +37,7 @@
         modules = [
           ./nixos.nix
           doom-emacs.homeModule
+          private.email
         ];
 
         # Optionally use extraSpecialArgs
