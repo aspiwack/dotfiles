@@ -108,6 +108,8 @@ in
 
       pkgs.deluge
 
+      pkgs.signal-desktop
+
       # Scripts
       scripts.ghci-with
       scripts.weather
