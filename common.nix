@@ -66,8 +66,6 @@ in
   home.packages =
     [ pkgs.cachix
 
-      pkgs.aider-chat
-
       pkgs.eog
       pkgs.resources
       pkgs.vlc
@@ -99,8 +97,6 @@ in
 
       pkgs.nix-output-monitor
       pkgs.nix-tree
-
-      pkgs.nodePackages.emoj
 
       pkgs.chrysalis
 
@@ -210,8 +206,8 @@ in
 
   programs.git = {
     enable = true;
-    userName = "Arnaud Spiwack";
-    extraConfig =
+    settings.user.name = "Arnaud Spiwack";
+    settings =
       {
         pull.rebase = true;
         rerere.enabled = "true";
@@ -221,7 +217,7 @@ in
     lfs.enable = true;
 
     # Aliases
-    aliases =
+    settings.alias =
       { ff = "pull --ff-only";
         create = "!git-create";
         # doesn't work because happens in a subshell so doesn't change
@@ -232,11 +228,12 @@ in
     # Enable difftastic [https://github.com/Wilfred/difftastic] as
     # Git's default diff viewer. It's a tree-sitter based tree diff
     # differ.
-    difftastic =
-      { enable = true;
-        background = "dark";
-      };
   };
+  programs.difftastic =
+    { enable = true;
+      git.enable = true;
+      options.background = "dark";
+    };
   programs.gh.enable = true;
   programs.gh-dash.enable = true;
 
