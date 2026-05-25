@@ -46,7 +46,8 @@
   # which gives them a little colour).
   programs.bat = {
     enable = true;
-    config.theme = "Dracula";
+    config.theme-dark = "Catppuccin Mocha";
+    config.theme-light = "Catppuccin Latte";
   };
 
   # Replacement for `ls`. Installs an alias so that it's simply called
