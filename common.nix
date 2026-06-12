@@ -296,6 +296,9 @@ in
 
   home.file.".stack/config.yaml".source = files/stack-config.yaml;
 
+  ### Gaming
+  programs.lutris.enable = true;
+
   #### Nix
 
   programs.nh.enable = true;
