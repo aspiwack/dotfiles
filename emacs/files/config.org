@@ -344,6 +344,8 @@ being conservative and define most boon-type bindings here.
 
 #+BEGIN_SRC emacs-lisp
   (use-package boon
+    :init
+    (define-prefix-command 'aspiwack/boon-custom-map nil "custom")
     :config
     (require 'boon-qwerty)
     (boon-mode)
@@ -362,7 +364,6 @@ being conservative and define most boon-type bindings here.
     (defadvice keyboard-quit (before aspiwack/set-cmd-when-quit activate)
       "On `C-g' (`keyboard-quit'), return to Boon command mode."
       (boon-set-command-state))
-    (define-prefix-command 'aspiwack/boon-custom-map nil "custom")
     (define-key boon-command-map "m" 'aspiwack/boon-custom-map)
 
     ; Since the powerline/doom-modeline indicates boom's mode, we can safely remove
@@ -491,66 +492,13 @@ basename but different extensions (it uses a list of matching
 extension: for instance, it can switch between ~.c~ and ~.h~ files in
 C projects).
 #+BEGIN_SRC emacs-lisp
-  ;; A function to figure out names for a git repository based on the
-  ;; name of the remote repository and current branch. Useful because I
-  ;; use `git worktree' a lot.
-  (defun aspiwack/git-repo-name (project-root)
-    (require 's) ; string processing library
-    (let (remotes (shell-command-to-string "git remote -v"))
-      (if (string= remotes "")
-          ; in case there is no remote, use the directory's basename
-          (projectile-default-project-name project-root)
-        ; TODO: can we make sure this is run from the project root?
-        (let ((repo-name
-               (s-trim (shell-command-to-string "git remote -v | head -n1 | cut -f2 | cut -d ' ' -f1 | xargs basename | sed -e 's/.git$//'")))
-              (branch-name
-               (s-trim (shell-command-to-string "git branch --no-color | grep '^*' | cut -c3-"))))
-          (format "%s" repo-name)))
-      ))
-
-  (use-package projectile
-    :commands ; entry points for projectile
-    (projectile-project-vcs
-     projectile-project-root
-     projectile-vc
-     projectile-default-project-name)
-    :bind
-    ; Use `C-x g` to open the VCS (Magit, darcsum) dashboard
-    ("C-x g" . aspiwack/vc)
-    :bind-keymap
-    ; sets the prefix for projectile command to be `C-x p' (default
-    ; `C-c p').
-    ("C-x p" . projectile-command-map)
-    :config
-    ; starts projectile
-    (projectile-global-mode)
-    ; Set the projectile keymap
-    ; The following should be `:bind-keymap'. But for some reason
-    ; `:bind-keymap' doesn't seem happy with the `:map' modifier. See
-    ; https://github.com/jwiegley/use-package/issues/736
-    (define-key aspiwack/boon-custom-map "p" 'projectile-command-map)
-    ; customises the mode line display
-    (setq projectile-mode-line
-         '(:eval
-           (if
-               (file-remote-p default-directory)
-               " [<remote>]"
-             (format " [%s]"
-                     (projectile-project-name)))))
-    ; discover better project names
-    (setq projectile-project-name-function
-          (lambda (project-root)
-            (let ((vcs (projectile-project-vcs project-root)))
-              (cl-case vcs
-                ; In git repositories, I use worktrees and it makes the
-                ; name of the root directory (default project name) very
-                ; uninformative. Instead I use a project name based on
-                ; repository name and branch name.
-                (git (aspiwack/git-repo-name project-root))
-                (otherwise (projectile-default-project-name project-root))))))
-    ; replaces ido-based completion for projectile command with
-    :defer 0 ; loads immediately, overrides the autoloads.
-    )
+;; It seems that the projectile configuration has a bit of a special status
+;; (maybe, I can't say I've tested it thoroughly, just ran into issues) so using
+;; a more Doom-esque configuration block.
+(map!
+ :after boon
+ :map aspiwack/boon-custom-map
+ "p" #'projectile-command-map)
 #+END_SRC
 
 * Languages
@@ -897,7 +845,7 @@ lightweight.
 
 #+begin_src emacs-lisp
   (use-package eglot
-    :config
+    :init
     (define-prefix-command 'aspiwack/eglot-command-map nil "Eglot")
     (define-key aspiwack/boon-custom-map "l" 'aspiwack/eglot-command-map)
     (define-key aspiwack/eglot-command-map "h" 'eldoc-doc-buffer)
@@ -905,6 +853,12 @@ lightweight.
     (define-key aspiwack/eglot-command-map "r" 'eglot-rename)
     (define-key aspiwack/eglot-command-map "a" 'eglot-code-actions)
     )
+
+  ;; (after! boon
+  ;;   (map!
+  ;;    :after eglot
+  ;;    :map aspiwack/boon-custom-map
+  ;;    ))
 
   ;; Adds breadcrumbs header.
   (use-package breadcrumb
@@ -1011,17 +965,9 @@ The [[http://ocaml.org/][Ocaml]] language with [[https://github.com/the-lambda-c
   (setq merlin-command 'opam)
 #+END_SRC
 
-*** COMMENT Coq
+*** COMMENT Rocq
 
-The [[https://coq.inria.fr/][Coq]] proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]].
-#+BEGIN_SRC emacs-lisp
-  ;; ProofGeneral generic mode
-  ;; (use-package proof-general)
-#+END_SRC
-
-**** TODO Describe configuration
-
-**** TODO Link to Quail configuration
+The [[https://rocq-prover.org/][Rocq prover]], proof assistant and programming language, with [[https://github.com/ProofGeneral/PG][Proof general]].
 
 **** TODO Steal ideas from this config?
 http://endlessparentheses.com/proof-general-configuration-for-the-coq-software-foundations-tutorial.html

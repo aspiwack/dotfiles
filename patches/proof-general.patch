@@ -1,0 +1,13 @@
+diff --git a/proof-general.el b/proof-general.el
+index c1f4c912..10f07854 100644
+--- a/proof-general.el
++++ b/proof-general.el
+@@ -67,7 +67,7 @@
+ ;;;###autoload
+ (unless (bound-and-true-p byte-compile-current-file)
+   ;; This require breaks compilation, so it must only run when loading the package.
+-  (require 'proof-site (expand-file-name "generic/proof-site" pg-init--pg-root)))
++  (require 'proof-site (locate-library "proof-site")))
+ 
+ (eval-when-compile
+   ;; FIXME: [ This is used during installation of the ELPA package ]

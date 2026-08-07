@@ -277,6 +277,15 @@ in
       doomDir = ./emacs/files;
       doomLocalDir = "${config.xdg.configHome}/doom";
       emacs = my-emacs;
+
+      emacsPackageOverrides = eself: esuper: {
+        proof-general = esuper.proof-general.overrideAttrs (old: {
+          patches = (old.patches or [ ]) ++ [
+            ./patches/proof-general.patch
+          ];
+        });
+      };
+      
       extraPackages = epkgs: (with epkgs; [
         melpaPackages.vterm
         copilot
