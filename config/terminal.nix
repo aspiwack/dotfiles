@@ -163,7 +163,7 @@
   # Carapace completion engine (works on all shells)
    programs.carapace.enable = true;
 
-  programs.command-not-found.enable = true;
+  programs.nix-index.enable = true;
 
   programs.nix-your-shell.enable = true;
 
