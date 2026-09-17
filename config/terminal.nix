@@ -145,8 +145,10 @@
   programs.fzf =
     { enable = true;
       defaultOptions = ["--layout=reverse" "--border" "--height=70%"];
+      # Don't use for history (I use Atuin instead)
+      historyWidget.command = "";
       # Use fd to find files
-      changeDirWidgetCommand = "fd --type d";
+      changeDirWidget.command = "fd --type d";
       defaultCommand = "fd --type file";
     };
 

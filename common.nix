@@ -10,7 +10,7 @@
 
 
 let
-  my-emacs = pkgs.emacs30-pgtk;
+  my-emacs = pkgs.emacs-pgtk;
   scripts = rec {
       ghci-with = pkgs.writeShellScriptBin "ghciwith" ''
           nix-shell -p "haskellPackages.ghcWithPackages (pkgs: with pkgs; [$*])" --run ghci
@@ -279,11 +279,12 @@ in
       emacs = my-emacs;
 
       emacsPackageOverrides = eself: esuper: {
-        proof-general = esuper.proof-general.overrideAttrs (old: {
-          patches = (old.patches or [ ]) ++ [
-            ./patches/proof-general.patch
-          ];
-        });
+        ## Not needed anymore revisit if need be?
+        # proof-general = esuper.proof-general.overrideAttrs (old: {
+        #   patches = (old.patches or [ ]) ++ [
+        #     ./patches/proof-general.patch
+        #   ];
+        # });
       };
       
       extraPackages = epkgs: (with epkgs; [
