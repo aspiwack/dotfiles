@@ -23,24 +23,11 @@ let
           curl -sL https://www.gitignore.io/api/$1;
       '';
     };
-  overlays = {
-    # Load extensions in Weechat
-    weechat = self: super: {
-      weechat = super.weechat.override {
-        configure = {...}: {
-          scripts = [
-            super.weechatScripts.weechat-notify-send
-          ];
-        };
-      };
-    };
-  };
 in
 {
   imports = [
     config/terminal.nix
     config/unix.nix
-    services/weechat.nix
   ];
 
   ### Home Manager self-configuration ###
@@ -58,7 +45,6 @@ in
   ### Overlays ###
 
   nixpkgs.overlays = [
-    overlays.weechat
   ];
 
   ### Configuration ###
@@ -89,6 +75,11 @@ in
       pkgs.graphviz
       pkgs.progress
       pkgs.jnv # interactive jq explorer
+
+      # Install notify-send, used by the `alert` package for Emacs, which is
+      # commonly used by Doom (it needs to be on the path so, I'm having it on
+      # the path)
+      pkgs.libnotify
 
       pkgs.papis
 

@@ -38,6 +38,8 @@
           ./nixos.nix
           doom-emacs.homeModule
           private.email
+          private.irc
+          ./services/irc.nix
         ];
 
         # Optionally use extraSpecialArgs

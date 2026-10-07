@@ -1212,67 +1212,14 @@ Eshell. It's become my default choice of terminal inside Emacs.
 #+end_src
 * Applications
 
-** Weechat
+** IRC
 
-[[https://github.com/the-kenny/weechat.el][Emacs client]] to connect to a [[http://weechat.org/][Weechat]] server.
+Doom Emacs uses [[https://github.com/emacs-circe/circe][Circe]] as its IRC client. I run it as an Emacs daemon.
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package weechat
-  ;;   ; does not load the mode until the `weechat-connect` command has
-  ;;   ; been used.
-  ;;   :commands weechat-connect
-  ;;   :init
-  ;;   (custom-set-variables
-  ;;      '(weechat-host-default "mowgli.spiwack.net")
-  ;;      '(weechat-port-default 8001)
-  ;;      '(weechat-modules '(
-  ;;                    ; Make link clickable (default)
-  ;;                    weechat-button
-  ;;                    ; Nickname and command completion (default)
-  ;;                    weechat-complete
-  ;;                    ; Spell-checking with flyspell
-  ;;                    weechat-spelling
-  ;;                    ; Enables desktop notifications
-  ;;                    weechat-notifications
-  ;;                    ; Store passwords with secrets.el
-  ;;                    weechat-secrets
-  ;;                    ; Use `C-c C-spc` to circle between "hot" buffers
-  ;;                    weechat-tracking
-  ;;                    ; Previews Latex code (using Org mode's Latex preview)
-  ;;                    ; Deactivated because it doesn't work that well
-  ;;                    ;; 'weechat-latex
-  ;;                    ; Preview images
-  ;;                    weechat-image))
-  ;;      ; Retrieves a stored password automatically when a password is
-  ;;      ; required. Weechat also reconnects automatically to the server
-  ;;      ; if it can get a password this way.
-  ;;      '(weechat-password-callback 'weechat-secrets-get-password)
-  ;;      '(weechat-spelling-dictionaries '())
-  ;;      )
-
-  ;;   :config
-  ;;   ; Activates the visual line mode which, in particular, wraps line
-  ;;   ; based on word boundaries (see `word-wrap')
-  ;;   (add-hook 'weechat-mode-hook 'visual-line-mode)
-  ;;   ; Deactivated because Latex preview doesn't work that well
-  ;;   ;; (add-hook 'weechat-mode-hook 'weechat-latex-auto-mode)
-  ;;   )
+(after! lui-logging
+  (setq lui-logging-directory "~/.local/share/circe/logs/")
+  (enable-lui-logging-globally))
 #+END_SRC
-
-About the ~secrets.el~ features. See the [[https://www.gnu.org/software/emacs/manual/html_node/auth/Secret-Service-API.html][relevant section of the Emacs
-documentation]].
-
-Instructions:
-- ~M-x weechat-secrets-create~, enter and confirm the password for the
-  appropriate host/port pair. The first time, you will be prompted to
-  create a keyring this requires another password, which you will have
-  to type when you log in your computer.
-
-At the time writing this [2016-02-12 ven.], there is [[https://github.com/the-kenny/weechat.el/pull/47][a bug in the
-~secrets.el~ feature of ~weechat.el~.]] To work around it, I do ~M-x
-trace-function~ on ~secrets-create-item~ before doing
-~weechat-secrets-create~, then evaluate ~secrets-create-item~ (with
-~M-:~) with the same inputs except the number after ~:port~ is
-replaced by the corresponding string.
 
 *** TODO Add the "francais" dictionary as a requirement
 ~sudo apt-get install aspell-fr~
