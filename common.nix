@@ -300,12 +300,6 @@ in
   ### Gaming
   programs.lutris.enable = true;
 
-  #### Encryption
-
-  # Yes, this is the entire configuration. As long as you are using a ed25519 or
-  # rsa key with the standard name in the standard location.
-  age.enable = true;
-
   #### Nix
 
   programs.nh.enable = true;
