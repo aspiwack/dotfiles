@@ -344,8 +344,6 @@ being conservative and define most boon-type bindings here.
 
 #+BEGIN_SRC emacs-lisp
   (use-package boon
-    :init
-    (define-prefix-command 'aspiwack/boon-custom-map nil "custom")
     :config
     (require 'boon-qwerty)
     (boon-mode)
@@ -364,7 +362,7 @@ being conservative and define most boon-type bindings here.
     (defadvice keyboard-quit (before aspiwack/set-cmd-when-quit activate)
       "On `C-g' (`keyboard-quit'), return to Boon command mode."
       (boon-set-command-state))
-    (define-key boon-command-map "m" 'aspiwack/boon-custom-map)
+    (define-key boon-command-map "m" doom-leader-map)
 
     ; Since the powerline/doom-modeline indicates boom's mode, we can safely remove
     ; the normal boon indication from the mode line.
@@ -388,8 +386,6 @@ typing errors inline.
 started)
 #+begin_src emacs-lisp
   (use-package aidermacs
-    :config
-    (define-key aspiwack/boon-custom-map "o" 'aidermacs-transient-menu)
     :custom
     ; See the Configuration section below
     (aidermacs-use-architect-mode t)
@@ -492,12 +488,14 @@ basename but different extensions (it uses a list of matching
 extension: for instance, it can switch between ~.c~ and ~.h~ files in
 C projects).
 #+BEGIN_SRC emacs-lisp
-;; It seems that the projectile configuration has a bit of a special status
-;; (maybe, I can't say I've tested it thoroughly, just ran into issues) so using
-;; a more Doom-esque configuration block.
+;; Projectile's command map is bound is a rather odd fashion. In Doom itself
+;; only a subset of the command map is populated, and projectile expands it. So
+;; we need to do a little custom configuration here. It isn't perfect, because
+;; it overrides Doom's custom bindings. But it'll have do I haven't been needing
+;; those extra bindings that Doom added.
 (map!
- :after boon
- :map aspiwack/boon-custom-map
+ :after projectile
+ :map doom-leader-map
  "p" #'projectile-command-map)
 #+END_SRC
 
@@ -836,41 +834,7 @@ See [[http://jyp.github.io/posts/variable-pitch.html][Jean-Philippe Bernardy's b
     )
 #+end_src
 
-*** Language server protocol
-
-I used to use [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]]. But it just tries to take over Emacs too
-much. It can hurt productivity as Emacs doesn't always behave
-well. These days, Emacs comes with [[https://github.com/joaotavora/eglot][Eglot]] built in, which is more
-lightweight.
-
-#+begin_src emacs-lisp
-  (use-package eglot
-    :init
-    (define-prefix-command 'aspiwack/eglot-command-map nil "Eglot")
-    (define-key aspiwack/boon-custom-map "l" 'aspiwack/eglot-command-map)
-    (define-key aspiwack/eglot-command-map "h" 'eldoc-doc-buffer)
-    (define-key aspiwack/eglot-command-map "=" 'eglot-format)
-    (define-key aspiwack/eglot-command-map "r" 'eglot-rename)
-    (define-key aspiwack/eglot-command-map "a" 'eglot-code-actions)
-    )
-
-  ;; (after! boon
-  ;;   (map!
-  ;;    :after eglot
-  ;;    :map aspiwack/boon-custom-map
-  ;;    ))
-
-  ;; Adds breadcrumbs header.
-  (use-package breadcrumb
-    :config
-    (breadcrumb-mode)
-    :defer 2)
-#+end_src
-
-**** TODO Configure Nickel and Typst servers for Eglot
-I may want to check the commit where I wrote those line for some inspiration
-
-*** AI autocompletion
+*** COMMENT AI autocompletion
 
 Copilot
 #+begin_src emacs-lisp
@@ -881,16 +845,16 @@ Copilot
     :config
     (define-key copilot-completion-map (kbd "<tab>") 'copilot-accept-completion)
     (define-key copilot-completion-map (kbd "TAB") 'copilot-accept-completion)
-    (define-prefix-command 'aspiwack/copilot-map nil "copilot")
-    (define-key aspiwack/boon-custom-map "k" aspiwack/copilot-map)
-    (define-key aspiwack/copilot-map "c" 'copilot-complete)
-    (define-key aspiwack/copilot-map "a" 'copilot-accept-completion)
-    (define-key aspiwack/copilot-map "s" 'copilot-accept-completion-by-word)
-    ;; not sure why, but the space command doesn't work. Something takes
-    ;; over for some reason
-    (define-key aspiwack/copilot-map " " 'copilot-accept-completion-by-line)
-    (define-key aspiwack/copilot-map "p" 'copilot-accept-completion-by-line)
-    (define-key aspiwack/copilot-map "g" 'copilot-accept-completion-by-paragraph)
+    ;; (define-prefix-command 'aspiwack/copilot-map nil "copilot")
+    ;; (define-key aspiwack/boon-custom-map "k" aspiwack/copilot-map)
+    ;; (define-key aspiwack/copilot-map "c" 'copilot-complete)
+    ;; (define-key aspiwack/copilot-map "a" 'copilot-accept-completion)
+    ;; (define-key aspiwack/copilot-map "s" 'copilot-accept-completion-by-word)
+    ;; ;; not sure why, but the space command doesn't work. Something takes
+    ;; ;; over for some reason
+    ;; (define-key aspiwack/copilot-map " " 'copilot-accept-completion-by-line)
+    ;; (define-key aspiwack/copilot-map "p" 'copilot-accept-completion-by-line)
+    ;; (define-key aspiwack/copilot-map "g" 'copilot-accept-completion-by-paragraph)
     )
 #+end_src
 
@@ -1072,10 +1036,7 @@ problematic.
 
 [[https://github.com/psibi/justl.el][Justl]] helps with calling Just commands from within Emacs. The entry point is ~M-x justl~.
 #+begin_src emacs-lisp
-  (use-package justl
-    :bind
-    (:map aspiwack/boon-custom-map
-          ("j" . justl)))
+  (use-package justl)
 #+end_src
 * Multi-modes
 
