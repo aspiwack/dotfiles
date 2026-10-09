@@ -152,39 +152,12 @@
         "type": "github"
       }
     },
-    "private": {
-      "inputs": {
-        "agenix": [
-          "agenix"
-        ],
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1791514202,
-        "narHash": "sha256-uVAn2Zf3gWjmvzv7hh2fPTy5m785QNSJxrZS0CUz4oY=",
-        "ref": "refs/heads/master",
-        "rev": "c5696956c1746be821384258c5e7897d8f6cfeb8",
-        "revCount": 3,
-        "type": "git",
-        "url": "file:../dotfiles-private"
-      },
-      "original": {
-        "type": "git",
-        "url": "file:../dotfiles-private"
-      }
-    },
     "root": {
       "inputs": {
         "agenix": "agenix",
         "doom-emacs": "doom-emacs",
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs",
-        "private": "private"
+        "nixpkgs": "nixpkgs"
       }
     }
   },
