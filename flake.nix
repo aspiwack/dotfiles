@@ -25,7 +25,7 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; config.allowUnfree = true; };
     in {
-      homeConfigurations."aspiwack" = home-manager.lib.homeManagerConfiguration {
+      homeConfigurations."aspiwack@jake" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
 
         # Specify your home configuration modules here, for example,
@@ -40,6 +40,19 @@
           # Sits in a submodule so that updates are convenient.
           ./private/email.nix
           ./private/irc/irc.nix
+        ];
+
+        # Optionally use extraSpecialArgs
+        # to pass through arguments to home.nix
+      };
+
+      homeConfigurations."aspiwack@zuko" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+
+        modules = [
+          ./nixos.nix
+          doom-emacs.homeModule
+          agenix.homeManagerModules.default
         ];
 
         # Optionally use extraSpecialArgs
