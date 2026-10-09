@@ -1129,21 +1129,14 @@ management, shells, etc…
 Dired is Emacs's built-in file manager.
 
 #+begin_src emacs-lisp
-  (use-package dired
+  (use-package! dired
     ;; dired is built-in
-    :hook
-    (dired-mode . aspiwack/dired-hide-detail-at-at-startup)
     :custom
-    (dired-listing-switches "-alh --group-directories-first" "Better ls options")
     (dired-hide-details-hide-symlink-targets nil "Don't hide symlink targets in hide-details")
-    (dired-dwim-target t "Use other dired pane to guess target for copy directory")
     :config
     (define-key dired-mode-map "]" 'dired-do-async-shell-command)
     (define-key dired-mode-map "[" 'aspiwack/dired-do-async-xdg-open)
   )
-
-  (defun aspiwack/dired-hide-detail-at-at-startup ()
-    (dired-hide-details-mode 1))
 
   (defun aspiwack/dired-do-async-xdg-open (&optional arg file-list)
     "Use `dired-do-async-shell-command' to open marked files with
@@ -1156,12 +1149,10 @@ Dired is Emacs's built-in file manager.
     (dired-do-async-shell-command "xdg-open" arg file-list))
 #+end_src
 
-Add icons
-
+With Doom, dired is largely taken over by [[https://github.com/alexluigit/dirvish][Dirvish]], so some configuration goes here.
 #+begin_src emacs-lisp
-  (use-package nerd-icons-dired
-    :hook
-    (dired-mode . nerd-icons-dired-mode))
+(after! dirvish
+  (setq dirvish-hide-details t))
 #+end_src
 
 ** Running command
