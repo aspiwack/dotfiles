@@ -834,7 +834,7 @@ See [[http://jyp.github.io/posts/variable-pitch.html][Jean-Philippe Bernardy's b
     )
 #+end_src
 
-*** COMMENT AI autocompletion
+*** AI autocompletion
 
 Copilot
 #+begin_src emacs-lisp
