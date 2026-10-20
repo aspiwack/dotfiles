@@ -119,7 +119,8 @@
   };
 
   programs.tmate = {
-    enable = true;
+    # currently marked as insecure
+    enable = false;
     # It's a little unfortunate that I can't use my Tmux configuration
     # on Tmate. This is because Tmate is a fork of Tmux, and isn't
     # caught up with the latest developments. Or so I understand. So

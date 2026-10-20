@@ -74,7 +74,7 @@ in
       pkgs.papis
 
       (pkgs.aspellWithDicts
-          (dicts: with dicts; [ en en-computers en-science es fr ]))
+          (dicts: with dicts; [ en es fr ]))
 
       pkgs.nix-output-monitor
       pkgs.nix-tree
