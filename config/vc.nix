@@ -21,6 +21,12 @@ in
     # Diff pager (when receiving diffs so diffastic doesn't work, e.g. the `gh`
     # CLI).
     pkgs.diffnav
+
+    # TUI for Github actions
+    # It's ideally installed as an extension to gh, but I don't know how to do
+    # so in the current setup. gh-dash is installed as an extension by its
+    # home-manager module, though, so it must be possible.
+    pkgs.gh-enhance
   ];
 
   ### Git
@@ -73,10 +79,14 @@ in
   programs.gh-dash = {
     enable = true;
     settings = {
-      pager = {
-        # see gh's config above
-        diff = "delta -s";
-      };
+      # see gh's config above
+      pager.diff = "delta -s";
+      keybindings.prs = [
+        {
+          key = "T";
+          command = "gh-enhance -R {{.RepoName}} {{.PrNumber}}";
+        }
+      ];
     };
   };
 
