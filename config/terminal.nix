@@ -4,6 +4,15 @@
 
 {
 
+  home.sessionVariables = rec {
+    EDITOR="${config.programs.emacs.package}/bin/emacsclient -a '' -c";
+    RLWRAP_EDITOR="${EDITOR} > /dev/null 2>&1";
+    MANPAGER = "sh -c 'col -bx | bat -l man -p'";
+    MANROFFOPT="-c"; # otherwise the above messes up the output of
+                     # man. Don't know why. See
+                     # https://github.com/sharkdp/bat/issues/2753#issuecomment-1792736679 .
+  };
+
   ### Terminal emulators
   programs.ghostty = {
     enable = true;

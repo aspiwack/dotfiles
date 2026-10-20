@@ -133,17 +133,6 @@ in
     enableBashIntegration = true;
   };
 
-  # TODO: I would like to move this to `terminal.nix`, but I need a
-  # way to refer to Emacs from there
-  home.sessionVariables = rec {
-    EDITOR="${my-emacs}/bin/emacsclient -a '' -c";
-    RLWRAP_EDITOR="${EDITOR} > /dev/null 2>&1";
-    MANPAGER = "sh -c 'col -bx | bat -l man -p'";
-    MANROFFOPT="-c"; # otherwise the above messes up the output of
-                     # man. Don't know why. See
-                     # https://github.com/sharkdp/bat/issues/2753#issuecomment-1792736679 .
-  };
-
   programs.jq.enable = true;
 
   programs.noti.enable = true;
