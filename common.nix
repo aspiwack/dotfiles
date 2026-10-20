@@ -127,12 +127,6 @@ in
 
   #### Shell/terminal
 
-  programs.navi = {
-    enable = true;
-    enableFishIntegration = true;
-    enableBashIntegration = true;
-  };
-
   programs.jq.enable = true;
 
   programs.noti.enable = true;
