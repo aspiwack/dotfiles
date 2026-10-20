@@ -163,7 +163,14 @@
     };
 
   # Carapace completion engine (works on all shells)
-   programs.carapace.enable = true;
+  programs.carapace = {
+    enable = true;
+    environment = {
+      # Enables using shell-specific completion methods. I think. I don't find
+      # the documentation particularly clear.
+      CARAPACE_BRIDGES = "zsh,fish,bash";
+    };
+  };
 
   programs.nix-index.enable = true;
 
