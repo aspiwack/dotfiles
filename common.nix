@@ -28,13 +28,6 @@ in
     config/vc.nix
   ];
 
-  ### Home Manager self-configuration ###
-
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
-  # Periodically delete old Home-manager generations
-  services.home-manager.autoExpire.enable = true;
-
   # Note to self: pre-switch
   # $ echo $XDG_DATA_DIRS
   # /usr/share/gnome:/home/aspiwack/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop:/var/lib/snapd/desktop
@@ -262,7 +255,19 @@ in
 
   #### Nix
 
-  programs.nh.enable = true;
+  # Let Home Manager install and manage itself.
+  programs.home-manager.enable = true;
+  # Periodically delete old Home-manager generations
+  services.home-manager.autoExpire.enable = true;
+
+  programs.nh = {
+    enable = true;
+    # Periodically removes roots created untouched `result` directories,
+    # profiles (I don't know why but my system creates some), and even
+    # Nix-direnv's dev shells. It also performs a garbage collection.
+    clean.enable = true;
+    clean.extraArgs = ["--keep-since" "90d"];
+  };
 
   ### Versioning ###
 
