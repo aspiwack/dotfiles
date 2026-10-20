@@ -70,6 +70,7 @@ in
   programs.gh = {
     enable = true;
     settings = {
+      # -s is for side-by-side diffs. Omit for traditional stacked diffs
       pager = "delta -s";
       # Atlernative (adds a file tree navigator, which is enticing, but doesn't
       # feel quite polished enough yet):
