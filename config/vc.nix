@@ -17,6 +17,10 @@ in
 
     # Scripts
     scripts.gitignoreio
+
+    # Diff pager (when receiving diffs so diffastic doesn't work, e.g. the `gh`
+    # CLI).
+    pkgs.diffnav
   ];
 
   ### Git
@@ -57,7 +61,27 @@ in
   
   ### Github
 
-  programs.gh.enable = true;
-  programs.gh-dash.enable = true;
+  programs.gh = {
+    enable = true;
+    settings = {
+      pager = "delta -s";
+      # Atlernative (adds a file tree navigator, which is enticing, but doesn't
+      # feel quite polished enough yet):
+      # pager = "diffnav";
+    };
+  };
+  programs.gh-dash = {
+    enable = true;
+    settings = {
+      pager = {
+        # see gh's config above
+        diff = "delta -s";
+      };
+    };
+  };
+
+  # Gh sends pure diffs, I think so difftastic can't work for it. Instead, we
+  # can use delta and configure it as a pager for gh.
+  programs.delta.enable = true;
   
 }
