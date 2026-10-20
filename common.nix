@@ -19,15 +19,13 @@ let
           [ -n $1 ] && arg="/$1"
           curl "wttr.in$arg"
       '';
-      gitignoreio = pkgs.writeShellScriptBin "gitignoreio" ''
-          curl -sL https://www.gitignore.io/api/$1;
-      '';
     };
 in
 {
   imports = [
     config/terminal.nix
     config/unix.nix
+    config/vc.nix
   ];
 
   ### Home Manager self-configuration ###
@@ -71,7 +69,6 @@ in
       ## Sound stuff
       pkgs.qpwgraph
 
-      # pkgs.darcs
       pkgs.graphviz
       pkgs.progress
       pkgs.jnv # interactive jq explorer
@@ -100,7 +97,6 @@ in
       # Scripts
       scripts.ghci-with
       scripts.weather
-      scripts.gitignoreio
 
       # Fonts
       pkgs.nerd-fonts.dejavu-sans-mono
@@ -194,42 +190,6 @@ in
   };
 
   #### Development environment
-
-  programs.git = {
-    enable = true;
-    settings.user.name = "Arnaud Spiwack";
-    settings =
-      {
-        pull.rebase = true;
-        rerere.enabled = "true";
-        rerere.autoupdate = "true";
-        github.user = "aspiwack";
-      };
-    lfs.enable = true;
-
-    # Aliases
-    settings.alias =
-      { ff = "pull --ff-only";
-        create = "!git-create";
-        # doesn't work because happens in a subshell so doesn't change
-        # the directory
-        # root = ''!cd "$(git rev-parse --show-toplevel)"'';
-      };
-
-    # Enable difftastic [https://github.com/Wilfred/difftastic] as
-    # Git's default diff viewer. It's a tree-sitter based tree diff
-    # differ.
-  };
-  programs.difftastic =
-    { enable = true;
-      git.enable = true;
-      options.background = "dark";
-    };
-  programs.gh.enable = true;
-  programs.gh-dash.enable = true;
-
-  # Globally-configured ignored patterns
-  home.file.".config/git/ignore".source = files/gitignore;
 
   programs.direnv = {
     enable = true;
