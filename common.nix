@@ -250,6 +250,8 @@ in
     # Nix-direnv's dev shells. It also performs a garbage collection.
     clean.enable = true;
     clean.extraArgs = ["--keep-since" "90d"];
+    osFlake = "${config.home.homeDirectory}/nixos-config/";
+    homeFlake = "${config.home.homeDirectory}/dotfiles/";
   };
 
   ### Versioning ###
