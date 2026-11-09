@@ -54,9 +54,20 @@
           doom-emacs.homeModule
           agenix.homeManagerModules.default
         ];
+     };
+
+     homeConfigurations."aspiwack@entrapta" = home-manager.lib.homeManagerConfiguration {
+       inherit pkgs;
+
+       modules = [
+         ./non-nixos.nix
+         doom-emacs.homeModule
+         agenix.homeManagerModules.default
+       ];
 
         # Optionally use extraSpecialArgs
         # to pass through arguments to home.nix
       };
     };
 }
+
