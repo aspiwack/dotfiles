@@ -172,6 +172,8 @@ in
     nix-direnv.enable = true;
   };
 
+  programs.devenv.enable = true;
+
   #### Emacs
 
   programs.doom-emacs =
