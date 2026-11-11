@@ -174,6 +174,10 @@ in
 
   programs.devenv.enable = true;
 
+  #### Dev tools
+
+  programs.codex.enable = true;
+
   #### Emacs
 
   programs.doom-emacs =
